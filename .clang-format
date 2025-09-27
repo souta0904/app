@@ -1,2 +1,21 @@
 ﻿# ベーススタイル
 BasedOnStyle: Google
+
+# 字下げスタイル
+BreakBeforeBraces: Allman
+
+# 1行の長さ
+ColumnLimit: 0
+
+# インデント、タブ
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+
+# スペース
+SpaceAfterControlStatementKeyword: false
+SpacesInParentheses: true
+
+# 初期化子リストの改行
+BreakConstructorInitializers: BeforeComma
+ConstructorInitializerIndentWidth: 4
