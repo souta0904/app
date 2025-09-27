@@ -149,10 +149,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\DescriptorHeap.cpp" />
+    <ClCompile Include="engine\DirectXBase.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\DescriptorHeap.h" />
+    <ClInclude Include="engine\DirectXBase.h" />
     <ClInclude Include="engine\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
