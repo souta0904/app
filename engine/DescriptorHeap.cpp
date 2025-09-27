@@ -39,7 +39,7 @@ bool DescriptorHeap::Create( Type type, uint32_t numDescriptors, bool isShaderVi
     desc.Flags = mIsShaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 
     // デスクリプタヒープを作成
-    HRESULT hr = device->CreateDescriptorHeap( &desc, IID_PPV_ARGS( mDescriptorHeap.GetAddressOf() ) );
+    auto hr = device->CreateDescriptorHeap( &desc, IID_PPV_ARGS( mDescriptorHeap.GetAddressOf() ) );
     if( FAILED( hr ) ) return false;
 
     // デスクリプタハンドルリストを作成
@@ -88,15 +88,15 @@ void DescriptorHeap::Free( DescriptorHandle*& hdl )
 }
 
 // デスクリプタハンドルを初期化
-void DescriptorHeap::InitHdl( uint32_t idx, DescriptorHandle& initHdl )
+void DescriptorHeap::InitHdl( uint32_t index, DescriptorHandle& initHdl )
 {
     initHdl.mCPU = mDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-    initHdl.mCPU.ptr += mIncrementSize * idx;
+    initHdl.mCPU.ptr += mIncrementSize * index;
     if( mIsShaderVisible )
     {
         initHdl.mGPU = mDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
-        initHdl.mGPU.ptr += mIncrementSize * idx;
+        initHdl.mGPU.ptr += mIncrementSize * index;
     }
     initHdl.mIsActive = true;
-    initHdl.mIndex = idx;
+    initHdl.mIndex = index;
 }

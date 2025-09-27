@@ -85,11 +85,14 @@ class DescriptorHeap
     /// <param name="hdl">解放するデスクリプタハンドル</param>
     void Free( DescriptorHandle*& hdl );
 
+    /// <summary>デスクリプタヒープを取得</summary>
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> GetDescriptorHeap() const { return mDescriptorHeap; }
+
    private:
     /// <summary>
     /// デスクリプタハンドルを初期化
     /// </summary>
-    /// <param name="idx">インデックス</param>
+    /// <param name="index">インデックス</param>
     /// <param name="initHdl">初期化するデスクリプタハンドル</param>
-    void InitHdl( uint32_t idx, DescriptorHandle& initHdl );
+    void InitHdl( uint32_t index, DescriptorHandle& initHdl );
 };
