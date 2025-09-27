@@ -47,4 +47,7 @@ class CommandList
     /// </summary>
     /// <param name="descriptorHeap">デスクリプタヒープ</param>
     void SetDescriptorHeap( DescriptorHeap* descriptorHeap );
+
+    /// <summary>コマンドリストを取得</summary>
+    Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> GetCmdList() const { return mCmdList; }
 };

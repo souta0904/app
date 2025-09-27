@@ -5,9 +5,18 @@
     <ClCompile Include="engine\Window.cpp">
       <Filter>engine</Filter>
     </ClCompile>
-    <ClCompile Include="engine\DescriptorHeap.cpp" />
-    <ClCompile Include="engine\DirectXBase.cpp" />
-    <ClCompile Include="engine\CommandList.cpp" />
+    <ClCompile Include="engine\CommandList.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\CommandQueue.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\DescriptorHeap.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\DirectXBase.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
@@ -18,8 +27,17 @@
     <ClInclude Include="engine\Window.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="engine\DescriptorHeap.h" />
-    <ClInclude Include="engine\DirectXBase.h" />
-    <ClInclude Include="engine\CommandList.h" />
+    <ClInclude Include="engine\CommandList.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\CommandQueue.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\DescriptorHeap.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\DirectXBase.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
