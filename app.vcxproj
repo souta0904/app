@@ -149,6 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\DirectXCommonSettings.cpp" />
     <ClCompile Include="engine\CommandQueue.cpp" />
     <ClCompile Include="engine\CommandList.cpp" />
     <ClCompile Include="engine\DescriptorHeap.cpp" />
@@ -157,6 +158,7 @@
     <ClCompile Include="engine\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\DirectXCommonSettings.h" />
     <ClInclude Include="engine\CommandQueue.h" />
     <ClInclude Include="engine\CommandList.h" />
     <ClInclude Include="engine\DescriptorHeap.h" />

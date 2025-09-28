@@ -3,6 +3,7 @@
 #include <wrl.h>
 
 #include <cstdint>
+#include <vector>
 
 class CommandList;
 
@@ -15,11 +16,14 @@ class CommandQueue
     // コマンドキュー
     Microsoft::WRL::ComPtr<ID3D12CommandQueue> mCmdQueue;
     // フェンス値
-    uint64_t mFenceVal;
+    std::vector<uint64_t> mFenceValues;
     // フェンス
     Microsoft::WRL::ComPtr<ID3D12Fence> mFence;
     // フェンスイベント
     HANDLE mFenceEvent;
+
+    // 現在のフェンス値
+    uint64_t mCurrValue;
 
    public:
     /// <summary>
@@ -33,19 +37,31 @@ class CommandQueue
     ~CommandQueue();
 
     /// <summary>
-    /// コマンドキューを作成
+    /// 作成
     /// </summary>
+    /// <param name="count">バックバッファ数</param>
     /// <returns>成否</returns>
-    bool Create();
+    bool Create( uint32_t count );
 
     /// <summary>
     /// コマンドリストを実行
     /// </summary>
     /// <param name="cmdList">コマンドリスト</param>
-    void Execute( CommandList* cmdList );
+    /// <param name="idx">バックバッファインデックス</param>
+    void Execute( CommandList* cmdList, uint32_t idx );
 
     /// <summary>
-    /// GPUの実行完了を待つ
+    /// GPUの処理を待つ
     /// </summary>
-    void WaitForGPU();
+    /// <param name="idx">バックバッファインデックス</param>
+    void WaitGPU( uint32_t idx );
+
+    /// <summary>
+    /// GPUの処理を待つ(終了処理用)
+    /// </summary>
+    /// <param name="idx">バックバッファインデックス</param>
+    void TermWaitGPU( uint32_t idx );
+
+    /// <summary>コマンドキューを取得</summary>
+    Microsoft::WRL::ComPtr<ID3D12CommandQueue> GetCmdQueue() const { return mCmdQueue; }
 };

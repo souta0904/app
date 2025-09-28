@@ -1,9 +1,12 @@
 #include "DescriptorHeap.h"
 
+#include "DirectXBase.h"
+
 // コンストラクタ
 DescriptorHeap::DescriptorHeap()
     : mDescriptorHeap( nullptr )
     , mDescriptorHdls()
+    , mNextIdx( 0 )
     , mIncrementSize( 0 )
     , mIsShaderVisible( false )
 {
@@ -45,7 +48,7 @@ bool DescriptorHeap::Create( Type type, uint32_t numDescriptors, bool isShaderVi
     // デスクリプタハンドルリストを作成
     mDescriptorHdls.clear();
     mDescriptorHdls.resize( desc.NumDescriptors );
-    mNextIndex = 0;
+    mNextIdx = 0;
 
     // インクリメントサイズを取得
     mIncrementSize = device->GetDescriptorHandleIncrementSize( desc.Type );
@@ -53,24 +56,20 @@ bool DescriptorHeap::Create( Type type, uint32_t numDescriptors, bool isShaderVi
     return true;
 }
 
-// デスクリプタヒープをバインド
-void DescriptorHeap::Bind( CommandList* cmdList )
-{
-    // TODO: 実装
-}
-
 // デスクリプタハンドルを割り当て
 DescriptorHandle* DescriptorHeap::Alloc()
 {
+    if( !mDescriptorHeap ) return nullptr;
+
     // リングバッファで空きを探す
     auto size = static_cast<uint32_t>( mDescriptorHdls.size() );
     for( uint32_t i = 0; i < size; ++i )
     {
-        uint32_t idx = ( mNextIndex + i ) % size;
+        uint32_t idx = ( mNextIdx + i ) % size;
         if( !mDescriptorHdls[idx].mIsActive )
         {
             InitHdl( idx, mDescriptorHdls[idx] );
-            mNextIndex = ( idx + 1 ) % size;
+            mNextIdx = ( idx + 1 ) % size;
             return &mDescriptorHdls[idx];
         }
     }
@@ -82,21 +81,21 @@ void DescriptorHeap::Free( DescriptorHandle*& hdl )
 {
     if( hdl )
     {
-        mDescriptorHdls[hdl->mIndex].mIsActive = false;
+        mDescriptorHdls[hdl->mIdx].mIsActive = false;
         hdl = nullptr;
     }
 }
 
 // デスクリプタハンドルを初期化
-void DescriptorHeap::InitHdl( uint32_t index, DescriptorHandle& initHdl )
+void DescriptorHeap::InitHdl( uint32_t idx, DescriptorHandle& initHdl )
 {
     initHdl.mCPU = mDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-    initHdl.mCPU.ptr += mIncrementSize * index;
+    initHdl.mCPU.ptr += mIncrementSize * idx;
     if( mIsShaderVisible )
     {
         initHdl.mGPU = mDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
-        initHdl.mGPU.ptr += mIncrementSize * index;
+        initHdl.mGPU.ptr += mIncrementSize * idx;
     }
     initHdl.mIsActive = true;
-    initHdl.mIndex = index;
+    initHdl.mIdx = idx;
 }

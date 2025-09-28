@@ -1,32 +1,39 @@
 #include "CommandList.h"
 
-#include "DescriptorHeap.h"
+#include "DirectXBase.h"
 
 // コンストラクタ
 CommandList::CommandList()
-    : mCmdAllocator( nullptr )
+    : mCmdAllocators()
     , mCmdList( nullptr )
 {
 }
 
-// コマンドリストを作成
-bool CommandList::Create()
+// 作成
+bool CommandList::Create( uint32_t count )
 {
     auto device = DirectXBase::GetInstance().GetDevice();
     if( !device ) return false;
 
-    // コマンドアロケーターを作成
-    auto hr = device->CreateCommandAllocator( D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS( mCmdAllocator.GetAddressOf() ) );
-    if( FAILED( hr ) ) return false;
+    mCmdAllocators.resize( count );
+    for( auto& cmdAllocator : mCmdAllocators )
+    {
+        // コマンドアロケーターを作成
+        auto hr = device->CreateCommandAllocator( D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS( cmdAllocator.GetAddressOf() ) );
+        if( FAILED( hr ) ) return false;
+    }
 
     // コマンドリストを作成
-    hr = device->CreateCommandList( 0, D3D12_COMMAND_LIST_TYPE_DIRECT, mCmdAllocator.Get(), nullptr, IID_PPV_ARGS( mCmdList.GetAddressOf() ) );
+    auto hr = device->CreateCommandList( 0, D3D12_COMMAND_LIST_TYPE_DIRECT, mCmdAllocators[0].Get(), nullptr, IID_PPV_ARGS( mCmdList.GetAddressOf() ) );
     if( FAILED( hr ) ) return false;
+
+    // 閉じておく
+    mCmdList->Close();
 
     return true;
 }
 
-// コマンドリストを閉じる
+// クローズ
 void CommandList::Close()
 {
     if( !mCmdList ) return;
@@ -34,16 +41,20 @@ void CommandList::Close()
     mCmdList->Close();
 }
 
-// コマンドリストをリセット
-void CommandList::Reset()
+// リセット
+void CommandList::Reset( uint32_t idx )
 {
-    if( !mCmdAllocator || !mCmdList ) return;
+    if( idx < 0 || idx >= mCmdAllocators.size() ) return;
 
-    mCmdAllocator->Reset();
-    mCmdList->Reset( mCmdAllocator.Get(), nullptr );
+    if( !mCmdAllocators[idx] || !mCmdList ) return;
+
+    mCmdAllocators[idx]->Reset();
+    mCmdList->Reset( mCmdAllocators[idx].Get(), nullptr );
 }
 
-// デスクリプタヒープを設定
+#pragma region ID3D12GraphicsCommandListラッパー
+
+// デスクリプタヒープをセット
 void CommandList::SetDescriptorHeap( DescriptorHeap* descriptorHeap )
 {
     if( !mCmdList || !descriptorHeap ) return;
@@ -51,3 +62,37 @@ void CommandList::SetDescriptorHeap( DescriptorHeap* descriptorHeap )
     ID3D12DescriptorHeap* descriptorHeaps[] = { descriptorHeap->GetDescriptorHeap().Get() };
     mCmdList->SetDescriptorHeaps( 1, descriptorHeaps );
 }
+
+// リソースバリアをセット
+void CommandList::ResourceBarrier( const D3D12_RESOURCE_BARRIER& barrier )
+{
+    if( !mCmdList ) return;
+
+    mCmdList->ResourceBarrier( 1, &barrier );
+}
+
+// レンダーターゲットをセット
+void CommandList::SetRenderTarget( DescriptorHandle* hRTV, DescriptorHandle* hDSV )
+{
+    if( !mCmdList || !hRTV || !hDSV ) return;
+
+    mCmdList->OMSetRenderTargets( 1, &hRTV->mCPU, false, &hDSV->mCPU );
+}
+
+// レンダーターゲットをクリア
+void CommandList::ClearRenderTargetView( DescriptorHandle* hRTV, const float clearColor[4] )
+{
+    if( !mCmdList || !hRTV ) return;
+
+    mCmdList->ClearRenderTargetView( hRTV->mCPU, clearColor, 0, nullptr );
+}
+
+// 深度バッファをクリア
+void CommandList::ClearDepthStencilView( DescriptorHandle* hDSV )
+{
+    if( !mCmdList || !hDSV ) return;
+
+    mCmdList->ClearDepthStencilView( hDSV->mCPU, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr );
+}
+
+#pragma endregion

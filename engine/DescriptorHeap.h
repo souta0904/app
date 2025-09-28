@@ -15,7 +15,7 @@ struct DescriptorHandle
     D3D12_CPU_DESCRIPTOR_HANDLE mCPU = {};
     D3D12_GPU_DESCRIPTOR_HANDLE mGPU = {};
     bool mIsActive = false;
-    uint32_t mIndex = 0;
+    uint32_t mIdx = 0;
 };
 
 /// <summary>
@@ -41,7 +41,7 @@ class DescriptorHeap
     // デスクリプタハンドルの配列
     std::vector<DescriptorHandle> mDescriptorHdls;
     // 次に割り当てるインデックス
-    uint32_t mNextIndex;
+    uint32_t mNextIdx;
     // デスクリプタのインクリメントサイズ
     uint32_t mIncrementSize;
     // シェーダーから参照可能か
@@ -68,12 +68,6 @@ class DescriptorHeap
     bool Create( Type type, uint32_t numDescriptors, bool isShaderVisible );
 
     /// <summary>
-    /// デスクリプタヒープをバインド
-    /// </summary>
-    /// <param name="cmdList">コマンドリスト</param>
-    void Bind( CommandList* cmdList );
-
-    /// <summary>
     /// デスクリプタハンドルを割り当て
     /// </summary>
     /// <returns>割り当てたデスクリプタハンドル</returns>
@@ -92,7 +86,7 @@ class DescriptorHeap
     /// <summary>
     /// デスクリプタハンドルを初期化
     /// </summary>
-    /// <param name="index">インデックス</param>
+    /// <param name="idx">インデックス</param>
     /// <param name="initHdl">初期化するデスクリプタハンドル</param>
-    void InitHdl( uint32_t index, DescriptorHandle& initHdl );
+    void InitHdl( uint32_t idx, DescriptorHandle& initHdl );
 };

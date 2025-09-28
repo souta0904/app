@@ -17,6 +17,9 @@
     <ClCompile Include="engine\DirectXBase.cpp">
       <Filter>engine</Filter>
     </ClCompile>
+    <ClCompile Include="engine\DirectXCommonSettings.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
@@ -37,6 +40,9 @@
       <Filter>engine</Filter>
     </ClInclude>
     <ClInclude Include="engine\DirectXBase.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\DirectXCommonSettings.h">
       <Filter>engine</Filter>
     </ClInclude>
   </ItemGroup>

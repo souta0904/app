@@ -1,13 +1,15 @@
 #include "CommandQueue.h"
 
 #include "CommandList.h"
+#include "DirectXBase.h"
 
 // コンストラクタ
 CommandQueue::CommandQueue()
     : mCmdQueue( nullptr )
-    , mFenceVal( 0 )
+    , mFenceValues()
     , mFence( nullptr )
     , mFenceEvent( nullptr )
+    , mCurrValue( 0 )
 {
 }
 
@@ -21,8 +23,8 @@ CommandQueue::~CommandQueue()
     }
 }
 
-// コマンドキューを作成
-bool CommandQueue::Create()
+// 作成
+bool CommandQueue::Create( uint32_t count )
 {
     auto device = DirectXBase::GetInstance().GetDevice();
     if( !device ) return false;
@@ -32,10 +34,10 @@ bool CommandQueue::Create()
     auto hr = device->CreateCommandQueue( &desc, IID_PPV_ARGS( mCmdQueue.GetAddressOf() ) );
     if( FAILED( hr ) ) return false;
 
-    mFenceVal = 0;
+    mFenceValues.resize( count, 0 );
 
     // フェンスを作成
-    hr = device->CreateFence( mFenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS( mFence.GetAddressOf() ) );
+    hr = device->CreateFence( mFenceValues[0], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS( mFence.GetAddressOf() ) );
     if( FAILED( hr ) ) return false;
 
     // フェンスイベントを作成
@@ -46,24 +48,44 @@ bool CommandQueue::Create()
 }
 
 // コマンドリストを実行
-void CommandQueue::Execute( CommandList* cmdList )
+void CommandQueue::Execute( CommandList* cmdList, uint32_t idx )
 {
+    if( idx < 0 || idx >= mFenceValues.size() ) return;
+
     if( !mCmdQueue || !cmdList ) return;
 
     ID3D12CommandList* cmdLists[] = { cmdList->GetCmdList().Get() };
     mCmdQueue->ExecuteCommandLists( 1, cmdLists );
+
+    mCurrValue = mFenceValues[idx];
+    mCmdQueue->Signal( mFence.Get(), mCurrValue );
 }
 
-// GPUの実行完了を待つ
-void CommandQueue::WaitForGPU()
+// GPUの処理を待つ
+void CommandQueue::WaitGPU( uint32_t idx )
 {
-    if( !mCmdQueue || !mFence || !mFenceEvent ) return;
+    if( idx < 0 || idx >= mFenceValues.size() ) return;
 
-    ++mFenceVal;
-    mCmdQueue->Signal( mFence.Get(), mFenceVal );
-    if( mFence->GetCompletedValue() < mFenceVal )
+    if( !mFence || !mFenceEvent ) return;
+
+    if( mFence->GetCompletedValue() < mFenceValues[idx] )
     {
-        mFence->SetEventOnCompletion( mFenceVal, mFenceEvent );
-        WaitForSingleObject( mFenceEvent, INFINITE );
+        mFence->SetEventOnCompletion( mFenceValues[idx], mFenceEvent );
+        WaitForSingleObjectEx( mFenceEvent, INFINITE, false );
     }
+
+    mFenceValues[idx] = mCurrValue + 1;
+}
+
+// GPUの処理を待つ(終了処理用)
+void CommandQueue::TermWaitGPU( uint32_t idx )
+{
+    if( idx < 0 || idx >= mFenceValues.size() ) return;
+
+    if( !mFence || !mFenceEvent ) return;
+
+    mCmdQueue->Signal( mFence.Get(), mFenceValues[idx] );
+    mFence->SetEventOnCompletion( mFenceValues[idx], mFenceEvent );
+    WaitForSingleObjectEx( mFenceEvent, INFINITE, false );
+    ++mFenceValues[idx];
 }
