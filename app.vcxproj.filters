@@ -45,5 +45,6 @@
     <ClInclude Include="engine\DirectXCommonSettings.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="engine\SimplePool.h" />
   </ItemGroup>
 </Project>

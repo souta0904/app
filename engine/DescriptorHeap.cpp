@@ -5,14 +5,13 @@
 // コンストラクタ
 DescriptorHeap::DescriptorHeap()
     : mDescriptorHeap( nullptr )
-    , mDescriptorHdls()
-    , mNextIdx( 0 )
+    , mDescriptorHdlPool()
     , mIncrementSize( 0 )
     , mIsShaderVisible( false )
 {
 }
 
-// デスクリプタヒープを作成
+// 作成
 bool DescriptorHeap::Create( Type type, uint32_t numDescriptors, bool isShaderVisible )
 {
     mIsShaderVisible = isShaderVisible;
@@ -45,12 +44,11 @@ bool DescriptorHeap::Create( Type type, uint32_t numDescriptors, bool isShaderVi
     auto hr = device->CreateDescriptorHeap( &desc, IID_PPV_ARGS( mDescriptorHeap.GetAddressOf() ) );
     if( FAILED( hr ) ) return false;
 
-    // デスクリプタハンドルリストを作成
-    mDescriptorHdls.clear();
-    mDescriptorHdls.resize( desc.NumDescriptors );
-    mNextIdx = 0;
+    // デスクリプタハンドルのリストを作成
+    mDescriptorHdlPool = std::make_unique<SimplePool<DescriptorHandle>>();
+    mDescriptorHdlPool->Init( desc.NumDescriptors );
 
-    // インクリメントサイズを取得
+    // デスクリプタのインクリメントサイズを取得
     mIncrementSize = device->GetDescriptorHandleIncrementSize( desc.Type );
 
     return true;
@@ -61,19 +59,13 @@ DescriptorHandle* DescriptorHeap::Alloc()
 {
     if( !mDescriptorHeap ) return nullptr;
 
-    // リングバッファで空きを探す
-    auto size = static_cast<uint32_t>( mDescriptorHdls.size() );
-    for( uint32_t i = 0; i < size; ++i )
+    auto* hdl = mDescriptorHdlPool->Lend();
+    if( hdl )
     {
-        uint32_t idx = ( mNextIdx + i ) % size;
-        if( !mDescriptorHdls[idx].mIsActive )
-        {
-            InitHdl( idx, mDescriptorHdls[idx] );
-            mNextIdx = ( idx + 1 ) % size;
-            return &mDescriptorHdls[idx];
-        }
+        InitHdl( hdl->mIdx, hdl->mValue );
+        return &hdl->mValue;
     }
-    return nullptr;  // 空きがない
+    return nullptr;
 }
 
 // デスクリプタハンドルを解放
@@ -81,7 +73,7 @@ void DescriptorHeap::Free( DescriptorHandle*& hdl )
 {
     if( hdl )
     {
-        mDescriptorHdls[hdl->mIdx].mIsActive = false;
+        mDescriptorHdlPool->Return( hdl->mIdx );
         hdl = nullptr;
     }
 }
@@ -96,6 +88,5 @@ void DescriptorHeap::InitHdl( uint32_t idx, DescriptorHandle& initHdl )
         initHdl.mGPU = mDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
         initHdl.mGPU.ptr += mIncrementSize * idx;
     }
-    initHdl.mIsActive = true;
     initHdl.mIdx = idx;
 }

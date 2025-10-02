@@ -49,7 +49,7 @@ bool DirectXBase::Init()
 // 終了処理
 void DirectXBase::Term()
 {
-    mCmdQueue->TermWaitGPU( mBackBuffIdx );
+    mCmdQueue->WaitGPUTerm( mBackBuffIdx );
 
     // デスクリプタハンドルを解放
     if( mRTVHeap )
@@ -90,7 +90,7 @@ void DirectXBase::BeginDraw()
     mCmdList->ClearRenderTargetView( mRTVHdls[mBackBuffIdx], clearColor );
     mCmdList->ClearDepthStencilView( mDSVHdl );
 
-    // SRV用デスクリプタヒープをセット
+    // SRVデスクリプタヒープをセット
     mCmdList->SetDescriptorHeap( mSRVHeap.get() );
 }
 
@@ -104,19 +104,11 @@ void DirectXBase::EndDraw()
     barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
     mCmdList->ResourceBarrier( barrier );
 
-    // コマンドを閉じる
+    // コマンドを実行して待つ
     mCmdList->Close();
-
-    // コマンドを実行
     mCmdQueue->Execute( mCmdList.get(), mBackBuffIdx );
-
-    // 表示
     mSwapChain->Present( 1, 0 );
-
-    // バックバッファのインデックスを取得
     mBackBuffIdx = mSwapChain->GetCurrentBackBufferIndex();
-
-    // GPUの処理を待機
     mCmdQueue->WaitGPU( mBackBuffIdx );
 }
 
@@ -175,12 +167,11 @@ bool DirectXBase::CreateDevice()
     Microsoft::WRL::ComPtr<ID3D12InfoQueue> infoQueue = nullptr;
     if( SUCCEEDED( mDevice->QueryInterface( IID_PPV_ARGS( infoQueue.GetAddressOf() ) ) ) )
     {
-        // 警告・エラーは停止
+        // 警告・エラーは停止する
         infoQueue->SetBreakOnSeverity( D3D12_MESSAGE_SEVERITY_CORRUPTION, true );
         infoQueue->SetBreakOnSeverity( D3D12_MESSAGE_SEVERITY_ERROR, true );
         infoQueue->SetBreakOnSeverity( D3D12_MESSAGE_SEVERITY_WARNING, true );
-
-        // 例外のエラーを設定
+        // どうしようもないエラーは無視する
         D3D12_MESSAGE_SEVERITY severities[] = { D3D12_MESSAGE_SEVERITY_INFO };
         D3D12_MESSAGE_ID ids[] = { D3D12_MESSAGE_ID_RESOURCE_BARRIER_MISMATCHING_COMMAND_LIST_TYPE };
         D3D12_INFO_QUEUE_FILTER filter = {};
@@ -217,7 +208,7 @@ bool DirectXBase::CreateSwapChain()
     desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     desc.SampleDesc.Count = 1;
     desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    desc.BufferCount = 2;
+    desc.BufferCount = kBackBuffCount;
     desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
     [[maybe_unused]] auto hr = mFactory->CreateSwapChainForHwnd( mCmdQueue->GetCmdQueue().Get(), window.GetHWnd(), &desc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>( mSwapChain.GetAddressOf() ) );
     if( FAILED( hr ) ) return false;
@@ -256,17 +247,17 @@ bool DirectXBase::CreateRTV()
 
     for( uint32_t i = 0; i < kBackBuffCount; ++i )
     {
-        // バックバッファを取得
+        // スワップチェインからバックバッファを取得
         [[maybe_unused]] auto hr = mSwapChain->GetBuffer( i, IID_PPV_ARGS( mBackBuffs[i].GetAddressOf() ) );
         if( FAILED( hr ) ) return false;
 
         mRTVHdls[i] = mRTVHeap->Alloc();
         if( !mRTVHdls[i] ) return false;
 
+        // レンダーターゲットビューを作成
         D3D12_RENDER_TARGET_VIEW_DESC viewDesc = {};
         viewDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
         viewDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-        // レンダーターゲットビューを作成
         mDevice->CreateRenderTargetView( mBackBuffs[i].Get(), &viewDesc, mRTVHdls[i]->mCPU );
     }
 
@@ -280,6 +271,7 @@ bool DirectXBase::CreateDSV()
 
     auto& window = Window::GetInstance();
 
+    // 深度バッファを作成
     D3D12_RESOURCE_DESC desc = {};
     desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
     desc.Width = window.GetWidth();
@@ -291,17 +283,16 @@ bool DirectXBase::CreateDSV()
     D3D12_CLEAR_VALUE clearValue = {};
     clearValue.Format = DXGI_FORMAT_D32_FLOAT;
     clearValue.DepthStencil.Depth = 1.0f;
-    // 深度バッファを作成
     [[maybe_unused]] auto hr = mDevice->CreateCommittedResource( &DirectXCommonSettings::gHeapPropertiesDefault, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_DEPTH_WRITE, &clearValue, IID_PPV_ARGS( mDepthBuff.GetAddressOf() ) );
     if( FAILED( hr ) ) return false;
 
     mDSVHdl = mDSVHeap->Alloc();
     if( !mDSVHdl ) return false;
 
+    // 深度ステンシルビューを作成
     D3D12_DEPTH_STENCIL_VIEW_DESC viewDesc = {};
     viewDesc.Format = DXGI_FORMAT_D32_FLOAT;
     viewDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-    // 深度ステンシルビューを作成
     mDevice->CreateDepthStencilView( mDepthBuff.Get(), &viewDesc, mDSVHdl->mCPU );
 
     return true;

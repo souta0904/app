@@ -39,7 +39,7 @@ class CommandQueue
     /// <summary>
     /// 作成
     /// </summary>
-    /// <param name="count">バックバッファ数</param>
+    /// <param name="count">バックバッファの数</param>
     /// <returns>成否</returns>
     bool Create( uint32_t count );
 
@@ -47,20 +47,20 @@ class CommandQueue
     /// コマンドリストを実行
     /// </summary>
     /// <param name="cmdList">コマンドリスト</param>
-    /// <param name="idx">バックバッファインデックス</param>
+    /// <param name="idx">バックバッファのインデックス</param>
     void Execute( CommandList* cmdList, uint32_t idx );
 
     /// <summary>
     /// GPUの処理を待つ
     /// </summary>
-    /// <param name="idx">バックバッファインデックス</param>
+    /// <param name="idx">バックバッファのインデックス</param>
     void WaitGPU( uint32_t idx );
 
     /// <summary>
     /// GPUの処理を待つ(終了処理用)
     /// </summary>
-    /// <param name="idx">バックバッファインデックス</param>
-    void TermWaitGPU( uint32_t idx );
+    /// <param name="idx">バックバッファのインデックス</param>
+    void WaitGPUTerm( uint32_t idx );
 
     /// <summary>コマンドキューを取得</summary>
     Microsoft::WRL::ComPtr<ID3D12CommandQueue> GetCmdQueue() const { return mCmdQueue; }

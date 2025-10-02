@@ -14,7 +14,7 @@
 class Window;
 
 /// <summary>
-/// DirectX基盤
+/// DirectXの基盤
 /// </summary>
 class DirectXBase
 {
@@ -43,7 +43,7 @@ class DirectXBase
     // 深度バッファ
     Microsoft::WRL::ComPtr<ID3D12Resource> mDepthBuff;
     DescriptorHandle* mDSVHdl;
-    // 現在のバックバッファインデックス
+    // 現在のバックバッファのインデックス
     uint32_t mBackBuffIdx;
 
    public:
@@ -89,7 +89,6 @@ class DirectXBase
     /// </summary>
     DirectXBase& operator=( DirectXBase&& ) = delete;
 
-   public:
     /// <summary>
     /// 初期化
     /// </summary>
@@ -117,13 +116,13 @@ class DirectXBase
     /// <summary>コマンドリストを取得</summary>
     CommandList* GetCmdList() const { return mCmdList.get(); }
 
-    /// <summary>RTV用デスクリプタヒープを取得</summary>
+    /// <summary>RTVデスクリプタヒープを取得</summary>
     DescriptorHeap* GetRTVHeap() const { return mRTVHeap.get(); }
 
-    /// <summary>DSV用デスクリプタヒープを取得</summary>
+    /// <summary>DSVデスクリプタヒープを取得</summary>
     DescriptorHeap* GetDSVHeap() const { return mDSVHeap.get(); }
 
-    /// <summary>SRV用デスクリプタヒープを取得</summary>
+    /// <summary>SRVデスクリプタヒープを取得</summary>
     DescriptorHeap* GetSRVHeap() const { return mSRVHeap.get(); }
 
    private:

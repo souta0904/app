@@ -78,7 +78,7 @@ void CommandQueue::WaitGPU( uint32_t idx )
 }
 
 // GPUの処理を待つ(終了処理用)
-void CommandQueue::TermWaitGPU( uint32_t idx )
+void CommandQueue::WaitGPUTerm( uint32_t idx )
 {
     if( idx < 0 || idx >= mFenceValues.size() ) return;
 

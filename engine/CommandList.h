@@ -31,7 +31,7 @@ class CommandList
     /// <summary>
     /// 作成
     /// </summary>
-    /// <param name="count">アロケーター数</param>
+    /// <param name="count">コマンドアロケーターの数</param>
     /// <returns>成否</returns>
     bool Create( uint32_t count = 1 );
 

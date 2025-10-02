@@ -5,6 +5,8 @@
 #include <memory>
 #include <vector>
 
+#include "SimplePool.h"
+
 class CommandList;
 
 /// <summary>
@@ -14,7 +16,6 @@ struct DescriptorHandle
 {
     D3D12_CPU_DESCRIPTOR_HANDLE mCPU = {};
     D3D12_GPU_DESCRIPTOR_HANDLE mGPU = {};
-    bool mIsActive = false;
     uint32_t mIdx = 0;
 };
 
@@ -38,10 +39,8 @@ class DescriptorHeap
    private:
     // デスクリプタヒープ
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mDescriptorHeap;
-    // デスクリプタハンドルの配列
-    std::vector<DescriptorHandle> mDescriptorHdls;
-    // 次に割り当てるインデックス
-    uint32_t mNextIdx;
+    // デスクリプタハンドルのリスト
+    std::unique_ptr<SimplePool<DescriptorHandle>> mDescriptorHdlPool;
     // デスクリプタのインクリメントサイズ
     uint32_t mIncrementSize;
     // シェーダーから参照可能か
@@ -59,7 +58,7 @@ class DescriptorHeap
     ~DescriptorHeap() = default;
 
     /// <summary>
-    /// デスクリプタヒープを作成
+    /// 作成
     /// </summary>
     /// <param name="type">デスクリプタヒープの種類</param>
     /// <param name="numDescriptors">デスクリプタの数</param>

@@ -163,6 +163,7 @@
     <ClInclude Include="engine\CommandList.h" />
     <ClInclude Include="engine\DescriptorHeap.h" />
     <ClInclude Include="engine\DirectXBase.h" />
+    <ClInclude Include="engine\SimplePool.h" />
     <ClInclude Include="engine\Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
