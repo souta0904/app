@@ -21,6 +21,7 @@ DirectXBase::DirectXBase()
     , mDepthBuff( nullptr )
     , mDSVHdl( nullptr )
     , mBackBuffIdx( 0 )
+    , mClearColor( Color::kBlue )
 {
 }
 
@@ -86,8 +87,7 @@ void DirectXBase::BeginDraw()
     mCmdList->SetRenderTarget( mRTVHdls[mBackBuffIdx], mDSVHdl );
 
     // レンダーターゲット・深度バッファをクリア
-    float clearColor[4] = { 0.0f, 0.0f, 1.0f, 0.0f };
-    mCmdList->ClearRenderTargetView( mRTVHdls[mBackBuffIdx], clearColor );
+    mCmdList->ClearRenderTargetView( mRTVHdls[mBackBuffIdx], &mClearColor.r );
     mCmdList->ClearDepthStencilView( mDSVHdl );
 
     // SRVデスクリプタヒープをセット

@@ -113,7 +113,7 @@ class SimplePool
     }
 
     /// <summary>
-    /// 全アイテムを返す
+    /// 全アイテムを返却
     /// </summary>
     void ReturnAll()
     {

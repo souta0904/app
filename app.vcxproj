@@ -117,7 +117,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)engine;$(SolutionDir)math;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -138,7 +138,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)engine;$(SolutionDir)math;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,6 +149,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="math\Color.cpp" />
     <ClCompile Include="engine\DirectXCommonSettings.cpp" />
     <ClCompile Include="engine\CommandQueue.cpp" />
     <ClCompile Include="engine\CommandList.cpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="engine\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="math\Color.h" />
     <ClInclude Include="engine\DirectXCommonSettings.h" />
     <ClInclude Include="engine\CommandQueue.h" />
     <ClInclude Include="engine\CommandList.h" />
