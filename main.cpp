@@ -14,25 +14,40 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
     auto& dxBase = DirectXBase::GetInstance();
     auto& editorBase = EditorBase::GetInstance();
 
-    LOG_INFO( "hello, world!" );
-    LOG_INFO( "LOG_INFO test." );
-    LOG_WARN( "LOG_WARN test." );
-    LOG_ERROR( "LOG_ERROR test." );
-
+    // ウィンドウを作成
     if( !window.Create( 1920, 1080, L"Game" ) )
     {
+        LOG_ERROR( "Failed to create window." );
         MessageBox( nullptr, L"Failed to create window.", L"Error", MB_OK | MB_ICONERROR );
         return -1;
     }
+    else
+    {
+        LOG_INFO( "Window created successfully." );
+    }
+
+    // DirectXを初期化
     if( !dxBase.Init() )
     {
+        LOG_ERROR( "Failed to initialize DirectX." );
         MessageBox( nullptr, L"Failed to initialize DirectX.", L"Error", MB_OK | MB_ICONERROR );
         return -1;
     }
+    else
+    {
+        LOG_INFO( "DirectX initialized successfully." );
+    }
+
+    // エディタを初期化
     if( !editorBase.Init() )
     {
+        LOG_ERROR( "Failed to initialize editor." );
         MessageBox( nullptr, L"Failed to initialize editor.", L"Error", MB_OK | MB_ICONERROR );
         return -1;
+    }
+    else
+    {
+        LOG_INFO( "Editor initialized successfully." );
     }
 
     // ゲームループ
@@ -59,8 +74,13 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
     }
 
     editorBase.Term();
+    LOG_INFO( "Editor terminated." );
+
     dxBase.Term();
+    LOG_INFO( "DirectX terminated." );
+
     window.Destroy();
+    LOG_INFO( "Window destroyed." );
 
     return 0;
 }

@@ -1,6 +1,10 @@
 #include "DirectXBase.h"
 
+#include <format>
+
 #include "DirectXCommonSettings.h"
+#include "Logger.h"
+#include "StringHelper.h"
 #include "Window.h"
 
 #pragma comment( lib, "d3d12.lib" )
@@ -29,6 +33,8 @@ DirectXBase::DirectXBase()
 // 初期化
 bool DirectXBase::Init()
 {
+    LOG_INFO( std::format( "Back Buffer Count: {}", kBackBuffCount ) );
+
     if( !DirectXCommonSettings::Init() ) return false;
 
     if( !CreateDevice() ) return false;
@@ -125,12 +131,21 @@ bool DirectXBase::CreateDevice()
     {
         debugController->EnableDebugLayer();
         debugController->SetEnableGPUBasedValidation( true );
+        LOG_INFO( "Enable debug layer." );
     }
 #endif
 
     // DXGIファクトリーを作成
     auto hr = CreateDXGIFactory( IID_PPV_ARGS( mFactory.GetAddressOf() ) );
-    if( FAILED( hr ) ) return false;
+    if( FAILED( hr ) )
+    {
+        LOG_ERROR( "Failed to create DXGIFactory." );
+        return false;
+    }
+    else
+    {
+        LOG_INFO( "DXGIFactory created successfully." );
+    }
 
     // パフォーマンスが高いアダプタから取得
     Microsoft::WRL::ComPtr<IDXGIAdapter4> useAdapter = nullptr;
@@ -146,6 +161,7 @@ bool DirectXBase::CreateDevice()
             if( !( desc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE ) )
             {
                 mAdapterName = desc.Description;
+                LOG_INFO( StringHelper::Convert( std::format( L"Use Adapter: {}", mAdapterName ) ) );
                 break;
             }
         }
@@ -164,9 +180,21 @@ bool DirectXBase::CreateDevice()
     {
         // デバイスを作成
         hr = D3D12CreateDevice( useAdapter.Get(), featureLevels[i], IID_PPV_ARGS( mDevice.GetAddressOf() ) );
-        if( SUCCEEDED( hr ) ) break;
+        if( SUCCEEDED( hr ) )
+        {
+            LOG_INFO( std::format( "Feature Level: {}", str[i] ) );
+            break;
+        }
     }
-    if( !mDevice ) return false;
+    if( !mDevice )
+    {
+        LOG_ERROR( "Failed to create D3D12Device." );
+        return false;
+    }
+    else
+    {
+        LOG_INFO( "D3D12Device created successfully." );
+    }
 
 #ifdef _DEBUG
     Microsoft::WRL::ComPtr<ID3D12InfoQueue> infoQueue = nullptr;
@@ -195,7 +223,15 @@ bool DirectXBase::CreateDevice()
 bool DirectXBase::CreateCmdQueue()
 {
     mCmdQueue = std::make_unique<CommandQueue>();
-    if( !mCmdQueue->Create( kBackBuffCount ) ) return false;
+    if( !mCmdQueue->Create( kBackBuffCount ) )
+    {
+        LOG_ERROR( "Failed to create CommandQueue." );
+        return false;
+    }
+    else
+    {
+        LOG_INFO( "CommandQueue created successfully." );
+    }
 
     return true;
 }
@@ -216,7 +252,15 @@ bool DirectXBase::CreateSwapChain()
     desc.BufferCount = kBackBuffCount;
     desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
     [[maybe_unused]] auto hr = mFactory->CreateSwapChainForHwnd( mCmdQueue->GetCmdQueue().Get(), window.GetHWnd(), &desc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>( mSwapChain.GetAddressOf() ) );
-    if( FAILED( hr ) ) return false;
+    if( FAILED( hr ) )
+    {
+        LOG_ERROR( "Failed to create DXGISwapChain." );
+        return false;
+    }
+    else
+    {
+        LOG_INFO( "DXGISwapChain created successfully." );
+    }
 
     return true;
 }
@@ -225,7 +269,15 @@ bool DirectXBase::CreateSwapChain()
 bool DirectXBase::CreateCmdList()
 {
     mCmdList = std::make_unique<CommandList>();
-    if( !mCmdList->Create( kBackBuffCount ) ) return false;
+    if( !mCmdList->Create( kBackBuffCount ) )
+    {
+        LOG_ERROR( "Failed to create CommandList." );
+        return false;
+    }
+    else
+    {
+        LOG_INFO( "CommandList created successfully." );
+    }
 
     return true;
 }
