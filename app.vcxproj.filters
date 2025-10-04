@@ -23,6 +23,12 @@
     <ClCompile Include="math\Color.cpp">
       <Filter>math</Filter>
     </ClCompile>
+    <ClCompile Include="engine\EditorBase.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\StringHelper.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
@@ -55,6 +61,12 @@
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="engine\SimplePool.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\EditorBase.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\StringHelper.h">
       <Filter>engine</Filter>
     </ClInclude>
   </ItemGroup>

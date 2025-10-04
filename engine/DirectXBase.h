@@ -49,6 +49,8 @@ class DirectXBase
 
     // クリアカラー
     Color mClearColor;
+    // アダプタの名前
+    std::wstring mAdapterName;
 
    public:
     /// <summary>
@@ -128,6 +130,15 @@ class DirectXBase
 
     /// <summary>SRVデスクリプタヒープを取得</summary>
     DescriptorHeap* GetSRVHeap() const { return mSRVHeap.get(); }
+
+    /// <summary>クリアカラーを取得</summary>
+    const Color& GetClearColor() const { return mClearColor; }
+
+    /// <summary>アダプタの名前を取得</summary>
+    const std::wstring& GetAdapterName() const { return mAdapterName; }
+
+    /// <summary>クリアカラーを設定</summary>
+    void SetClearColor( const Color& clearColor ) { mClearColor = clearColor; }
 
    private:
     /// <summary>

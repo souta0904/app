@@ -22,6 +22,7 @@ DirectXBase::DirectXBase()
     , mDSVHdl( nullptr )
     , mBackBuffIdx( 0 )
     , mClearColor( 0.0f, 0.0f, 0.5f )
+    , mAdapterName()
 {
 }
 
@@ -142,7 +143,11 @@ bool DirectXBase::CreateDevice()
         if( SUCCEEDED( hr ) )
         {
             // ソフトウェアアダプタは使わない
-            if( !( desc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE ) ) break;
+            if( !( desc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE ) )
+            {
+                mAdapterName = desc.Description;
+                break;
+            }
         }
     }
     if( !useAdapter ) return false;

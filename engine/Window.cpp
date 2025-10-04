@@ -1,5 +1,7 @@
 #include "Window.h"
 
+#include "imgui/imgui_impl_win32.h"
+
 namespace
 {
 
@@ -8,9 +10,17 @@ const auto kClassName = TEXT( "DxWndClass" );
 
 }  // namespace
 
+// imguiのウィンドウプロシージャ
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
+
 // ウィンドウプロシージャ
 LRESULT CALLBACK Window::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
 {
+    if( ImGui_ImplWin32_WndProcHandler( hwnd, msg, wp, lp ) )
+    {
+        return true;
+    }
+
     switch( msg )
     {
         case WM_DESTROY:
