@@ -21,7 +21,7 @@ DirectXBase::DirectXBase()
     , mDepthBuff( nullptr )
     , mDSVHdl( nullptr )
     , mBackBuffIdx( 0 )
-    , mClearColor( Color::kBlue )
+    , mClearColor( 0.0f, 0.0f, 0.5f )
 {
 }
 
