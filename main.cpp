@@ -2,6 +2,7 @@
 
 #include "DirectXBase.h"
 #include "EditorBase.h"
+#include "Logger.h"
 #include "StringHelper.h"
 #include "Window.h"
 #include "imgui/imgui.h"
@@ -12,6 +13,11 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
     auto& window = Window::GetInstance();
     auto& dxBase = DirectXBase::GetInstance();
     auto& editorBase = EditorBase::GetInstance();
+
+    LOG_INFO( "hello, world!" );
+    LOG_INFO( "LOG_INFO test." );
+    LOG_WARN( "LOG_WARN test." );
+    LOG_ERROR( "LOG_ERROR test." );
 
     if( !window.Create( 1920, 1080, L"Game" ) )
     {

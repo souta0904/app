@@ -29,6 +29,9 @@
     <ClCompile Include="engine\StringHelper.cpp">
       <Filter>engine</Filter>
     </ClCompile>
+    <ClCompile Include="engine\Logger.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
@@ -67,6 +70,9 @@
       <Filter>engine</Filter>
     </ClInclude>
     <ClInclude Include="engine\StringHelper.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\Logger.h">
       <Filter>engine</Filter>
     </ClInclude>
   </ItemGroup>
