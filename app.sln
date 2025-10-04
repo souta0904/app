@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ソリューション項目
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imgui", "external\imgui\imgui.vcxproj", "{F155C3C3-1F9C-4E08-B2B2-5F44E444080A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -27,6 +29,14 @@ Global
 		{36D7E5EF-E150-413D-A8BD-765CE8EB2C89}.Release|x64.Build.0 = Release|x64
 		{36D7E5EF-E150-413D-A8BD-765CE8EB2C89}.Release|x86.ActiveCfg = Release|Win32
 		{36D7E5EF-E150-413D-A8BD-765CE8EB2C89}.Release|x86.Build.0 = Release|Win32
+		{F155C3C3-1F9C-4E08-B2B2-5F44E444080A}.Debug|x64.ActiveCfg = Debug|x64
+		{F155C3C3-1F9C-4E08-B2B2-5F44E444080A}.Debug|x64.Build.0 = Debug|x64
+		{F155C3C3-1F9C-4E08-B2B2-5F44E444080A}.Debug|x86.ActiveCfg = Debug|Win32
+		{F155C3C3-1F9C-4E08-B2B2-5F44E444080A}.Debug|x86.Build.0 = Debug|Win32
+		{F155C3C3-1F9C-4E08-B2B2-5F44E444080A}.Release|x64.ActiveCfg = Release|x64
+		{F155C3C3-1F9C-4E08-B2B2-5F44E444080A}.Release|x64.Build.0 = Release|x64
+		{F155C3C3-1F9C-4E08-B2B2-5F44E444080A}.Release|x86.ActiveCfg = Release|Win32
+		{F155C3C3-1F9C-4E08-B2B2-5F44E444080A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
