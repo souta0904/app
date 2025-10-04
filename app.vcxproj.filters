@@ -20,10 +20,16 @@
     <ClCompile Include="engine\DirectXCommonSettings.cpp">
       <Filter>engine</Filter>
     </ClCompile>
+    <ClCompile Include="math\Color.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
       <UniqueIdentifier>{4cfa7c93-9ef2-41c7-9db9-b0119f35ed39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math">
+      <UniqueIdentifier>{9b381bd6-69bb-4c4c-9dca-899242200768}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -45,6 +51,11 @@
     <ClInclude Include="engine\DirectXCommonSettings.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="engine\SimplePool.h" />
+    <ClInclude Include="math\Color.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\SimplePool.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
