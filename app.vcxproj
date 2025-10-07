@@ -175,6 +175,9 @@
     <ClInclude Include="engine\StringHelper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="external\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
+      <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
+    </ProjectReference>
     <ProjectReference Include="external\imgui\imgui.vcxproj">
       <Project>{f155c3c3-1f9c-4e08-b2b2-5f44e444080a}</Project>
     </ProjectReference>

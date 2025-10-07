@@ -204,6 +204,7 @@ bool DirectXBase::CreateDevice()
         infoQueue->SetBreakOnSeverity( D3D12_MESSAGE_SEVERITY_CORRUPTION, true );
         infoQueue->SetBreakOnSeverity( D3D12_MESSAGE_SEVERITY_ERROR, true );
         infoQueue->SetBreakOnSeverity( D3D12_MESSAGE_SEVERITY_WARNING, true );
+
         // どうしようもないエラーは無視する
         D3D12_MESSAGE_SEVERITY severities[] = { D3D12_MESSAGE_SEVERITY_INFO };
         D3D12_MESSAGE_ID ids[] = { D3D12_MESSAGE_ID_RESOURCE_BARRIER_MISMATCHING_COMMAND_LIST_TYPE };
@@ -251,6 +252,7 @@ bool DirectXBase::CreateSwapChain()
     desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     desc.BufferCount = kBackBuffCount;
     desc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+
     [[maybe_unused]] auto hr = mFactory->CreateSwapChainForHwnd( mCmdQueue->GetCmdQueue().Get(), window.GetHWnd(), &desc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>( mSwapChain.GetAddressOf() ) );
     if( FAILED( hr ) )
     {
@@ -328,7 +330,6 @@ bool DirectXBase::CreateDSV()
 
     auto& window = Window::GetInstance();
 
-    // 深度バッファを作成
     D3D12_RESOURCE_DESC desc = {};
     desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
     desc.Width = window.GetWidth();
@@ -337,9 +338,12 @@ bool DirectXBase::CreateDSV()
     desc.Format = DXGI_FORMAT_D32_FLOAT;
     desc.SampleDesc.Count = 1;
     desc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+
     D3D12_CLEAR_VALUE clearValue = {};
     clearValue.Format = DXGI_FORMAT_D32_FLOAT;
     clearValue.DepthStencil.Depth = 1.0f;
+
+    // 深度バッファを作成
     [[maybe_unused]] auto hr = mDevice->CreateCommittedResource( &DirectXCommonSettings::gHeapPropertiesDefault, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_DEPTH_WRITE, &clearValue, IID_PPV_ARGS( mDepthBuff.GetAddressOf() ) );
     if( FAILED( hr ) ) return false;
 
