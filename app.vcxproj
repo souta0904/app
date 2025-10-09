@@ -160,6 +160,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\Window.cpp" />
     <ClCompile Include="engine\StringHelper.cpp" />
+    <ClCompile Include="engine\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\EditorBase.h" />
@@ -173,6 +174,7 @@
     <ClInclude Include="engine\SimplePool.h" />
     <ClInclude Include="engine\Window.h" />
     <ClInclude Include="engine\StringHelper.h" />
+    <ClInclude Include="engine\Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="external\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

@@ -95,4 +95,12 @@ void CommandList::ClearDepthStencilView( DescriptorHandle* hDSV )
     mCmdList->ClearDepthStencilView( hDSV->mCPU, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr );
 }
 
+// デスクリプタテーブルをルートシグネチャへセット
+void CommandList::SetGraphicsRootDescriptorTable( uint32_t rootParamIdx, DescriptorHandle* hSRV )
+{
+    if( !mCmdList || !hSRV ) return;
+
+    mCmdList->SetGraphicsRootDescriptorTable( rootParamIdx, hSRV->mGPU );
+}
+
 #pragma endregion

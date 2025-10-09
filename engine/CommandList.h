@@ -80,6 +80,13 @@ class CommandList
     /// <param name="hDSV">DSVのCPUデスクリプタハンドル</param>
     void ClearDepthStencilView( DescriptorHandle* hDSV );
 
+    /// <summary>
+    /// デスクリプタテーブルをルートシグネチャへセット
+    /// </summary>
+    /// <param name="rootParamIdx">ルートパラメータのインデックス</param>
+    /// <param name="hSRV">SRVのCPUデスクリプタハンドル</param>
+    void SetGraphicsRootDescriptorTable( uint32_t rootParamIdx, DescriptorHandle* hSRV );
+
 #pragma endregion
 
     /// <summary>コマンドリストを取得</summary>

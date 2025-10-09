@@ -119,6 +119,9 @@ class DirectXBase
     /// <summary>デバイスを取得</summary>
     Microsoft::WRL::ComPtr<ID3D12Device> GetDevice() const { return mDevice.Get(); }
 
+    /// <summary>コマンドキューを取得</summary>
+    CommandQueue* GetCmdQueue() const { return mCmdQueue.get(); }
+
     /// <summary>コマンドリストを取得</summary>
     CommandList* GetCmdList() const { return mCmdList.get(); }
 

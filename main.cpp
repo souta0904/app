@@ -4,6 +4,7 @@
 #include "EditorBase.h"
 #include "Logger.h"
 #include "StringHelper.h"
+#include "Texture.h"
 #include "Window.h"
 #include "imgui/imgui.h"
 
@@ -48,6 +49,13 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
     else
     {
         LOG_INFO( "Editor initialized successfully." );
+    }
+
+    std::unique_ptr<Texture> texture = std::make_unique<Texture>();
+    std::string path = "assets/texture/bird_fukurou_run.png";
+    if( !texture->Create( path ) )
+    {
+        return -1;
     }
 
     // ゲームループ
