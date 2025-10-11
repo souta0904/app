@@ -61,6 +61,9 @@ class Texture
     /// <summary>テクスチャの高さを取得</summary>
     uint32_t GetHeight() const { return mHeight; }
 
+    /// <summary>デスクリプタハンドルを取得</summary>
+    DescriptorHandle* GetSRVHdl() const { return mSRVHdl; }
+
    private:
     /// <summary>
     /// テクスチャを読み込む

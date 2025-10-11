@@ -70,6 +70,7 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         auto clearColor = dxBase.GetClearColor();
         ImGui::ColorPicker3( "Clear Color", &clearColor.r );
         dxBase.SetClearColor( clearColor );
+        ImGui::Image( texture->GetSRVHdl()->mGPU.ptr, ImVec2( 256.0f, 256.0f ) );
         ImGui::End();
 
         editorBase.End();

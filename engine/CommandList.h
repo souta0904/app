@@ -87,6 +87,12 @@ class CommandList
     /// <param name="hSRV">SRVのCPUデスクリプタハンドル</param>
     void SetGraphicsRootDescriptorTable( uint32_t rootParamIdx, DescriptorHandle* hSRV );
 
+    /// <summary>
+    /// 頂点バッファをセット
+    /// </summary>
+    /// <param name="view">頂点バッファビュー</param>
+    void SetVertexBuffer( const D3D12_VERTEX_BUFFER_VIEW& vbv );
+
 #pragma endregion
 
     /// <summary>コマンドリストを取得</summary>

@@ -151,6 +151,7 @@
   <ItemGroup>
     <ClCompile Include="engine\EditorBase.cpp" />
     <ClCompile Include="engine\Logger.cpp" />
+    <ClCompile Include="engine\VertexBuffer.cpp" />
     <ClCompile Include="math\Color.cpp" />
     <ClCompile Include="engine\DirectXCommonSettings.cpp" />
     <ClCompile Include="engine\CommandQueue.cpp" />
@@ -165,6 +166,7 @@
   <ItemGroup>
     <ClInclude Include="engine\EditorBase.h" />
     <ClInclude Include="engine\Logger.h" />
+    <ClInclude Include="engine\VertexBuffer.h" />
     <ClInclude Include="math\Color.h" />
     <ClInclude Include="engine\DirectXCommonSettings.h" />
     <ClInclude Include="engine\CommandQueue.h" />

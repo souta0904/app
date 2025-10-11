@@ -84,8 +84,7 @@ bool Texture::CreateResource( const DirectX::ScratchImage& mipChain )
     desc.Format = metadata.format;
     desc.SampleDesc.Count = 1;
 
-    auto device = DirectXBase::GetInstance().GetDevice();
-    [[maybe_unused]] auto hr = device->CreateCommittedResource( &DirectXCommonSettings::gHeapPropertiesDefault, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS( mResource.GetAddressOf() ) );
+    [[maybe_unused]] auto hr = DirectXBase::GetInstance().GetDevice()->CreateCommittedResource( &DirectXCommonSettings::gHeapPropertiesDefault, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS( mResource.GetAddressOf() ) );
     if( FAILED( hr ) ) return false;
 
     return true;

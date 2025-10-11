@@ -103,4 +103,12 @@ void CommandList::SetGraphicsRootDescriptorTable( uint32_t rootParamIdx, Descrip
     mCmdList->SetGraphicsRootDescriptorTable( rootParamIdx, hSRV->mGPU );
 }
 
+// 頂点バッファをセット
+void CommandList::SetVertexBuffer( const D3D12_VERTEX_BUFFER_VIEW& vbv )
+{
+    if( !mCmdList ) return;
+
+    mCmdList->IASetVertexBuffers( 0, 1, &vbv );
+}
+
 #pragma endregion

@@ -35,6 +35,9 @@
     <ClCompile Include="engine\Texture.cpp">
       <Filter>engine</Filter>
     </ClCompile>
+    <ClCompile Include="engine\VertexBuffer.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
@@ -79,6 +82,9 @@
       <Filter>engine</Filter>
     </ClInclude>
     <ClInclude Include="engine\Texture.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\VertexBuffer.h">
       <Filter>engine</Filter>
     </ClInclude>
   </ItemGroup>
