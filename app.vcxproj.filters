@@ -44,6 +44,15 @@
     <ClCompile Include="engine\graphics\Texture.cpp">
       <Filter>engine\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="engine\core\GraphicsPSO.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\graphics\ResourceManager.cpp">
+      <Filter>engine\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\graphics\ShaderObject.cpp">
+      <Filter>engine\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
@@ -109,6 +118,18 @@
       <Filter>engine\editor</Filter>
     </ClInclude>
     <ClInclude Include="engine\graphics\Texture.h">
+      <Filter>engine\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\GraphicsPSO.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\PSOInit.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\graphics\ResourceManager.h">
+      <Filter>engine\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\graphics\ShaderObject.h">
       <Filter>engine\graphics</Filter>
     </ClInclude>
   </ItemGroup>

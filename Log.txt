@@ -1,15 +1,14 @@
-[2025-10-12 11:16:02] [INFO ] Window created successfully.
-[2025-10-12 11:16:02] [INFO ] Back Buffer Count: 2
-[2025-10-12 11:16:02] [INFO ] Enable debug layer.
-[2025-10-12 11:16:02] [INFO ] DXGIFactory created successfully.
-[2025-10-12 11:16:02] [INFO ] Use Adapter: NVIDIA GeForce RTX 3070
-[2025-10-12 11:16:02] [INFO ] Feature Level: 12.2
-[2025-10-12 11:16:02] [INFO ] D3D12Device created successfully.
-[2025-10-12 11:16:02] [INFO ] CommandQueue created successfully.
-[2025-10-12 11:16:02] [INFO ] DXGISwapChain created successfully.
-[2025-10-12 11:16:02] [INFO ] CommandList created successfully.
-[2025-10-12 11:16:02] [INFO ] DirectX initialized successfully.
-[2025-10-12 11:16:02] [INFO ] Editor initialized successfully.
-[2025-10-12 11:16:04] [INFO ] Editor terminated.
-[2025-10-12 11:16:04] [INFO ] DirectX terminated.
-[2025-10-12 11:16:04] [INFO ] Window destroyed.
+[2025-10-12 23:57:53] [INFO ] Window created successfully.
+[2025-10-12 23:57:53] [INFO ] Back Buffer Count: 2
+[2025-10-12 23:57:53] [INFO ] DXGIFactory created successfully.
+[2025-10-12 23:57:53] [INFO ] Use Adapter: NVIDIA GeForce RTX 3070
+[2025-10-12 23:57:53] [INFO ] Feature Level: 12.2
+[2025-10-12 23:57:53] [INFO ] D3D12Device created successfully.
+[2025-10-12 23:57:54] [INFO ] CommandQueue created successfully.
+[2025-10-12 23:57:54] [INFO ] DXGISwapChain created successfully.
+[2025-10-12 23:57:54] [INFO ] CommandList created successfully.
+[2025-10-12 23:57:54] [INFO ] DirectX initialized successfully.
+[2025-10-12 23:57:54] [INFO ] Editor initialized successfully.
+[2025-10-12 23:57:56] [INFO ] Editor terminated.
+[2025-10-12 23:57:56] [INFO ] DirectX terminated.
+[2025-10-12 23:57:56] [INFO ] Window destroyed.

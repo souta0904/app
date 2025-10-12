@@ -1,0 +1,59 @@
+#pragma once
+#include <wrl.h>
+
+#include <vector>
+
+#include "PSOInit.h"
+
+class CommandList;
+
+/// <summary>
+/// グラフィックスパイプラインステートオブジェクト
+/// </summary>
+class GraphicsPSO
+{
+   private:
+    // パイプラインステート設定
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC mDesc;
+    // 頂点レイアウト
+    std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayouts;
+    // パイプラインステート
+    Microsoft::WRL::ComPtr<ID3D12PipelineState> mPipelineState;
+
+   public:
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    GraphicsPSO();
+
+    /// <summary>
+    /// デストラクタ
+    /// </summary>
+    ~GraphicsPSO() = default;
+
+    /// <summary>
+    /// コピーコンストラクタ
+    /// </summary>
+    GraphicsPSO( const GraphicsPSO& pso );
+
+    /// <summary>
+    /// 代入演算子
+    /// </summary>
+    GraphicsPSO& operator=( const GraphicsPSO& pso );
+
+    /// <summary>
+    /// 作成
+    /// </summary>
+    /// <param name="init">PSO初期化構造体</param>
+    /// <returns>成否</returns>
+    bool Create( const PSOInit& init );
+
+    /// <summary>
+    /// バインド
+    /// </summary>
+    /// <param name="cmdList">コマンドリスト</param>
+    void Bind( CommandList* cmdList );
+
+    /// <summary>パイプラインステートを取得</summary>
+    Microsoft::WRL::ComPtr<ID3D12PipelineState> GetPipelineState() const { return mPipelineState; }
+};

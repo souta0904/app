@@ -6,6 +6,7 @@
 
 #include "DescriptorHeap.h"
 
+class GraphicsPSO;
 class RootSignature;
 
 /// <summary>
@@ -100,6 +101,12 @@ class CommandList
     /// </summary>
     /// <param name="rootSignature">ルートシグネチャ</param>
     void SetGraphicsRootSignature( RootSignature* rootSignature );
+
+    /// <summary>
+    /// パイプラインステートをセット
+    /// </summary>
+    /// <param name="pso">パイプラインステート</param>
+    void SetPipelineState( GraphicsPSO* pso );
 
 #pragma endregion
 

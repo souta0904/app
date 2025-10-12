@@ -1,6 +1,7 @@
 #include "CommandList.h"
 
 #include "DirectXBase.h"
+#include "GraphicsPSO.h"
 #include "RootSignature.h"
 
 // コンストラクタ
@@ -112,11 +113,20 @@ void CommandList::SetVertexBuffer( const D3D12_VERTEX_BUFFER_VIEW& vbv )
     mCmdList->IASetVertexBuffers( 0, 1, &vbv );
 }
 
+// ルートシグネチャをセット
 void CommandList::SetGraphicsRootSignature( RootSignature* rootSignature )
 {
     if( !mCmdList || !rootSignature ) return;
 
     mCmdList->SetGraphicsRootSignature( rootSignature->GetRootSignature().Get() );
+}
+
+// パイプラインステートをセット
+void CommandList::SetPipelineState( GraphicsPSO* pso )
+{
+    if( !mCmdList || !pso ) return;
+
+    mCmdList->SetPipelineState( pso->GetPipelineState().Get() );
 }
 
 #pragma endregion

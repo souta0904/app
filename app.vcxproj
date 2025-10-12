@@ -124,6 +124,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)"
+copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -147,6 +151,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)"
+copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="engine\editor\EditorBase.cpp" />
@@ -158,12 +166,15 @@
     <ClCompile Include="engine\core\CommandList.cpp" />
     <ClCompile Include="engine\core\DescriptorHeap.cpp" />
     <ClCompile Include="engine\core\DirectXBase.cpp" />
+    <ClCompile Include="engine\core\GraphicsPSO.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\core\Window.cpp" />
     <ClCompile Include="engine\utils\StringHelper.cpp" />
     <ClCompile Include="engine\graphics\Texture.cpp" />
     <ClCompile Include="engine\core\RootParameter.cpp" />
     <ClCompile Include="engine\core\RootSignature.cpp" />
+    <ClCompile Include="engine\graphics\ResourceManager.cpp" />
+    <ClCompile Include="engine\graphics\ShaderObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\editor\EditorBase.h" />
@@ -181,6 +192,10 @@
     <ClInclude Include="engine\graphics\Texture.h" />
     <ClInclude Include="engine\core\RootParameter.h" />
     <ClInclude Include="engine\core\RootSignature.h" />
+    <ClInclude Include="engine\core\GraphicsPSO.h" />
+    <ClInclude Include="engine\core\PSOInit.h" />
+    <ClInclude Include="engine\graphics\ResourceManager.h" />
+    <ClInclude Include="engine\graphics\ShaderObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="external\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
