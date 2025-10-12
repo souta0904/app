@@ -2,102 +2,114 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="engine\Window.cpp">
-      <Filter>engine</Filter>
+    <ClCompile Include="engine\math\Color.cpp">
+      <Filter>engine\math</Filter>
     </ClCompile>
-    <ClCompile Include="engine\CommandList.cpp">
-      <Filter>engine</Filter>
+    <ClCompile Include="engine\utils\StringHelper.cpp">
+      <Filter>engine\utils</Filter>
     </ClCompile>
-    <ClCompile Include="engine\CommandQueue.cpp">
-      <Filter>engine</Filter>
+    <ClCompile Include="engine\utils\Logger.cpp">
+      <Filter>engine\utils</Filter>
     </ClCompile>
-    <ClCompile Include="engine\DescriptorHeap.cpp">
-      <Filter>engine</Filter>
+    <ClCompile Include="engine\core\CommandList.cpp">
+      <Filter>engine\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\DirectXBase.cpp">
-      <Filter>engine</Filter>
+    <ClCompile Include="engine\core\CommandQueue.cpp">
+      <Filter>engine\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\DirectXCommonSettings.cpp">
-      <Filter>engine</Filter>
+    <ClCompile Include="engine\core\DescriptorHeap.cpp">
+      <Filter>engine\core</Filter>
     </ClCompile>
-    <ClCompile Include="math\Color.cpp">
-      <Filter>math</Filter>
+    <ClCompile Include="engine\core\DirectXBase.cpp">
+      <Filter>engine\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\EditorBase.cpp">
-      <Filter>engine</Filter>
+    <ClCompile Include="engine\core\DirectXCommonSettings.cpp">
+      <Filter>engine\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\StringHelper.cpp">
-      <Filter>engine</Filter>
+    <ClCompile Include="engine\core\RootParameter.cpp">
+      <Filter>engine\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\Logger.cpp">
-      <Filter>engine</Filter>
+    <ClCompile Include="engine\core\RootSignature.cpp">
+      <Filter>engine\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\Texture.cpp">
-      <Filter>engine</Filter>
+    <ClCompile Include="engine\core\VertexBuffer.cpp">
+      <Filter>engine\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\VertexBuffer.cpp">
-      <Filter>engine</Filter>
+    <ClCompile Include="engine\core\Window.cpp">
+      <Filter>engine\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\RootParameter.cpp">
-      <Filter>engine</Filter>
+    <ClCompile Include="engine\editor\EditorBase.cpp">
+      <Filter>engine\editor</Filter>
     </ClCompile>
-    <ClCompile Include="engine\RootSignature.cpp">
-      <Filter>engine</Filter>
+    <ClCompile Include="engine\graphics\Texture.cpp">
+      <Filter>engine\graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
       <UniqueIdentifier>{4cfa7c93-9ef2-41c7-9db9-b0119f35ed39}</UniqueIdentifier>
     </Filter>
-    <Filter Include="math">
+    <Filter Include="engine\math">
       <UniqueIdentifier>{9b381bd6-69bb-4c4c-9dca-899242200768}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\utils">
+      <UniqueIdentifier>{b840cfae-fae3-451e-9924-9dab552a6893}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\core">
+      <UniqueIdentifier>{ec61325c-3c48-40fb-b9a0-7360e10e2f4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\editor">
+      <UniqueIdentifier>{41fc2202-f0ea-4fbe-9ed0-f11ac3732d6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\graphics">
+      <UniqueIdentifier>{134a115c-55cc-4b65-b0f2-b1685246f944}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="engine\Window.h">
-      <Filter>engine</Filter>
+    <ClInclude Include="engine\math\Color.h">
+      <Filter>engine\math</Filter>
     </ClInclude>
-    <ClInclude Include="engine\CommandList.h">
-      <Filter>engine</Filter>
+    <ClInclude Include="engine\utils\StringHelper.h">
+      <Filter>engine\utils</Filter>
     </ClInclude>
-    <ClInclude Include="engine\CommandQueue.h">
-      <Filter>engine</Filter>
+    <ClInclude Include="engine\utils\Logger.h">
+      <Filter>engine\utils</Filter>
     </ClInclude>
-    <ClInclude Include="engine\DescriptorHeap.h">
-      <Filter>engine</Filter>
+    <ClInclude Include="engine\utils\SimplePool.h">
+      <Filter>engine\utils</Filter>
     </ClInclude>
-    <ClInclude Include="engine\DirectXBase.h">
-      <Filter>engine</Filter>
+    <ClInclude Include="engine\core\CommandList.h">
+      <Filter>engine\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\DirectXCommonSettings.h">
-      <Filter>engine</Filter>
+    <ClInclude Include="engine\core\CommandQueue.h">
+      <Filter>engine\core</Filter>
     </ClInclude>
-    <ClInclude Include="math\Color.h">
-      <Filter>math</Filter>
+    <ClInclude Include="engine\core\DescriptorHeap.h">
+      <Filter>engine\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\SimplePool.h">
-      <Filter>engine</Filter>
+    <ClInclude Include="engine\core\DirectXBase.h">
+      <Filter>engine\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\EditorBase.h">
-      <Filter>engine</Filter>
+    <ClInclude Include="engine\core\DirectXCommonSettings.h">
+      <Filter>engine\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\StringHelper.h">
-      <Filter>engine</Filter>
+    <ClInclude Include="engine\core\RootParameter.h">
+      <Filter>engine\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\Logger.h">
-      <Filter>engine</Filter>
+    <ClInclude Include="engine\core\RootSignature.h">
+      <Filter>engine\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\Texture.h">
-      <Filter>engine</Filter>
+    <ClInclude Include="engine\core\VertexBuffer.h">
+      <Filter>engine\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\VertexBuffer.h">
-      <Filter>engine</Filter>
+    <ClInclude Include="engine\core\Window.h">
+      <Filter>engine\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\RootParameter.h">
-      <Filter>engine</Filter>
+    <ClInclude Include="engine\editor\EditorBase.h">
+      <Filter>engine\editor</Filter>
     </ClInclude>
-    <ClInclude Include="engine\RootSignature.h">
-      <Filter>engine</Filter>
+    <ClInclude Include="engine\graphics\Texture.h">
+      <Filter>engine\graphics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

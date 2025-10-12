@@ -1,12 +1,12 @@
 #include <format>
 
-#include "DirectXBase.h"
-#include "EditorBase.h"
-#include "Logger.h"
-#include "StringHelper.h"
-#include "Texture.h"
-#include "Window.h"
+#include "core/DirectXBase.h"
+#include "core/Window.h"
+#include "editor/EditorBase.h"
+#include "graphics/Texture.h"
 #include "imgui/imgui.h"
+#include "utils/Logger.h"
+#include "utils/StringHelper.h"
 
 // エントリポイント
 int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )

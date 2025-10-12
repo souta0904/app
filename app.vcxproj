@@ -117,7 +117,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)engine;$(SolutionDir)math;$(SolutionDir)external;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)engine;$(SolutionDir)external;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -138,7 +138,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)engine;$(SolutionDir)math;$(SolutionDir)external;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)engine;$(SolutionDir)external;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,38 +149,38 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="engine\EditorBase.cpp" />
-    <ClCompile Include="engine\Logger.cpp" />
-    <ClCompile Include="engine\VertexBuffer.cpp" />
-    <ClCompile Include="math\Color.cpp" />
-    <ClCompile Include="engine\DirectXCommonSettings.cpp" />
-    <ClCompile Include="engine\CommandQueue.cpp" />
-    <ClCompile Include="engine\CommandList.cpp" />
-    <ClCompile Include="engine\DescriptorHeap.cpp" />
-    <ClCompile Include="engine\DirectXBase.cpp" />
+    <ClCompile Include="engine\editor\EditorBase.cpp" />
+    <ClCompile Include="engine\utils\Logger.cpp" />
+    <ClCompile Include="engine\core\VertexBuffer.cpp" />
+    <ClCompile Include="engine\math\Color.cpp" />
+    <ClCompile Include="engine\core\DirectXCommonSettings.cpp" />
+    <ClCompile Include="engine\core\CommandQueue.cpp" />
+    <ClCompile Include="engine\core\CommandList.cpp" />
+    <ClCompile Include="engine\core\DescriptorHeap.cpp" />
+    <ClCompile Include="engine\core\DirectXBase.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="engine\Window.cpp" />
-    <ClCompile Include="engine\StringHelper.cpp" />
-    <ClCompile Include="engine\Texture.cpp" />
-    <ClCompile Include="engine\RootParameter.cpp" />
-    <ClCompile Include="engine\RootSignature.cpp" />
+    <ClCompile Include="engine\core\Window.cpp" />
+    <ClCompile Include="engine\utils\StringHelper.cpp" />
+    <ClCompile Include="engine\graphics\Texture.cpp" />
+    <ClCompile Include="engine\core\RootParameter.cpp" />
+    <ClCompile Include="engine\core\RootSignature.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="engine\EditorBase.h" />
-    <ClInclude Include="engine\Logger.h" />
-    <ClInclude Include="engine\VertexBuffer.h" />
-    <ClInclude Include="math\Color.h" />
-    <ClInclude Include="engine\DirectXCommonSettings.h" />
-    <ClInclude Include="engine\CommandQueue.h" />
-    <ClInclude Include="engine\CommandList.h" />
-    <ClInclude Include="engine\DescriptorHeap.h" />
-    <ClInclude Include="engine\DirectXBase.h" />
-    <ClInclude Include="engine\SimplePool.h" />
-    <ClInclude Include="engine\Window.h" />
-    <ClInclude Include="engine\StringHelper.h" />
-    <ClInclude Include="engine\Texture.h" />
-    <ClInclude Include="engine\RootParameter.h" />
-    <ClInclude Include="engine\RootSignature.h" />
+    <ClInclude Include="engine\editor\EditorBase.h" />
+    <ClInclude Include="engine\utils\Logger.h" />
+    <ClInclude Include="engine\core\VertexBuffer.h" />
+    <ClInclude Include="engine\math\Color.h" />
+    <ClInclude Include="engine\core\DirectXCommonSettings.h" />
+    <ClInclude Include="engine\core\CommandQueue.h" />
+    <ClInclude Include="engine\core\CommandList.h" />
+    <ClInclude Include="engine\core\DescriptorHeap.h" />
+    <ClInclude Include="engine\core\DirectXBase.h" />
+    <ClInclude Include="engine\utils\SimplePool.h" />
+    <ClInclude Include="engine\core\Window.h" />
+    <ClInclude Include="engine\utils\StringHelper.h" />
+    <ClInclude Include="engine\graphics\Texture.h" />
+    <ClInclude Include="engine\core\RootParameter.h" />
+    <ClInclude Include="engine\core\RootSignature.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="external\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

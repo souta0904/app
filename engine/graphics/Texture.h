@@ -4,8 +4,8 @@
 
 #include <string>
 
-#include "DescriptorHeap.h"
 #include "DirectXTex/DirectXTex.h"
+#include "core/DescriptorHeap.h"
 
 class CommandList;
 

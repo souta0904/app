@@ -2,11 +2,11 @@
 
 #include <format>
 
-#include "CommandList.h"
-#include "DirectXBase.h"
-#include "DirectXCommonSettings.h"
 #include "DirectXTex/d3dx12.h"
-#include "StringHelper.h"
+#include "core/CommandList.h"
+#include "core/DirectXBase.h"
+#include "core/DirectXCommonSettings.h"
+#include "utils/StringHelper.h"
 
 // コンストラクタ
 Texture::Texture()

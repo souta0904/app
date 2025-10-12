@@ -3,9 +3,9 @@
 #include <format>
 
 #include "DirectXCommonSettings.h"
-#include "Logger.h"
-#include "StringHelper.h"
 #include "Window.h"
+#include "utils/Logger.h"
+#include "utils/StringHelper.h"
 
 #pragma comment( lib, "d3d12.lib" )
 #pragma comment( lib, "dxgi.lib" )

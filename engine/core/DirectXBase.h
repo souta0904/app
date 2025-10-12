@@ -7,10 +7,10 @@
 #include <memory>
 #include <string>
 
-#include "Color.h"
 #include "CommandList.h"
 #include "CommandQueue.h"
 #include "DescriptorHeap.h"
+#include "math/Color.h"
 
 class Window;
 
