@@ -138,7 +138,6 @@ bool Texture::Upload( const DirectX::ScratchImage& mipChain )
 bool Texture::CreateSRV()
 {
     auto& dxBase = DirectXBase::GetInstance();
-    auto device = dxBase.GetDevice();
 
     auto* srvHeap = dxBase.GetSRVHeap();
     if( !srvHeap ) return false;
@@ -154,7 +153,7 @@ bool Texture::CreateSRV()
     viewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
     viewDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     viewDesc.Texture2D.MipLevels = static_cast<UINT>( resourceDesc.MipLevels );
-    device->CreateShaderResourceView( mResource.Get(), &viewDesc, mSRVHdl->mCPU );
+    dxBase.GetDevice()->CreateShaderResourceView( mResource.Get(), &viewDesc, mSRVHdl->mCPU );
 
     return true;
 }

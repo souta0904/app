@@ -6,6 +6,8 @@
 
 #include "DescriptorHeap.h"
 
+class RootSignature;
+
 /// <summary>
 /// コマンドリスト
 /// </summary>
@@ -92,6 +94,12 @@ class CommandList
     /// </summary>
     /// <param name="view">頂点バッファビュー</param>
     void SetVertexBuffer( const D3D12_VERTEX_BUFFER_VIEW& vbv );
+
+    /// <summary>
+    /// ルートシグネチャをセット
+    /// </summary>
+    /// <param name="rootSignature">ルートシグネチャ</param>
+    void SetGraphicsRootSignature( RootSignature* rootSignature );
 
 #pragma endregion
 

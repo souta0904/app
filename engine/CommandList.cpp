@@ -1,6 +1,7 @@
 #include "CommandList.h"
 
 #include "DirectXBase.h"
+#include "RootSignature.h"
 
 // コンストラクタ
 CommandList::CommandList()
@@ -109,6 +110,13 @@ void CommandList::SetVertexBuffer( const D3D12_VERTEX_BUFFER_VIEW& vbv )
     if( !mCmdList ) return;
 
     mCmdList->IASetVertexBuffers( 0, 1, &vbv );
+}
+
+void CommandList::SetGraphicsRootSignature( RootSignature* rootSignature )
+{
+    if( !mCmdList || !rootSignature ) return;
+
+    mCmdList->SetGraphicsRootSignature( rootSignature->GetRootSignature().Get() );
 }
 
 #pragma endregion

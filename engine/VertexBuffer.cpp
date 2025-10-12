@@ -40,7 +40,7 @@ bool VertexBuffer::Create( uint32_t size, uint32_t strideSize )
 // 更新
 void VertexBuffer::Update( void* data )
 {
-    if( !mResource || !mData ) return;
+    if( !mData ) return;
 
     memcpy( mData, data, mView.SizeInBytes );
 }

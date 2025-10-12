@@ -38,6 +38,12 @@
     <ClCompile Include="engine\VertexBuffer.cpp">
       <Filter>engine</Filter>
     </ClCompile>
+    <ClCompile Include="engine\RootParameter.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\RootSignature.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
@@ -85,6 +91,12 @@
       <Filter>engine</Filter>
     </ClInclude>
     <ClInclude Include="engine\VertexBuffer.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\RootParameter.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\RootSignature.h">
       <Filter>engine</Filter>
     </ClInclude>
   </ItemGroup>
