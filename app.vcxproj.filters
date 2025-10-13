@@ -53,6 +53,9 @@
     <ClCompile Include="engine\graphics\ShaderObject.cpp">
       <Filter>engine\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="engine\math\Vector4.cpp">
+      <Filter>engine\math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
@@ -72,6 +75,9 @@
     </Filter>
     <Filter Include="engine\graphics">
       <UniqueIdentifier>{134a115c-55cc-4b65-b0f2-b1685246f944}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="shader">
+      <UniqueIdentifier>{6ddf98de-50ad-4b31-acc4-2ce90db133c9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -132,5 +138,21 @@
     <ClInclude Include="engine\graphics\ShaderObject.h">
       <Filter>engine\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="engine\math\Vector4.h">
+      <Filter>engine\math</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="assets\shader\SimplePS.hlsl">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shader\SimpleVS.hlsl">
+      <Filter>shader</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shader\Simple.hlsli">
+      <Filter>shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

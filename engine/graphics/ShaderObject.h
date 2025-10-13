@@ -10,9 +10,9 @@ class ShaderObject
 {
    private:
     // シェーダーのパス
-    std::wstring mPath;
+    std::string mPath;
     // プロファイル
-    std::wstring mProfile;
+    std::string mProfile;
     // シェーダーオブジェクト
     Microsoft::WRL::ComPtr<IDxcBlob> mBlob;
 
@@ -37,8 +37,8 @@ class ShaderObject
     /// <param name="includeHandler">インクルードハンドラ</param>
     /// <returns>成否</returns>
     bool Compile(
-        const std::wstring& path,
-        const std::wstring& profile,
+        const std::string& path,
+        const std::string& profile,
         Microsoft::WRL::ComPtr<IDxcUtils> utils,
         Microsoft::WRL::ComPtr<IDxcCompiler3> compiler,
         Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler );

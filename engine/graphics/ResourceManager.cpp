@@ -30,7 +30,7 @@ void ResourceManager::Term()
 }
 
 // シェーダーオブジェクトを取得
-ShaderObject* ResourceManager::GetShader( const std::wstring& path, const std::wstring& profile )
+ShaderObject* ResourceManager::GetShader( const std::string& path, const std::string& profile )
 {
     auto it = mShaders.find( path );
     if( it != mShaders.end() )

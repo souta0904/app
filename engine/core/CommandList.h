@@ -108,6 +108,38 @@ class CommandList
     /// <param name="pso">パイプラインステート</param>
     void SetPipelineState( GraphicsPSO* pso );
 
+    /// <summary>
+    /// ビューポートをセット
+    /// </summary>
+    /// <param name="topLeftX">左上X座標</param>
+    /// <param name="topLeftY">左上Y座標</param>
+    /// <param name="width">幅</param>
+    /// <param name="height">高さ</param>
+    /// <param name="minDepth">最小深度値</param>
+    /// <param name="maxDepth">最大深度値</param>
+    void SetViewport( float topLeftX, float topLeftY, float width, float height, float minDepth = 0.0f, float maxDepth = 1.0f );
+
+    /// <summary>
+    /// シザー矩形をセット
+    /// </summary>
+    /// <param name="left">左</param>
+    /// <param name="top">上</param>
+    /// <param name="right">右</param>
+    /// <param name="bottom">下</param>
+    void SetScissorRect( float left, float top, float right, float bottom );
+
+    /// <summary>
+    /// プリミティブ型をセット
+    /// </summary>
+    /// <param name="primitiveTopology">プリミティブ型</param>
+    void SetPrimitiveTopology( D3D12_PRIMITIVE_TOPOLOGY primitiveTopology );
+
+    /// <summary>
+    /// 描画
+    /// </summary>
+    /// <param name="vertexCount">頂点数</param>
+    void DrawInstanced(uint32_t vertexCount);
+
 #pragma endregion
 
     /// <summary>コマンドリストを取得</summary>

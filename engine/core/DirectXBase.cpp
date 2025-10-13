@@ -345,7 +345,7 @@ bool DirectXBase::CreateDSV()
     clearValue.DepthStencil.Depth = 1.0f;
 
     // 深度バッファを作成
-    [[maybe_unused]] auto hr = mDevice->CreateCommittedResource( &DirectXCommonSettings::gHeapPropertiesDefault, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_DEPTH_WRITE, &clearValue, IID_PPV_ARGS( mDepthBuff.GetAddressOf() ) );
+    [[maybe_unused]] auto hr = mDevice->CreateCommittedResource( &DirectXCommonSettings::gHeapDefault, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_DEPTH_WRITE, &clearValue, IID_PPV_ARGS( mDepthBuff.GetAddressOf() ) );
     if( FAILED( hr ) ) return false;
 
     mDSVHdl = mDSVHeap->Alloc();

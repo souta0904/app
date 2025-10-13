@@ -7,7 +7,7 @@
 #include <string>
 #include <unordered_map>
 
-class ShaderObject;
+#include "ShaderObject.h"
 
 /// <summary>
 /// リソース管理
@@ -23,7 +23,7 @@ class ResourceManager
     Microsoft::WRL::ComPtr<IDxcIncludeHandler> mIncludeHandler;
 
     // シェーダーオブジェクト
-    std::unordered_map<std::wstring, std::unique_ptr<ShaderObject>> mShaders;
+    std::unordered_map<std::string, std::unique_ptr<ShaderObject>> mShaders;
 
    public:
     /// <summary>
@@ -53,7 +53,7 @@ class ResourceManager
     /// <param name="path">シェーダーのパス</param>
     /// <param name="profile">プロファイル</param>
     /// <returns>シェーダーオブジェクト</returns>
-    ShaderObject* GetShader( const std::wstring& path, const std::wstring& profile );
+    ShaderObject* GetShader( const std::string& path, const std::string& profile );
 
    private:
     /// <summary>

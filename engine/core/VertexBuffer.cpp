@@ -23,7 +23,7 @@ bool VertexBuffer::Create( uint32_t size, uint32_t strideSize )
     desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
     // 頂点バッファを作成
-    [[maybe_unused]] auto hr = DirectXBase::GetInstance().GetDevice()->CreateCommittedResource( &DirectXCommonSettings::gHeapPropertiesUpload, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS( mResource.GetAddressOf() ) );
+    [[maybe_unused]] auto hr = DirectXBase::GetInstance().GetDevice()->CreateCommittedResource( &DirectXCommonSettings::gHeapUpload, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS( mResource.GetAddressOf() ) );
     if( FAILED( hr ) ) return false;
 
     // 頂点バッファビュー

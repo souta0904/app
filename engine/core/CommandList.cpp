@@ -129,4 +129,48 @@ void CommandList::SetPipelineState( GraphicsPSO* pso )
     mCmdList->SetPipelineState( pso->GetPipelineState().Get() );
 }
 
+// ビューポートをセット
+void CommandList::SetViewport( float topLeftX, float topLeftY, float width, float height, float minDepth, float maxDepth )
+{
+    if( !mCmdList ) return;
+
+    D3D12_VIEWPORT viewport = {};
+    viewport.TopLeftX = topLeftX;
+    viewport.TopLeftY = topLeftY;
+    viewport.Width = width;
+    viewport.Height = height;
+    viewport.MinDepth = minDepth;
+    viewport.MaxDepth = maxDepth;
+    mCmdList->RSSetViewports( 1, &viewport );
+}
+
+// シザー矩形をセット
+void CommandList::SetScissorRect( float left, float top, float right, float bottom )
+{
+    if( !mCmdList ) return;
+
+    D3D12_RECT scissorRc = {};
+    scissorRc.left = static_cast<LONG>( left );
+    scissorRc.top = static_cast<LONG>( top );
+    scissorRc.right = static_cast<LONG>( right );
+    scissorRc.bottom = static_cast<LONG>( bottom );
+    mCmdList->RSSetScissorRects( 1, &scissorRc );
+}
+
+// プリミティブ型をセット
+void CommandList::SetPrimitiveTopology( D3D12_PRIMITIVE_TOPOLOGY primitiveTopology )
+{
+    if( !mCmdList ) return;
+
+    mCmdList->IASetPrimitiveTopology( primitiveTopology );
+}
+
+// 描画
+void CommandList::DrawInstanced( uint32_t vertexCount )
+{
+    if( !mCmdList ) return;
+
+    mCmdList->DrawInstanced( vertexCount, 1, 0, 0 );
+}
+
 #pragma endregion

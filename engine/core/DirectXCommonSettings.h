@@ -8,8 +8,22 @@ namespace DirectXCommonSettings
 {
 
 // ヒーププロパティ
-extern D3D12_HEAP_PROPERTIES gHeapPropertiesDefault;
-extern D3D12_HEAP_PROPERTIES gHeapPropertiesUpload;
+extern D3D12_HEAP_PROPERTIES gHeapDefault;
+extern D3D12_HEAP_PROPERTIES gHeapUpload;
+
+// ブレンド設定
+extern D3D12_BLEND_DESC gBlendNone;
+extern D3D12_BLEND_DESC gBlendAlpha;
+extern D3D12_BLEND_DESC gBlendAdd;
+extern D3D12_BLEND_DESC gBlendSubtract;
+extern D3D12_BLEND_DESC gBlendMultiply;
+extern D3D12_BLEND_DESC gBlendScreen;
+
+// ラスタライザ設定
+extern D3D12_RASTERIZER_DESC gRasterizerDefault;
+
+// 深度ステンシル設定
+extern D3D12_DEPTH_STENCIL_DESC gDepthDefault;
 
 /// <summary>
 /// 初期化

@@ -84,7 +84,7 @@ bool Texture::CreateResource( const DirectX::ScratchImage& mipChain )
     desc.Format = metadata.format;
     desc.SampleDesc.Count = 1;
 
-    [[maybe_unused]] auto hr = DirectXBase::GetInstance().GetDevice()->CreateCommittedResource( &DirectXCommonSettings::gHeapPropertiesDefault, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS( mResource.GetAddressOf() ) );
+    [[maybe_unused]] auto hr = DirectXBase::GetInstance().GetDevice()->CreateCommittedResource( &DirectXCommonSettings::gHeapDefault, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS( mResource.GetAddressOf() ) );
     if( FAILED( hr ) ) return false;
 
     return true;
@@ -109,7 +109,7 @@ bool Texture::Upload( const DirectX::ScratchImage& mipChain )
 
     // 中間リソースを作成
     Microsoft::WRL::ComPtr<ID3D12Resource> intermediateRes = nullptr;
-    [[maybe_unused]] auto hr = device->CreateCommittedResource( &DirectXCommonSettings::gHeapPropertiesUpload, D3D12_HEAP_FLAG_NONE, &intermediateDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS( intermediateRes.GetAddressOf() ) );
+    [[maybe_unused]] auto hr = device->CreateCommittedResource( &DirectXCommonSettings::gHeapUpload, D3D12_HEAP_FLAG_NONE, &intermediateDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS( intermediateRes.GetAddressOf() ) );
     if( FAILED( hr ) ) return false;
 
     CommandList cmdList;

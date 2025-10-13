@@ -15,15 +15,15 @@ ShaderObject::ShaderObject()
 
 // コンパイル
 bool ShaderObject::Compile(
-    const std::wstring& path,
-    const std::wstring& profile,
+    const std::string& path,
+    const std::string& profile,
     Microsoft::WRL::ComPtr<IDxcUtils> utils,
     Microsoft::WRL::ComPtr<IDxcCompiler3> compiler,
     Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler )
 {
-    if( !utils || compiler || includeHandler )
+    if( !utils || !compiler || !includeHandler )
     {
-        LOG_INFO( StringHelper::Convert( std::format( L"Failed to compile Shader: {}", mPath ) ) );
+        LOG_INFO( std::format( "Failed to compile Shader: {}", mPath ) );
         return false;
     }
 
@@ -31,11 +31,12 @@ bool ShaderObject::Compile(
     mProfile = profile;
 
     // シェーダーファイルを読み込む
+    auto wpath = StringHelper::Convert( mPath );
     Microsoft::WRL::ComPtr<IDxcBlobEncoding> sourceBlob = nullptr;
-    auto hr = utils->LoadFile( mPath.c_str(), nullptr, &sourceBlob );
+    auto hr = utils->LoadFile( wpath.c_str(), nullptr, &sourceBlob );
     if( FAILED( hr ) )
     {
-        LOG_INFO( StringHelper::Convert( std::format( L"Failed to compile Shader: {}", mPath ) ) );
+        LOG_INFO( std::format( "Failed to compile Shader: {}", mPath ) );
         return false;
     }
 
@@ -45,13 +46,14 @@ bool ShaderObject::Compile(
     source.Encoding = DXC_CP_UTF8;
 
     // コンパイルオプション
+    auto wprofile = StringHelper::Convert( mProfile );
     LPCWSTR arguments[] =
         {
-            mPath.c_str(),
+            wpath.c_str(),
             L"-E",
             L"main",
             L"-T",
-            mProfile.c_str(),
+            wprofile.c_str(),
             L"-Zi",
             L"-Qembed_debug",
             L"-Od",
@@ -63,7 +65,7 @@ bool ShaderObject::Compile(
     hr = compiler->Compile( &source, arguments, _countof( arguments ), includeHandler.Get(), IID_PPV_ARGS( &result ) );
     if( FAILED( hr ) )
     {
-        LOG_INFO( StringHelper::Convert( std::format( L"Failed to compile Shader: {}", mPath ) ) );
+        LOG_INFO( std::format( "Failed to compile Shader: {}", mPath ) );
         return false;
     }
 
@@ -73,7 +75,7 @@ bool ShaderObject::Compile(
     if( errors && errors->GetStringLength() > 0 )
     {
         LOG_ERROR( errors->GetStringPointer() );
-        LOG_INFO( StringHelper::Convert( std::format( L"Failed to compile Shader: {}", mPath ) ) );
+        LOG_INFO( std::format( "Failed to compile Shader: {}", mPath ) );
         return false;
     }
 
@@ -81,6 +83,6 @@ bool ShaderObject::Compile(
     hr = result->GetOutput( DXC_OUT_OBJECT, IID_PPV_ARGS( &mBlob ), nullptr );
     if( FAILED( hr ) ) return false;
 
-    LOG_INFO( StringHelper::Convert( std::format( L"Shader compiled successfully: {}", mPath ) ) );
+    LOG_INFO( std::format( "Shader compiled successfully: {}", mPath ) );
     return true;
 }
