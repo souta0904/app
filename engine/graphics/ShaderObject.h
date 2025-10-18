@@ -3,12 +3,30 @@
 #include <dxcapi.h>
 #include <wrl.h>
 
+#include <future>
 #include <string>
 
 // シェーダーオブジェクト
 class ShaderObject
 {
+   public:
+    /// <summary>
+    /// 状態
+    /// </summary>
+    enum class State
+    {
+        Unload,
+        Load,
+        Ready,
+        Error,
+    };
+
    private:
+    // 状態
+    std::atomic<State> mState;
+    // タスク
+    std::future<void> mTask;
+
     // シェーダーのパス
     std::string mPath;
     // プロファイル
@@ -35,13 +53,18 @@ class ShaderObject
     /// <param name="utils">DXCユーティリティ</param>
     /// <param name="compiler">DXCコンパイラ</param>
     /// <param name="includeHandler">インクルードハンドラ</param>
-    /// <returns>成否</returns>
-    bool Compile(
+    void CompileAsync(
         const std::string& path,
         const std::string& profile,
         Microsoft::WRL::ComPtr<IDxcUtils> utils,
         Microsoft::WRL::ComPtr<IDxcCompiler3> compiler,
         Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler );
+
+    /// <summary>使用可能か</summary>
+    bool IsReady() { return mState == State::Ready; }
+
+    /// <summary>非同期タスクを取得</summary>
+    std::future<void>& GetTask() { return mTask; }
 
     /// <summary>シェーダーオブジェクトを取得</summary>
     Microsoft::WRL::ComPtr<IDxcBlob> GetBlob() const { return mBlob; }

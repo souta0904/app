@@ -3,10 +3,13 @@
 #include "DirectXBase.h"
 #include "RootSignature.h"
 #include "graphics/ShaderObject.h"
+#include "utils/Logger.h"
 
 // コンストラクタ
 GraphicsPSO::GraphicsPSO()
-    : mDesc()
+    : mState( State::Unload )
+    , mTask()
+    , mDesc()
     , mInputLayouts()
     , mPipelineState( nullptr )
 {
@@ -34,35 +37,59 @@ GraphicsPSO& GraphicsPSO::operator=( const GraphicsPSO& pso )
 }
 
 // 作成
-bool GraphicsPSO::Create( const PSOInit& init )
+void GraphicsPSO::Create( const PSOInit& init )
 {
-    // 設定を移行
-    mDesc.pRootSignature = init.mRootSignature->GetRootSignature().Get();
-    auto blob = init.mVS->GetBlob();
-    mDesc.VS.pShaderBytecode = blob->GetBufferPointer();
-    mDesc.VS.BytecodeLength = blob->GetBufferSize();
-    blob = init.mPS->GetBlob();
-    mDesc.PS.pShaderBytecode = blob->GetBufferPointer();
-    mDesc.PS.BytecodeLength = blob->GetBufferSize();
-    mDesc.BlendState = init.mBlendState;
-    mDesc.RasterizerState = init.mRasterizerState;
-    mDesc.DepthStencilState = init.mDepthStencilState;
-    mDesc.PrimitiveTopologyType = init.mPrimitiveTopologyType;
+    mState = State::Load;
 
-    // 頂点レイアウトを設定
-    auto num = static_cast<uint32_t>( init.mInputLayouts.size() );
-    mDesc.InputLayout.NumElements = num;
-    if( num > 0 )
-    {
-        mInputLayouts = init.mInputLayouts;
-        mDesc.InputLayout.pInputElementDescs = mInputLayouts.data();
-    }
+    mTask = std::async(
+        std::launch::async,
+        [this, init]()
+        {
+            try
+            {
+                init.mVS->GetTask().wait();
+                init.mPS->GetTask().wait();
+                if( !init.mVS->IsReady() || !init.mPS->IsReady() )
+                {
+                    throw std::runtime_error( "Failed to create graphics pipeline state." );
+                }
 
-    // パイプラインステートを作成
-    [[maybe_unused]] auto hr = DirectXBase::GetInstance().GetDevice()->CreateGraphicsPipelineState( &mDesc, IID_PPV_ARGS( mPipelineState.GetAddressOf() ) );
-    if( FAILED( hr ) ) return false;
+                // 設定を移行
+                mDesc.pRootSignature = init.mRootSignature->GetRootSignature().Get();
+                auto blob = init.mVS->GetBlob();
+                mDesc.VS.pShaderBytecode = blob->GetBufferPointer();
+                mDesc.VS.BytecodeLength = blob->GetBufferSize();
+                blob = init.mPS->GetBlob();
+                mDesc.PS.pShaderBytecode = blob->GetBufferPointer();
+                mDesc.PS.BytecodeLength = blob->GetBufferSize();
+                mDesc.BlendState = init.mBlendState;
+                mDesc.RasterizerState = init.mRasterizerState;
+                mDesc.DepthStencilState = init.mDepthStencilState;
+                mDesc.PrimitiveTopologyType = init.mPrimitiveTopologyType;
 
-    return true;
+                // 頂点レイアウトを設定
+                auto num = static_cast<uint32_t>( init.mInputLayouts.size() );
+                mDesc.InputLayout.NumElements = num;
+                if( num > 0 )
+                {
+                    mInputLayouts = init.mInputLayouts;
+                    mDesc.InputLayout.pInputElementDescs = mInputLayouts.data();
+                }
+
+                // パイプラインステートを作成
+                [[maybe_unused]] auto hr = DirectXBase::GetInstance().GetDevice()->CreateGraphicsPipelineState( &mDesc, IID_PPV_ARGS( mPipelineState.GetAddressOf() ) );
+                if( FAILED( hr ) )
+                {
+                    throw std::runtime_error( "Failed to create graphics pipeline state." );
+                }
+                mState = State::Ready;
+            }
+            catch( const std::exception& e )
+            {
+                mState = State::Error;
+                LOG_ERROR( e.what() );
+            }
+        } );
 }
 
 // バインド

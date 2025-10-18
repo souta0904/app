@@ -6,11 +6,14 @@
 #include "core/CommandList.h"
 #include "core/DirectXBase.h"
 #include "core/DirectXCommonSettings.h"
+#include "utils/Logger.h"
 #include "utils/StringHelper.h"
 
 // コンストラクタ
 Texture::Texture()
-    : mPath()
+    : mState( State::Unload )
+    , mTask()
+    , mPath()
     , mWidth( 0 )
     , mHeight( 0 )
     , mResource( nullptr )
@@ -28,21 +31,34 @@ Texture::~Texture()
 }
 
 // テクスチャを作成
-bool Texture::Create( const std::string& path )
+void Texture::CreateAsync( const std::string& path )
 {
+    mState = State::Load;
     mPath = path;
 
-    DirectX::ScratchImage image = {};
-    DirectX::ScratchImage mipChain = {};
-    if( !Load( mPath, image, mipChain ) ) return false;
-
-    if( !CreateResource( mipChain ) ) return false;
-
-    if( !Upload( mipChain ) ) return false;
-
-    if( !CreateSRV() ) return false;
-
-    return true;
+    mTask = std::async(
+        std::launch::async,
+        [this]()
+        {
+            try
+            {
+                DirectX::ScratchImage image = {};
+                DirectX::ScratchImage mipChain = {};
+                if( !Load( mPath, image, mipChain ) ||
+                    !CreateResource( mipChain ) ||
+                    !Upload( mipChain ) ||
+                    !CreateSRV() )
+                {
+                    throw std::runtime_error( std::format( "Failed to create texture: {}", mPath ) );
+                }
+                mState = State::Ready;
+            }
+            catch( const std::exception& e )
+            {
+                mState = State::Error;
+                LOG_ERROR( e.what() );
+            }
+        } );
 }
 
 // テクスチャをバインド
@@ -127,7 +143,7 @@ bool Texture::Upload( const DirectX::ScratchImage& mipChain )
 
     // コマンドリストを実行
     cmdList.Close();
-    auto cmdQueue = dxBase.GetCmdQueue();
+    auto cmdQueue = dxBase.GetUploadQueue();
     cmdQueue->Execute( &cmdList, 0 );
     cmdQueue->WaitGPU( 0 );
 

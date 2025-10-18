@@ -2,6 +2,7 @@
 #include <d3d12.h>
 #include <wrl.h>
 
+#include <future>
 #include <string>
 
 #include "DirectXTex/DirectXTex.h"
@@ -14,7 +15,24 @@ class CommandList;
 /// </summary>
 class Texture
 {
+   public:
+    /// <summary>
+    /// 状態
+    /// </summary>
+    enum class State
+    {
+        Unload,
+        Load,
+        Ready,
+        Error,
+    };
+
    private:
+    // 状態
+    std::atomic<State> mState;
+    // タスク
+    std::future<void> mTask;
+
     // テクスチャのパス
     std::string mPath;
     // テクスチャの幅
@@ -42,8 +60,7 @@ class Texture
     /// テクスチャを作成
     /// </summary>
     /// <param name="path">テクスチャのパス</param>
-    /// <returns>成否</returns>
-    bool Create( const std::string& path );
+    void CreateAsync( const std::string& path );
 
     /// <summary>
     /// テクスチャをバインド
@@ -51,6 +68,9 @@ class Texture
     /// <param name="cmdList">コマンドリスト</param>
     /// <param name="rootParamIdx">ルートパラメータのインデックス</param>
     void Bind( CommandList* cmdList, uint32_t rootParamIdx );
+
+    /// <summary>使用可能か</summary>
+    bool IsReady() { return mState == State::Ready; }
 
     /// <summary>テクスチャのパスを取得</summary>
     const std::string& GetPath() const { return mPath; }

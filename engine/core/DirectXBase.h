@@ -30,6 +30,7 @@ class DirectXBase
     Microsoft::WRL::ComPtr<ID3D12Device> mDevice;
     // コマンドキュー
     std::unique_ptr<CommandQueue> mCmdQueue;
+    std::unique_ptr<CommandQueue> mUploadQueue;
     // スワップチェイン
     Microsoft::WRL::ComPtr<IDXGISwapChain4> mSwapChain;
     // コマンドリスト
@@ -121,6 +122,9 @@ class DirectXBase
 
     /// <summary>コマンドキューを取得</summary>
     CommandQueue* GetCmdQueue() const { return mCmdQueue.get(); }
+
+    /// <summary>アップロード用のコマンドキューを取得</summary>
+    CommandQueue* GetUploadQueue() const { return mUploadQueue.get(); }
 
     /// <summary>コマンドリストを取得</summary>
     CommandList* GetCmdList() const { return mCmdList.get(); }

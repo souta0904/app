@@ -235,6 +235,17 @@ bool DirectXBase::CreateCmdQueue()
         LOG_INFO( "CommandQueue created successfully." );
     }
 
+    mUploadQueue = std::make_unique<CommandQueue>();
+    if( !mUploadQueue->Create( 1 ) )
+    {
+        LOG_ERROR( "Failed to create UploadQueue." );
+        return false;
+    }
+    else
+    {
+        LOG_INFO( "UploadQueue created successfully." );
+    }
+
     return true;
 }
 

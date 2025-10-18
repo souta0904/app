@@ -34,6 +34,12 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         LOG_INFO( "Window created successfully." );
     }
 
+    auto hr = CoInitializeEx( nullptr, COINIT_MULTITHREADED );
+    if( FAILED( hr ) )
+    {
+        return -1;
+    }
+
     // DirectXを初期化
     if( !dxBase.Init() )
     {
@@ -94,10 +100,7 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
     init.mInputLayouts[1].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
     init.mInputLayouts[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
     std::unique_ptr<GraphicsPSO> pso = std::make_unique<GraphicsPSO>();
-    if( !pso->Create( init ) )
-    {
-        return -1;
-    }
+    pso->Create( init );
 
     // 頂点を作成
     struct Vertex
@@ -119,12 +122,8 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         };
     vb->Update( v );
 
-    std::unique_ptr<Texture> texture = std::make_unique<Texture>();
-    std::string path = "assets/texture/bird_fukurou_run.png";
-    if( !texture->Create( path ) )
-    {
-        return -1;
-    }
+    auto path = "assets/texture/bird_fukurou_run.png";
+    auto texture = resMgr.GetTexture( path );
 
     // ゲームループ
     while( !window.ProcessMessage() )
@@ -138,24 +137,34 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         auto clearColor = dxBase.GetClearColor();
         ImGui::ColorPicker3( "Clear Color", &clearColor.r );
         dxBase.SetClearColor( clearColor );
-        ImGui::Image( texture->GetSRVHdl()->mGPU.ptr, ImVec2( 256.0f, 256.0f ) );
+        if( texture->IsReady() )
+        {
+            ImGui::Image( texture->GetSRVHdl()->mGPU.ptr, ImVec2( 256.0f, 256.0f ) );
+        }
+        else
+        {
+            ImGui::Text( "Texture loading..." );
+        }
         ImGui::End();
 
         editorBase.End();
 
         dxBase.BeginDraw();
 
-        // 描画コマンド
         auto cmdList = dxBase.GetCmdList();
-        auto windowWidth = static_cast<float>( window.GetWidth() );
-        auto windowHeight = static_cast<float>( window.GetHeight() );
-        cmdList->SetViewport( 0.0f, 0.0f, windowWidth, windowHeight );
-        cmdList->SetScissorRect( 0.0f, 0.0f, windowWidth, windowHeight );
-        rs->Bind( cmdList );
-        pso->Bind( cmdList );
-        cmdList->SetPrimitiveTopology( D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-        vb->Bind( dxBase.GetCmdList() );
-        cmdList->DrawInstanced( kVertexCount );
+        // 描画コマンド
+        if( pso->IsReady() )
+        {
+            auto windowWidth = static_cast<float>( window.GetWidth() );
+            auto windowHeight = static_cast<float>( window.GetHeight() );
+            cmdList->SetViewport( 0.0f, 0.0f, windowWidth, windowHeight );
+            cmdList->SetScissorRect( 0.0f, 0.0f, windowWidth, windowHeight );
+            rs->Bind( cmdList );
+            pso->Bind( cmdList );
+            cmdList->SetPrimitiveTopology( D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+            vb->Bind( cmdList );
+            cmdList->DrawInstanced( kVertexCount );
+        }
 
         editorBase.Draw( cmdList );
 
@@ -170,6 +179,8 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 
     dxBase.Term();
     LOG_INFO( "DirectX terminated." );
+
+    CoUninitialize();
 
     window.Destroy();
     LOG_INFO( "Window destroyed." );

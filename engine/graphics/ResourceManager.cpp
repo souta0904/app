@@ -40,12 +40,29 @@ ShaderObject* ResourceManager::GetShader( const std::string& path, const std::st
     else
     {
         auto shader = std::make_unique<ShaderObject>();
-        if( shader->Compile( path, profile, mUtils, mCompiler, mIncludeHandler ) )
-        {
-            auto* ptr = shader.get();
-            mShaders.emplace( path, std::move( shader ) );
-            return ptr;
-        }
+        shader->CompileAsync( path, profile, mUtils, mCompiler, mIncludeHandler );
+        auto* ptr = shader.get();
+        mShaders.emplace( path, std::move( shader ) );
+        return ptr;
+    }
+    return nullptr;
+}
+
+// テクスチャを取得
+Texture* ResourceManager::GetTexture( const std::string& path )
+{
+    auto it = mTextures.find( path );
+    if( it != mTextures.end() )
+    {
+        return it->second.get();
+    }
+    else
+    {
+        auto texture = std::make_unique<Texture>();
+        texture->CreateAsync( path );
+        auto* ptr = texture.get();
+        mTextures.emplace( path, std::move( texture ) );
+        return ptr;
     }
     return nullptr;
 }
