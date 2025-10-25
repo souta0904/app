@@ -112,23 +112,22 @@ bool Texture::Upload( const DirectX::ScratchImage& mipChain )
     [[maybe_unused]] auto hr = device->CreateCommittedResource( &DirectXCommonSettings::gHeapUpload, D3D12_HEAP_FLAG_NONE, &intermediateDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS( intermediateRes.GetAddressOf() ) );
     if( FAILED( hr ) ) return false;
 
-    CommandList cmdList;
-    cmdList.Create();
-    cmdList.Reset( 0 );
+    auto cmdList = dxBase.GetCmdList();
+    cmdList->Reset( 0 );
 
-    UpdateSubresources( cmdList.GetCmdList().Get(), mResource.Get(), intermediateRes.Get(), 0, 0, static_cast<UINT>( subresources.size() ), subresources.data() );
+    UpdateSubresources( cmdList->GetCmdList().Get(), mResource.Get(), intermediateRes.Get(), 0, 0, static_cast<UINT>( subresources.size() ), subresources.data() );
     // リソースバリア
     D3D12_RESOURCE_BARRIER barrier = {};
     barrier.Transition.pResource = mResource.Get();
     barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
     barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
     barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ;
-    cmdList.ResourceBarrier( barrier );
+    cmdList->ResourceBarrier( barrier );
 
     // コマンドリストを実行
-    cmdList.Close();
+    cmdList->Close();
     auto cmdQueue = dxBase.GetCmdQueue();
-    cmdQueue->Execute( &cmdList, 0 );
+    cmdQueue->Execute( cmdList, 0 );
     cmdQueue->WaitGPU( 0 );
 
     return true;

@@ -14,6 +14,16 @@ class RootSignature;
 /// </summary>
 class CommandList
 {
+   public:
+    /// <summary>
+    /// コマンドリスト種別
+    /// </summary>
+    enum class Type
+    {
+        Direct,
+        Copy,
+    };
+
    private:
     // コマンドアロケーター
     std::vector<Microsoft::WRL::ComPtr<ID3D12CommandAllocator>> mCmdAllocators;
@@ -21,6 +31,13 @@ class CommandList
     Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> mCmdList;
 
    public:
+    /// <summary>
+    /// DirectX12のコマンドリスト種別を取得
+    /// </summary>
+    /// <param name="type">コマンドリスト種別</param>
+    /// <returns>DirectX12のコマンドリスト種別</returns>
+    static D3D12_COMMAND_LIST_TYPE GetCommandListType( Type type );
+
     /// <summary>
     /// コンストラクタ
     /// </summary>
@@ -34,9 +51,10 @@ class CommandList
     /// <summary>
     /// 作成
     /// </summary>
+    /// <param name="type">コマンドリスト種別</param>
     /// <param name="count">コマンドアロケーターの数</param>
     /// <returns>成否</returns>
-    bool Create( uint32_t count = 1 );
+    bool Create( Type type, uint32_t count = 1 );
 
     /// <summary>
     /// クローズ

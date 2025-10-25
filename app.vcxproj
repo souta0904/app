@@ -176,6 +176,7 @@ copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir
     <ClCompile Include="engine\graphics\ResourceManager.cpp" />
     <ClCompile Include="engine\graphics\ShaderObject.cpp" />
     <ClCompile Include="engine\math\Vector4.cpp" />
+    <ClCompile Include="engine\graphics\SpriteBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\editor\EditorBase.h" />
@@ -198,6 +199,7 @@ copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir
     <ClInclude Include="engine\graphics\ResourceManager.h" />
     <ClInclude Include="engine\graphics\ShaderObject.h" />
     <ClInclude Include="engine\math\Vector4.h" />
+    <ClInclude Include="engine\graphics\SpriteBase.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="external\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

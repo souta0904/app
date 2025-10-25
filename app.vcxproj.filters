@@ -56,6 +56,7 @@
     <ClCompile Include="engine\math\Vector4.cpp">
       <Filter>engine\math</Filter>
     </ClCompile>
+    <ClCompile Include="engine\graphics\SpriteBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
@@ -141,6 +142,7 @@
     <ClInclude Include="engine\math\Vector4.h">
       <Filter>engine\math</Filter>
     </ClInclude>
+    <ClInclude Include="engine\graphics\SpriteBase.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shader\SimplePS.hlsl">

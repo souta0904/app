@@ -4,6 +4,20 @@
 #include "GraphicsPSO.h"
 #include "RootSignature.h"
 
+// DirectX12のコマンドリスト種別を取得
+D3D12_COMMAND_LIST_TYPE CommandList::GetCommandListType( Type type )
+{
+    switch( type )
+    {
+        case Type::Direct:
+            return D3D12_COMMAND_LIST_TYPE_DIRECT;
+        case Type::Copy:
+            return D3D12_COMMAND_LIST_TYPE_COPY;
+        default:
+            return D3D12_COMMAND_LIST_TYPE_DIRECT;
+    }
+}
+
 // コンストラクタ
 CommandList::CommandList()
     : mCmdAllocators()
@@ -12,21 +26,23 @@ CommandList::CommandList()
 }
 
 // 作成
-bool CommandList::Create( uint32_t count )
+bool CommandList::Create( Type type, uint32_t count )
 {
     auto device = DirectXBase::GetInstance().GetDevice();
     if( !device ) return false;
+
+    auto cmdListType = CommandList::GetCommandListType( type );
 
     mCmdAllocators.resize( count );
     for( auto& cmdAllocator : mCmdAllocators )
     {
         // コマンドアロケーターを作成
-        auto hr = device->CreateCommandAllocator( D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS( cmdAllocator.GetAddressOf() ) );
+        auto hr = device->CreateCommandAllocator( cmdListType, IID_PPV_ARGS( cmdAllocator.GetAddressOf() ) );
         if( FAILED( hr ) ) return false;
     }
 
     // コマンドリストを作成
-    auto hr = device->CreateCommandList( 0, D3D12_COMMAND_LIST_TYPE_DIRECT, mCmdAllocators[0].Get(), nullptr, IID_PPV_ARGS( mCmdList.GetAddressOf() ) );
+    auto hr = device->CreateCommandList( 0, cmdListType, mCmdAllocators[0].Get(), nullptr, IID_PPV_ARGS( mCmdList.GetAddressOf() ) );
     if( FAILED( hr ) ) return false;
 
     // 閉じておく

@@ -22,16 +22,16 @@ bool DescriptorHeap::Create( Type type, uint32_t numDescriptors, bool isShaderVi
     D3D12_DESCRIPTOR_HEAP_DESC desc = {};
     switch( type )
     {
-        case Type::kCBV_SRV_UAV:
+        case Type::CBV_SRV_UAV:
             desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
             break;
-        case Type::kSAMPLER:
+        case Type::SAMPLER:
             desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER;
             break;
-        case Type::kRTV:
+        case Type::RTV:
             desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
             break;
-        case Type::kDSV:
+        case Type::DSV:
             desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
             break;
         default:

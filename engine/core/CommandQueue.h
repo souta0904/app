@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <vector>
 
-class CommandList;
+#include "CommandList.h"
 
 /// <summary>
 /// コマンドキュー
@@ -22,9 +22,6 @@ class CommandQueue
     // フェンスイベント
     HANDLE mFenceEvent;
 
-    // 現在のフェンス値
-    uint64_t mCurrValue;
-
    public:
     /// <summary>
     /// コンストラクタ
@@ -39,9 +36,10 @@ class CommandQueue
     /// <summary>
     /// 作成
     /// </summary>
+    /// <param name="type">コマンドリスト種別</param>
     /// <param name="count">バックバッファの数</param>
     /// <returns>成否</returns>
-    bool Create( uint32_t count );
+    bool Create( CommandList::Type type, uint32_t count );
 
     /// <summary>
     /// コマンドリストを実行
@@ -49,6 +47,13 @@ class CommandQueue
     /// <param name="cmdList">コマンドリスト</param>
     /// <param name="idx">バックバッファのインデックス</param>
     void Execute( CommandList* cmdList, uint32_t idx );
+
+    /// <summary>
+    /// 指定したコマンドキューを待つ
+    /// </summary>
+    /// <param name="cmdQueue">対象のコマンドキュー</param>
+    /// <param name="idx">バックバッファのインデックス</param>
+    void Wait( CommandQueue* cmdQueue, uint32_t idx );
 
     /// <summary>
     /// GPUの処理を待つ

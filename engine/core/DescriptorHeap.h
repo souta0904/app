@@ -30,10 +30,10 @@ class DescriptorHeap
     /// </summary>
     enum class Type
     {
-        kCBV_SRV_UAV,
-        kSAMPLER,
-        kRTV,
-        kDSV,
+        CBV_SRV_UAV,
+        SAMPLER,
+        RTV,
+        DSV,
     };
 
    private:

@@ -112,12 +112,16 @@ void DirectXBase::EndDraw()
     barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
     mCmdList->ResourceBarrier( barrier );
 
-    // コマンドを実行して待つ
+    // コマンドを実行
     mCmdList->Close();
     mCmdQueue->Execute( mCmdList.get(), mBackBuffIdx );
+
     mSwapChain->Present( 1, 0 );
-    mBackBuffIdx = mSwapChain->GetCurrentBackBufferIndex();
+
+    // コマンドの実行を待つ
     mCmdQueue->WaitGPU( mBackBuffIdx );
+
+    mBackBuffIdx = mSwapChain->GetCurrentBackBufferIndex();
 }
 
 #pragma region 作成処理
@@ -225,7 +229,7 @@ bool DirectXBase::CreateDevice()
 bool DirectXBase::CreateCmdQueue()
 {
     mCmdQueue = std::make_unique<CommandQueue>();
-    if( !mCmdQueue->Create( kBackBuffCount ) )
+    if( !mCmdQueue->Create( CommandList::Type::Direct, kBackBuffCount ) )
     {
         LOG_ERROR( "Failed to create CommandQueue." );
         return false;
@@ -272,7 +276,7 @@ bool DirectXBase::CreateSwapChain()
 bool DirectXBase::CreateCmdList()
 {
     mCmdList = std::make_unique<CommandList>();
-    if( !mCmdList->Create( kBackBuffCount ) )
+    if( !mCmdList->Create( CommandList::Type::Direct, kBackBuffCount ) )
     {
         LOG_ERROR( "Failed to create CommandList." );
         return false;
@@ -289,13 +293,13 @@ bool DirectXBase::CreateCmdList()
 bool DirectXBase::CreateDescriptorHeaps()
 {
     mRTVHeap = std::make_unique<DescriptorHeap>();
-    if( !mRTVHeap->Create( DescriptorHeap::Type::kRTV, 128, false ) ) return false;
+    if( !mRTVHeap->Create( DescriptorHeap::Type::RTV, 128, false ) ) return false;
 
     mDSVHeap = std::make_unique<DescriptorHeap>();
-    if( !mDSVHeap->Create( DescriptorHeap::Type::kDSV, 64, false ) ) return false;
+    if( !mDSVHeap->Create( DescriptorHeap::Type::DSV, 64, false ) ) return false;
 
     mSRVHeap = std::make_unique<DescriptorHeap>();
-    if( !mSRVHeap->Create( DescriptorHeap::Type::kCBV_SRV_UAV, 4096, true ) ) return false;
+    if( !mSRVHeap->Create( DescriptorHeap::Type::CBV_SRV_UAV, 4096, true ) ) return false;
 
     return true;
 }
