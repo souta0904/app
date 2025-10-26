@@ -48,12 +48,6 @@ class GraphicsPSO
     /// <returns>成否</returns>
     bool Create( const PSOInit& init );
 
-    /// <summary>
-    /// バインド
-    /// </summary>
-    /// <param name="cmdList">コマンドリスト</param>
-    void Bind( CommandList* cmdList );
-
     /// <summary>パイプラインステートを取得</summary>
     Microsoft::WRL::ComPtr<ID3D12PipelineState> GetPipelineState() const { return mPipelineState; }
 };

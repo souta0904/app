@@ -3,11 +3,12 @@
 #include "core/DirectXBase.h"
 #include "core/DirectXCommonSettings.h"
 #include "core/GraphicsPSO.h"
+#include "core/ResourceManager.h"
 #include "core/RootSignature.h"
 #include "core/VertexBuffer.h"
 #include "core/Window.h"
 #include "editor/EditorBase.h"
-#include "graphics/ResourceManager.h"
+#include "graphics/Renderer.h"
 #include "graphics/Texture.h"
 #include "imgui/imgui.h"
 #include "math/Vector4.h"
@@ -21,6 +22,7 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
     auto& dxBase = DirectXBase::GetInstance();
     auto& editorBase = EditorBase::GetInstance();
     auto& resMgr = ResourceManager::GetInstance();
+    auto& renderer = Renderer::GetInstance();
 
     // ウィンドウを作成
     if( !window.Create( 1920, 1080, L"Game" ) )
@@ -68,6 +70,18 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
     else
     {
         LOG_INFO( "Resource manager initialized successfully." );
+    }
+
+    // レンダラーを初期化
+    if( !renderer.Init() )
+    {
+        LOG_ERROR( "Failed to initialize renderer." );
+        MessageBox( nullptr, L"Failed to initialize renderer.", L"Error", MB_OK | MB_ICONERROR );
+        return -1;
+    }
+    else
+    {
+        LOG_INFO( "Renderer initialized successfully." );
     }
 
     // ルートシグネチャを作成
@@ -119,9 +133,15 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         };
     vb->Update( v );
 
-    std::unique_ptr<Texture> texture = std::make_unique<Texture>();
-    std::string path = "assets/texture/bird_fukurou_run.png";
-    if( !texture->Create( path ) )
+    // std::unique_ptr<Texture> texture = std::make_unique<Texture>();
+    // std::string path = "assets/texture/bird_fukurou_run.png";
+    // if( !texture->Create( path ) )
+    //{
+    //     return -1;
+    // }
+
+    auto texture = resMgr.GetTexture( "assets/texture/bird_fukurou_run.png" );
+    if( !texture )
     {
         return -1;
     }
@@ -151,16 +171,21 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         auto windowHeight = static_cast<float>( window.GetHeight() );
         cmdList->SetViewport( 0.0f, 0.0f, windowWidth, windowHeight );
         cmdList->SetScissorRect( 0.0f, 0.0f, windowWidth, windowHeight );
-        rs->Bind( cmdList );
-        pso->Bind( cmdList );
+        cmdList->SetGraphicsRootSignature( rs.get() );
+        cmdList->SetPipelineState( pso.get() );
         cmdList->SetPrimitiveTopology( D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-        vb->Bind( dxBase.GetCmdList() );
+        cmdList->SetVertexBuffer( vb.get() );
         cmdList->DrawInstanced( kVertexCount );
+
+        renderer.Draw( cmdList );
 
         editorBase.Draw( cmdList );
 
         dxBase.EndDraw();
     }
+
+    renderer.Term();
+    LOG_INFO( "Renderer terminated." );
 
     resMgr.Term();
     LOG_INFO( "Resource manager terminated." );

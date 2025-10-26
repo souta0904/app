@@ -47,26 +47,20 @@ class RootSignature
     /// </summary>
     /// <param name="idx">インデックス</param>
     /// <returns>ルートパラメータ</returns>
-    RootParameter* GetParameter( uint32_t idx );
+    RootParameter& GetParameter( uint32_t idx );
 
     /// <summary>
     /// サンプラーを取得
     /// </summary>
     /// <param name="idx">インデックス</param>
     /// <returns>サンプラー</returns>
-    D3D12_STATIC_SAMPLER_DESC* GetSampler( uint32_t idx );
+    D3D12_STATIC_SAMPLER_DESC& GetSampler( uint32_t idx );
 
     /// <summary>
     /// 作成
     /// </summary>
     /// <returns>成否</returns>
     bool Create();
-
-    /// <summary>
-    /// バインド
-    /// </summary>
-    /// <param name="cmdList">コマンドリスト</param>
-    void Bind( CommandList* cmdList );
 
     /// <summary>ルートシグネチャを取得</summary>
     Microsoft::WRL::ComPtr<ID3D12RootSignature> GetRootSignature() const { return mRootSignature; }

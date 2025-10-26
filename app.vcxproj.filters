@@ -47,16 +47,27 @@
     <ClCompile Include="engine\core\GraphicsPSO.cpp">
       <Filter>engine\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\graphics\ResourceManager.cpp">
-      <Filter>engine\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="engine\graphics\ShaderObject.cpp">
       <Filter>engine\graphics</Filter>
     </ClCompile>
     <ClCompile Include="engine\math\Vector4.cpp">
       <Filter>engine\math</Filter>
     </ClCompile>
-    <ClCompile Include="engine\graphics\SpriteBase.cpp" />
+    <ClCompile Include="engine\graphics\SpriteBase.cpp">
+      <Filter>engine\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\Vector2.cpp">
+      <Filter>engine\math</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\Vector3.cpp">
+      <Filter>engine\math</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\ResourceManager.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\graphics\Renderer.cpp">
+      <Filter>engine\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
@@ -133,16 +144,33 @@
     <ClInclude Include="engine\core\PSOInit.h">
       <Filter>engine\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\graphics\ResourceManager.h">
-      <Filter>engine\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="engine\graphics\ShaderObject.h">
       <Filter>engine\graphics</Filter>
     </ClInclude>
     <ClInclude Include="engine\math\Vector4.h">
       <Filter>engine\math</Filter>
     </ClInclude>
-    <ClInclude Include="engine\graphics\SpriteBase.h" />
+    <ClInclude Include="engine\graphics\SpriteBase.h">
+      <Filter>engine\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Vector2.h">
+      <Filter>engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\MathUtil.h">
+      <Filter>engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Matrix4.h">
+      <Filter>engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Vector3.h">
+      <Filter>engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\ResourceManager.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\graphics\Renderer.h">
+      <Filter>engine\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shader\SimplePS.hlsl">
@@ -151,10 +179,13 @@
     <FxCompile Include="assets\shader\SimpleVS.hlsl">
       <Filter>shader</Filter>
     </FxCompile>
+    <FxCompile Include="assets\shader\SpriteVS.hlsl" />
+    <FxCompile Include="assets\shader\SpritePS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shader\Simple.hlsli">
       <Filter>shader</Filter>
     </None>
+    <None Include="assets\shader\Sprite.hlsli" />
   </ItemGroup>
 </Project>

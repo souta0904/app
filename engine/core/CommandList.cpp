@@ -3,8 +3,8 @@
 #include "DirectXBase.h"
 #include "GraphicsPSO.h"
 #include "RootSignature.h"
+#include "VertexBuffer.h"
 
-// DirectX12のコマンドリスト種別を取得
 D3D12_COMMAND_LIST_TYPE CommandList::GetCommandListType( Type type )
 {
     switch( type )
@@ -122,11 +122,11 @@ void CommandList::SetGraphicsRootDescriptorTable( uint32_t rootParamIdx, Descrip
 }
 
 // 頂点バッファをセット
-void CommandList::SetVertexBuffer( const D3D12_VERTEX_BUFFER_VIEW& vbv )
+void CommandList::SetVertexBuffer( VertexBuffer* vertexBuffer )
 {
-    if( !mCmdList ) return;
+    if( !mCmdList || !vertexBuffer ) return;
 
-    mCmdList->IASetVertexBuffers( 0, 1, &vbv );
+    mCmdList->IASetVertexBuffers( 0, 1, &vertexBuffer->GetView() );
 }
 
 // ルートシグネチャをセット

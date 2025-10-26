@@ -44,11 +44,3 @@ void VertexBuffer::Update( void* data )
 
     memcpy( mData, data, mView.SizeInBytes );
 }
-
-// バインド
-void VertexBuffer::Bind( CommandList* cmdList )
-{
-    if( !cmdList ) return;
-
-    cmdList->SetVertexBuffer( mView );
-}

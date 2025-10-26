@@ -44,9 +44,6 @@ class VertexBuffer
     /// <param name="data">データ</param>
     void Update( void* data );
 
-    /// <summary>
-    /// バインド
-    /// </summary>
-    /// <param name="cmdList">コマンドリスト</param>
-    void Bind( CommandList* cmdList );
+    /// <summary>頂点バッファビューを取得</summary>
+    const D3D12_VERTEX_BUFFER_VIEW& GetView() const { return mView; }
 };

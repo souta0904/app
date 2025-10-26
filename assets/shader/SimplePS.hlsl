@@ -2,12 +2,12 @@
 
 struct PSOutput
 {
-    float32_t4 mColor : SV_TARGET0;
+    float32_t4 color : SV_TARGET0;
 };
 
 PSOutput main(VSOutput input)
 {
     PSOutput output;
-    output.mColor = input.mColor;
+    output.color = input.color;
     return output;
 }

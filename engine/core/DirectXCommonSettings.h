@@ -25,6 +25,9 @@ extern D3D12_RASTERIZER_DESC gRasterizerDefault;
 // 深度ステンシル設定
 extern D3D12_DEPTH_STENCIL_DESC gDepthDefault;
 
+// サンプラー設定
+extern D3D12_STATIC_SAMPLER_DESC gSamplerLinearClamp;
+
 /// <summary>
 /// 初期化
 /// </summary>

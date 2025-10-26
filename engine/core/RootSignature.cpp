@@ -30,19 +30,19 @@ void RootSignature::Init( uint32_t numParameters, uint32_t numSamplers )
 }
 
 // ルートパラメータを取得
-RootParameter* RootSignature::GetParameter( uint32_t idx )
+RootParameter& RootSignature::GetParameter( uint32_t idx )
 {
     if( idx < 0 && idx >= mNumParameters ) nullptr;
 
-    return &mParameters[idx];
+    return mParameters[idx];
 }
 
 // サンプラーを取得
-D3D12_STATIC_SAMPLER_DESC* RootSignature::GetSampler( uint32_t idx )
+D3D12_STATIC_SAMPLER_DESC& RootSignature::GetSampler( uint32_t idx )
 {
     if( idx < 0 && idx >= mNumSamplers ) nullptr;
 
-    return &mSamplers[idx];
+    return mSamplers[idx];
 }
 
 // 作成
@@ -73,12 +73,4 @@ bool RootSignature::Create()
     if( FAILED( hr ) ) return false;
 
     return true;
-}
-
-// バインド
-void RootSignature::Bind( CommandList* cmdList )
-{
-    if( !cmdList ) return;
-
-    cmdList->SetGraphicsRootSignature( this );
 }

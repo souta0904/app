@@ -64,11 +64,3 @@ bool GraphicsPSO::Create( const PSOInit& init )
 
     return true;
 }
-
-// バインド
-void GraphicsPSO::Bind( CommandList* cmdList )
-{
-    if( !cmdList ) return;
-
-    cmdList->SetPipelineState( this );
-}

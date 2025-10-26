@@ -1,7 +1,5 @@
 #include "ResourceManager.h"
 
-#include "ShaderObject.h"
-
 #pragma comment( lib, "dxcompiler.lib" )
 
 // コンストラクタ
@@ -44,6 +42,27 @@ ShaderObject* ResourceManager::GetShader( const std::string& path, const std::st
         {
             auto* ptr = shader.get();
             mShaders.emplace( path, std::move( shader ) );
+            return ptr;
+        }
+    }
+    return nullptr;
+}
+
+// テクスチャを取得
+Texture* ResourceManager::GetTexture( const std::string& path )
+{
+    auto it = mTextures.find( path );
+    if( it != mTextures.end() )
+    {
+        return it->second.get();
+    }
+    else
+    {
+        auto texture = std::make_unique<Texture>();
+        if( texture->Create( path ) )
+        {
+            auto* ptr = texture.get();
+            mTextures.emplace( path, std::move( texture ) );
             return ptr;
         }
     }

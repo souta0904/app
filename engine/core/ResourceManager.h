@@ -7,7 +7,8 @@
 #include <string>
 #include <unordered_map>
 
-#include "ShaderObject.h"
+#include "graphics/ShaderObject.h"
+#include "graphics/Texture.h"
 
 /// <summary>
 /// リソース管理
@@ -24,6 +25,8 @@ class ResourceManager
 
     // シェーダーオブジェクト
     std::unordered_map<std::string, std::unique_ptr<ShaderObject>> mShaders;
+    // テクスチャ
+    std::unordered_map<std::string, std::unique_ptr<Texture>> mTextures;
 
    public:
     /// <summary>
@@ -54,6 +57,13 @@ class ResourceManager
     /// <param name="profile">プロファイル</param>
     /// <returns>シェーダーオブジェクト</returns>
     ShaderObject* GetShader( const std::string& path, const std::string& profile );
+
+    /// <summary>
+    /// テクスチャを取得
+    /// </summary>
+    /// <param name="path">テクスチャのパス</param>
+    /// <returns>テクスチャ</returns>
+    Texture* GetTexture( const std::string& path );
 
    private:
     /// <summary>

@@ -8,6 +8,7 @@
 
 class GraphicsPSO;
 class RootSignature;
+class VertexBuffer;
 
 /// <summary>
 /// コマンドリスト
@@ -111,8 +112,8 @@ class CommandList
     /// <summary>
     /// 頂点バッファをセット
     /// </summary>
-    /// <param name="view">頂点バッファビュー</param>
-    void SetVertexBuffer( const D3D12_VERTEX_BUFFER_VIEW& vbv );
+    /// <param name="vertexBuffer">頂点バッファ</param>
+    void SetVertexBuffer( VertexBuffer* vertexBuffer );
 
     /// <summary>
     /// ルートシグネチャをセット

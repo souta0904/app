@@ -112,7 +112,10 @@ bool Texture::Upload( const DirectX::ScratchImage& mipChain )
     [[maybe_unused]] auto hr = device->CreateCommittedResource( &DirectXCommonSettings::gHeapUpload, D3D12_HEAP_FLAG_NONE, &intermediateDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS( intermediateRes.GetAddressOf() ) );
     if( FAILED( hr ) ) return false;
 
-    auto cmdList = dxBase.GetCmdList();
+    auto* cmdList = dxBase.GetCmdList();
+    auto* cmdQueue = dxBase.GetCmdQueue();
+    if( !cmdList || !cmdQueue ) return false;
+
     cmdList->Reset( 0 );
 
     UpdateSubresources( cmdList->GetCmdList().Get(), mResource.Get(), intermediateRes.Get(), 0, 0, static_cast<UINT>( subresources.size() ), subresources.data() );
@@ -126,7 +129,6 @@ bool Texture::Upload( const DirectX::ScratchImage& mipChain )
 
     // コマンドリストを実行
     cmdList->Close();
-    auto cmdQueue = dxBase.GetCmdQueue();
     cmdQueue->Execute( cmdList, 0 );
     cmdQueue->WaitGPU( 0 );
 
