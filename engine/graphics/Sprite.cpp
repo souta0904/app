@@ -46,6 +46,8 @@ bool Sprite::Create( Texture* texture )
 // 描画
 void Sprite::Draw( const Matrix4& worldMat, Camera* camera )
 {
+    if( !camera ) return;
+
     if( mTexture )
     {
         // 頂点バッファを更新
