@@ -45,14 +45,6 @@ bool Texture::Create( const std::string& path )
     return true;
 }
 
-// テクスチャをバインド
-void Texture::Bind( CommandList* cmdList, uint32_t rootParamIdx )
-{
-    if( !cmdList ) return;
-
-    cmdList->SetGraphicsRootDescriptorTable( rootParamIdx, mSRVHdl );
-}
-
 // テクスチャを読み込む
 bool Texture::Load( const std::string& path, DirectX::ScratchImage& image, DirectX::ScratchImage& mipChain )
 {

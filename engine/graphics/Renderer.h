@@ -1,5 +1,7 @@
 #pragma once
+#include "Camera.h"
 #include "SpriteBase.h"
+#include "Sprite.h"
 
 class CommandList;
 
@@ -10,7 +12,14 @@ class Renderer
 {
    private:
     // スプライト基盤
-    std::unique_ptr<SpriteBase> mSpriteBase;
+    SpriteBase* mSpriteBase;
+
+    // スプライト用カメラ
+    std::unique_ptr<Camera> mSpriteCamera;
+
+    // スプライト
+    std::unique_ptr<Sprite> mOwlSprite;
+    std::unique_ptr<Sprite> mStarSprite;
 
    public:
     /// <summary>
@@ -67,8 +76,20 @@ class Renderer
     void Term();
 
     /// <summary>
+    /// 更新
+    /// </summary>
+    void Update();
+
+    /// <summary>
     /// 描画
     /// </summary>
     /// <param name="cmdList">コマンドリスト</param>
     void Draw( CommandList* cmdList );
+
+   private:
+    /// <summary>
+    /// スプライトを描画
+    /// </summary>
+    /// <param name="cmdList">コマンドリスト</param>
+    void DrawSprite( CommandList* cmdList );
 };

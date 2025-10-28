@@ -4,6 +4,7 @@
 #include <array>
 #include <memory>
 
+#include "Sprite.h"
 #include "core/GraphicsPSO.h"
 #include "core/RootSignature.h"
 #include "math/Color.h"
@@ -16,20 +17,7 @@
 /// </summary>
 class SpriteBase
 {
-   public:
-    /// <summary>
-    /// ブレンドモード
-    /// </summary>
-    enum class BlendMode
-    {
-        None,
-        Alpha,
-        Add,
-        Subtract,
-        Multiply,
-        Screen,
-        Max,
-    };
+    friend class Sprite;
 
    private:
     /// <summary>
@@ -46,21 +34,31 @@ class SpriteBase
     /// </summary>
     struct Constant
     {
-        Matrix4 mWvp;
+        Matrix4 mWVP;
+        Matrix4 mUVTransform;
         Color mColor;
     };
 
     // ルートシグネチャ
     std::unique_ptr<RootSignature> mRS;
     // パイプラインステート
-    std::array<std::unique_ptr<GraphicsPSO>, static_cast<size_t>( BlendMode::Max )> mPSO;
-    // プロジェクション行列
-    Matrix4 mProjectionMat;
+    std::array<std::unique_ptr<GraphicsPSO>, static_cast<size_t>( Sprite::BlendMode::Max )> mPSO;
 
     // コマンドリスト
     CommandList* mCmdList;
 
    public:
+    /// <summary>
+    /// インスタンスを取得
+    /// </summary>
+    /// <returns>インスタンス</returns>
+    static SpriteBase& GetInstance()
+    {
+        static SpriteBase instance;
+        return instance;
+    }
+
+   private:
     /// <summary>
     /// コンストラクタ
     /// </summary>
@@ -71,6 +69,28 @@ class SpriteBase
     /// </summary>
     ~SpriteBase() = default;
 
+   public:
+    /// <summary>
+    /// コピーコンストラクタ禁止
+    /// </summary>
+    SpriteBase( const SpriteBase& ) = delete;
+
+    /// <summary>
+    /// 代入演算子禁止
+    /// </summary>
+    SpriteBase& operator=( const SpriteBase& ) = delete;
+
+    /// <summary>
+    /// ムーブコンストラクタ禁止
+    /// </summary>
+    SpriteBase( SpriteBase&& ) = delete;
+
+    /// <summary>
+    /// ムーブ代入演算子禁止
+    /// </summary>
+    SpriteBase& operator=( SpriteBase&& ) = delete;
+
+   public:
     /// <summary>
     /// 初期化
     /// </summary>
@@ -89,7 +109,7 @@ class SpriteBase
     /// </summary>
     /// <param name="cmdList">コマンドリスト</param>
     /// <param name="defaultBlend">デフォルトのブレンドモード</param>
-    void Begin( CommandList* cmdList, BlendMode defaultBlend = BlendMode::Alpha );
+    void Begin( CommandList* cmdList, Sprite::BlendMode defaultBlend = Sprite::BlendMode::Alpha );
 
     /// <summary>
     /// 描画終了
@@ -100,5 +120,5 @@ class SpriteBase
     /// ブレンドモードからパイプラインを設定
     /// </summary>
     /// <param name="blendMode">ブレンドモード</param>
-    void SetGraphicsPSO( BlendMode blendMode );
+    void SetGraphicsPSO( Sprite::BlendMode blendMode );
 };

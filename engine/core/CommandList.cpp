@@ -1,9 +1,11 @@
 #include "CommandList.h"
 
+#include "ConstantBuffer.h"
 #include "DirectXBase.h"
 #include "GraphicsPSO.h"
 #include "RootSignature.h"
 #include "VertexBuffer.h"
+#include "graphics/Texture.h"
 
 D3D12_COMMAND_LIST_TYPE CommandList::GetCommandListType( Type type )
 {
@@ -72,29 +74,12 @@ void CommandList::Reset( uint32_t idx )
 
 #pragma region ID3D12GraphicsCommandListラッパー
 
-// デスクリプタヒープをセット
-void CommandList::SetDescriptorHeap( DescriptorHeap* descriptorHeap )
+// 深度バッファをクリア
+void CommandList::ClearDepthStencilView( DescriptorHandle* hDSV )
 {
-    if( !mCmdList || !descriptorHeap ) return;
+    if( !mCmdList || !hDSV ) return;
 
-    ID3D12DescriptorHeap* descriptorHeaps[] = { descriptorHeap->GetDescriptorHeap().Get() };
-    mCmdList->SetDescriptorHeaps( 1, descriptorHeaps );
-}
-
-// リソースバリアをセット
-void CommandList::ResourceBarrier( const D3D12_RESOURCE_BARRIER& barrier )
-{
-    if( !mCmdList ) return;
-
-    mCmdList->ResourceBarrier( 1, &barrier );
-}
-
-// レンダーターゲットをセット
-void CommandList::SetRenderTarget( DescriptorHandle* hRTV, DescriptorHandle* hDSV )
-{
-    if( !mCmdList || !hRTV || !hDSV ) return;
-
-    mCmdList->OMSetRenderTargets( 1, &hRTV->mCPU, false, &hDSV->mCPU );
+    mCmdList->ClearDepthStencilView( hDSV->mCPU, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr );
 }
 
 // レンダーターゲットをクリア
@@ -105,12 +90,37 @@ void CommandList::ClearRenderTargetView( DescriptorHandle* hRTV, const float cle
     mCmdList->ClearRenderTargetView( hRTV->mCPU, clearColor, 0, nullptr );
 }
 
-// 深度バッファをクリア
-void CommandList::ClearDepthStencilView( DescriptorHandle* hDSV )
+// 描画
+void CommandList::DrawInstanced( uint32_t vertexCount )
 {
-    if( !mCmdList || !hDSV ) return;
+    if( !mCmdList ) return;
 
-    mCmdList->ClearDepthStencilView( hDSV->mCPU, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr );
+    mCmdList->DrawInstanced( vertexCount, 1, 0, 0 );
+}
+
+// リソースバリアをセット
+void CommandList::ResourceBarrier( const D3D12_RESOURCE_BARRIER& barrier )
+{
+    if( !mCmdList ) return;
+
+    mCmdList->ResourceBarrier( 1, &barrier );
+}
+
+// 定数バッファをセット
+void CommandList::SetConstantBuffer( uint32_t rootParamIdx, ConstantBuffer* constantBuffer )
+{
+    if( !mCmdList || !constantBuffer ) return;
+
+    mCmdList->SetGraphicsRootConstantBufferView( rootParamIdx, constantBuffer->GetGPUVirtualAddress() );
+}
+
+// デスクリプタヒープをセット
+void CommandList::SetDescriptorHeap( DescriptorHeap* descriptorHeap )
+{
+    if( !mCmdList || !descriptorHeap ) return;
+
+    ID3D12DescriptorHeap* descriptorHeaps[] = { descriptorHeap->GetDescriptorHeap().Get() };
+    mCmdList->SetDescriptorHeaps( 1, descriptorHeaps );
 }
 
 // デスクリプタテーブルをルートシグネチャへセット
@@ -119,14 +129,6 @@ void CommandList::SetGraphicsRootDescriptorTable( uint32_t rootParamIdx, Descrip
     if( !mCmdList || !hSRV ) return;
 
     mCmdList->SetGraphicsRootDescriptorTable( rootParamIdx, hSRV->mGPU );
-}
-
-// 頂点バッファをセット
-void CommandList::SetVertexBuffer( VertexBuffer* vertexBuffer )
-{
-    if( !mCmdList || !vertexBuffer ) return;
-
-    mCmdList->IASetVertexBuffers( 0, 1, &vertexBuffer->GetView() );
 }
 
 // ルートシグネチャをセット
@@ -145,19 +147,20 @@ void CommandList::SetPipelineState( GraphicsPSO* pso )
     mCmdList->SetPipelineState( pso->GetPipelineState().Get() );
 }
 
-// ビューポートをセット
-void CommandList::SetViewport( float topLeftX, float topLeftY, float width, float height, float minDepth, float maxDepth )
+// プリミティブ型をセット
+void CommandList::SetPrimitiveTopology( D3D12_PRIMITIVE_TOPOLOGY primitiveTopology )
 {
     if( !mCmdList ) return;
 
-    D3D12_VIEWPORT viewport = {};
-    viewport.TopLeftX = topLeftX;
-    viewport.TopLeftY = topLeftY;
-    viewport.Width = width;
-    viewport.Height = height;
-    viewport.MinDepth = minDepth;
-    viewport.MaxDepth = maxDepth;
-    mCmdList->RSSetViewports( 1, &viewport );
+    mCmdList->IASetPrimitiveTopology( primitiveTopology );
+}
+
+// レンダーターゲットをセット
+void CommandList::SetRenderTarget( DescriptorHandle* hRTV, DescriptorHandle* hDSV )
+{
+    if( !mCmdList || !hRTV || !hDSV ) return;
+
+    mCmdList->OMSetRenderTargets( 1, &hRTV->mCPU, false, &hDSV->mCPU );
 }
 
 // シザー矩形をセット
@@ -173,20 +176,27 @@ void CommandList::SetScissorRect( float left, float top, float right, float bott
     mCmdList->RSSetScissorRects( 1, &scissorRc );
 }
 
-// プリミティブ型をセット
-void CommandList::SetPrimitiveTopology( D3D12_PRIMITIVE_TOPOLOGY primitiveTopology )
+// 頂点バッファをセット
+void CommandList::SetVertexBuffer( VertexBuffer* vertexBuffer )
 {
-    if( !mCmdList ) return;
+    if( !mCmdList || !vertexBuffer ) return;
 
-    mCmdList->IASetPrimitiveTopology( primitiveTopology );
+    mCmdList->IASetVertexBuffers( 0, 1, &vertexBuffer->GetView() );
 }
 
-// 描画
-void CommandList::DrawInstanced( uint32_t vertexCount )
+// ビューポートをセット
+void CommandList::SetViewport( float topLeftX, float topLeftY, float width, float height, float minDepth, float maxDepth )
 {
     if( !mCmdList ) return;
 
-    mCmdList->DrawInstanced( vertexCount, 1, 0, 0 );
+    D3D12_VIEWPORT viewport = {};
+    viewport.TopLeftX = topLeftX;
+    viewport.TopLeftY = topLeftY;
+    viewport.Width = width;
+    viewport.Height = height;
+    viewport.MinDepth = minDepth;
+    viewport.MaxDepth = maxDepth;
+    mCmdList->RSSetViewports( 1, &viewport );
 }
 
 #pragma endregion

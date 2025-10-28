@@ -11,7 +11,8 @@ struct PSOutput
 PSOutput main(VSOutput input)
 {
     PSOutput output;
-    float32_t4 texColor = gTexture.Sample(gSampler, input.uv);
+    float32_t4 transformedUV = mul(float32_t4(input.uv, 0.0f, 1.0f), gConstant.mUVTransform);
+    float32_t4 texColor = gTexture.Sample(gSampler, transformedUV.xy);
     output.color = texColor * gConstant.mColor;
     return output;
 }

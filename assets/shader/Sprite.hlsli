@@ -2,6 +2,7 @@
 struct Constant
 {
     float32_t4x4 mWVP;
+    float32_t4x4 mUVTransform;
     float32_t4 mColor;
 };
 

@@ -17,12 +17,14 @@ D3D12_BLEND_DESC gBlendScreen = {};
 
 // ラスタライザ設定
 D3D12_RASTERIZER_DESC gRasterizerDefault = {};
+D3D12_RASTERIZER_DESC gRasterizerNoCulling = {};
 
 // 深度ステンシル設定
 D3D12_DEPTH_STENCIL_DESC gDepthDefault = {};
+D3D12_DEPTH_STENCIL_DESC gDepthDisable = {};
 
 // サンプラー設定
-D3D12_STATIC_SAMPLER_DESC gSamplerLinearClamp = {};
+D3D12_STATIC_SAMPLER_DESC gSamplerLinearWrap = {};
 
 // 初期化
 bool Init()
@@ -75,19 +77,23 @@ bool Init()
     gRasterizerDefault.CullMode = D3D12_CULL_MODE_BACK;
     gRasterizerDefault.DepthClipEnable = true;
 
+    // カリングなし
+    gRasterizerNoCulling = gRasterizerDefault;
+    gRasterizerNoCulling.CullMode = D3D12_CULL_MODE_NONE;
+
     // 深度ステンシル設定
     gDepthDefault.DepthEnable = true;
     gDepthDefault.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
     gDepthDefault.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 
     // サンプラー設定
-    gSamplerLinearClamp.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-    gSamplerLinearClamp.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-    gSamplerLinearClamp.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-    gSamplerLinearClamp.AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-    gSamplerLinearClamp.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
-    gSamplerLinearClamp.MaxLOD = D3D12_FLOAT32_MAX;
-    gSamplerLinearClamp.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+    gSamplerLinearWrap.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+    gSamplerLinearWrap.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+    gSamplerLinearWrap.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+    gSamplerLinearWrap.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+    gSamplerLinearWrap.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+    gSamplerLinearWrap.MaxLOD = D3D12_FLOAT32_MAX;
+    gSamplerLinearWrap.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
     return true;
 }

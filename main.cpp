@@ -133,13 +133,6 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         };
     vb->Update( v );
 
-    // std::unique_ptr<Texture> texture = std::make_unique<Texture>();
-    // std::string path = "assets/texture/bird_fukurou_run.png";
-    // if( !texture->Create( path ) )
-    //{
-    //     return -1;
-    // }
-
     auto texture = resMgr.GetTexture( "assets/texture/bird_fukurou_run.png" );
     if( !texture )
     {
@@ -163,6 +156,8 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 
         editorBase.End();
 
+        renderer.Update();
+
         dxBase.BeginDraw();
 
         // 描画コマンド
@@ -171,13 +166,14 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         auto windowHeight = static_cast<float>( window.GetHeight() );
         cmdList->SetViewport( 0.0f, 0.0f, windowWidth, windowHeight );
         cmdList->SetScissorRect( 0.0f, 0.0f, windowWidth, windowHeight );
+
+        renderer.Draw( cmdList );
+
         cmdList->SetGraphicsRootSignature( rs.get() );
         cmdList->SetPipelineState( pso.get() );
         cmdList->SetPrimitiveTopology( D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
         cmdList->SetVertexBuffer( vb.get() );
         cmdList->DrawInstanced( kVertexCount );
-
-        renderer.Draw( cmdList );
 
         editorBase.Draw( cmdList );
 

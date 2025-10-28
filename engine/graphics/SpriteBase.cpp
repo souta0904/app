@@ -8,7 +8,6 @@
 SpriteBase::SpriteBase()
     : mRS( nullptr )
     , mPSO()
-    , mProjectionMat()
     , mCmdList( nullptr )
 {
 }
@@ -23,7 +22,7 @@ bool SpriteBase::Init( ShaderObject* vs, ShaderObject* ps )
     mRS->GetParameter( 0 ).InitAsCBV( 0 );
     mRS->GetParameter( 1 ).InitAsDescriptorTable( 1 );
     mRS->GetParameter( 1 ).SetDescriptorRange( 0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0 );
-    mRS->GetSampler( 0 ) = DirectXCommonSettings::gSamplerLinearClamp;
+    mRS->GetSampler( 0 ) = DirectXCommonSettings::gSamplerLinearWrap;
     // ルートシグネチャを作成
     if( !mRS->Create() )
     {
@@ -34,8 +33,8 @@ bool SpriteBase::Init( ShaderObject* vs, ShaderObject* ps )
     init.mRootSignature = mRS.get();
     init.mVS = vs;
     init.mPS = ps;
-    init.mRasterizerState = DirectXCommonSettings::gRasterizerDefault;
-    init.mDepthStencilState = DirectXCommonSettings::gDepthDefault;
+    init.mRasterizerState = DirectXCommonSettings::gRasterizerNoCulling;
+    init.mDepthStencilState = DirectXCommonSettings::gDepthDisable;
     init.mInputLayouts.resize( 2 );
     init.mInputLayouts[0].SemanticName = "POSITION";
     init.mInputLayouts[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -44,13 +43,13 @@ bool SpriteBase::Init( ShaderObject* vs, ShaderObject* ps )
     init.mInputLayouts[1].Format = DXGI_FORMAT_R32G32_FLOAT;
     init.mInputLayouts[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
     // ブレンド設定
-    const std::pair<BlendMode, D3D12_BLEND_DESC> descs[] = {
-        { BlendMode::None, DirectXCommonSettings::gBlendNone },
-        { BlendMode::Alpha, DirectXCommonSettings::gBlendAlpha },
-        { BlendMode::Add, DirectXCommonSettings::gBlendAdd },
-        { BlendMode::Subtract, DirectXCommonSettings::gBlendSubtract },
-        { BlendMode::Multiply, DirectXCommonSettings::gBlendMultiply },
-        { BlendMode::Screen, DirectXCommonSettings::gBlendScreen },
+    const std::pair<Sprite::BlendMode, D3D12_BLEND_DESC> descs[] = {
+        { Sprite::BlendMode::None, DirectXCommonSettings::gBlendNone },
+        { Sprite::BlendMode::Alpha, DirectXCommonSettings::gBlendAlpha },
+        { Sprite::BlendMode::Add, DirectXCommonSettings::gBlendAdd },
+        { Sprite::BlendMode::Subtract, DirectXCommonSettings::gBlendSubtract },
+        { Sprite::BlendMode::Multiply, DirectXCommonSettings::gBlendMultiply },
+        { Sprite::BlendMode::Screen, DirectXCommonSettings::gBlendScreen },
     };
     // パイプラインステートを作成
     for( auto&& [mode, desc] : descs )
@@ -64,16 +63,6 @@ bool SpriteBase::Init( ShaderObject* vs, ShaderObject* ps )
         }
     }
 
-    // プロジェクション行列
-    auto& window = Window::GetInstance();
-    mProjectionMat = CreateOrthographic(
-        0.0f,
-        0.0f,
-        static_cast<float>( window.GetWidth() ),
-        static_cast<float>( window.GetHeight() ),
-        0.0f,
-        100.0f );
-
     return true;
 }
 
@@ -83,7 +72,7 @@ void SpriteBase::Term()
 }
 
 // 描画開始
-void SpriteBase::Begin( CommandList* cmdList, BlendMode defaultBlend )
+void SpriteBase::Begin( CommandList* cmdList, Sprite::BlendMode defaultBlend )
 {
     if( !cmdList ) return;
 
@@ -100,7 +89,7 @@ void SpriteBase::End()
 }
 
 // ブレンドモードからパイプラインを設定
-void SpriteBase::SetGraphicsPSO( BlendMode blendMode )
+void SpriteBase::SetGraphicsPSO( Sprite::BlendMode blendMode )
 {
     auto& pso = mPSO[static_cast<size_t>( blendMode )];
     if( !pso ) return;

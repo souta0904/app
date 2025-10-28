@@ -68,6 +68,15 @@
     <ClCompile Include="engine\graphics\Renderer.cpp">
       <Filter>engine\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="engine\graphics\Sprite.cpp">
+      <Filter>engine\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\ConstantBuffer.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\graphics\Camera.cpp">
+      <Filter>engine\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
@@ -171,6 +180,21 @@
     <ClInclude Include="engine\graphics\Renderer.h">
       <Filter>engine\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="engine\graphics\Sprite.h">
+      <Filter>engine\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\ConstantBuffer.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Rect.h">
+      <Filter>engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Quaternion.h">
+      <Filter>engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\graphics\Camera.h">
+      <Filter>engine\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shader\SimplePS.hlsl">
@@ -179,13 +203,19 @@
     <FxCompile Include="assets\shader\SimpleVS.hlsl">
       <Filter>shader</Filter>
     </FxCompile>
-    <FxCompile Include="assets\shader\SpriteVS.hlsl" />
-    <FxCompile Include="assets\shader\SpritePS.hlsl" />
+    <FxCompile Include="assets\shader\SpritePS.hlsl">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shader\SpriteVS.hlsl">
+      <Filter>shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shader\Simple.hlsli">
       <Filter>shader</Filter>
     </None>
-    <None Include="assets\shader\Sprite.hlsli" />
+    <None Include="assets\shader\Sprite.hlsli">
+      <Filter>shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

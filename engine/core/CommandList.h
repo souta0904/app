@@ -6,6 +6,7 @@
 
 #include "DescriptorHeap.h"
 
+class ConstantBuffer;
 class GraphicsPSO;
 class RootSignature;
 class VertexBuffer;
@@ -71,23 +72,10 @@ class CommandList
 #pragma region ID3D12GraphicsCommandListラッパー
 
     /// <summary>
-    /// デスクリプタヒープをセット
+    /// 深度バッファをクリア
     /// </summary>
-    /// <param name="descriptorHeap">デスクリプタヒープ</param>
-    void SetDescriptorHeap( DescriptorHeap* descriptorHeap );
-
-    /// <summary>
-    /// リソースバリアをセット
-    /// </summary>
-    /// <param name="barrier">リソースバリア</param>
-    void ResourceBarrier( const D3D12_RESOURCE_BARRIER& barrier );
-
-    /// <summary>
-    /// レンダーターゲットをセット
-    /// </summary>
-    /// <param name="hRTV">RTVのCPUデスクリプタハンドル</param>
     /// <param name="hDSV">DSVのCPUデスクリプタハンドル</param>
-    void SetRenderTarget( DescriptorHandle* hRTV, DescriptorHandle* hDSV );
+    void ClearDepthStencilView( DescriptorHandle* hDSV );
 
     /// <summary>
     /// レンダーターゲットをクリア
@@ -97,10 +85,29 @@ class CommandList
     void ClearRenderTargetView( DescriptorHandle* hRTV, const float clearColor[4] );
 
     /// <summary>
-    /// 深度バッファをクリア
+    /// 描画
     /// </summary>
-    /// <param name="hDSV">DSVのCPUデスクリプタハンドル</param>
-    void ClearDepthStencilView( DescriptorHandle* hDSV );
+    /// <param name="vertexCount">頂点数</param>
+    void DrawInstanced( uint32_t vertexCount );
+
+    /// <summary>
+    /// リソースバリアをセット
+    /// </summary>
+    /// <param name="barrier">リソースバリア</param>
+    void ResourceBarrier( const D3D12_RESOURCE_BARRIER& barrier );
+
+    /// <summary>
+    /// 定数バッファをセット
+    /// </summary>
+    /// <param name="rootParamIdx">ルートパラメータのインデックス</param>
+    /// <param name="constantBuffer">定数バッファ</param>
+    void SetConstantBuffer( uint32_t rootParamIdx, ConstantBuffer* constantBuffer );
+
+    /// <summary>
+    /// デスクリプタヒープをセット
+    /// </summary>
+    /// <param name="descriptorHeap">デスクリプタヒープ</param>
+    void SetDescriptorHeap( DescriptorHeap* descriptorHeap );
 
     /// <summary>
     /// デスクリプタテーブルをルートシグネチャへセット
@@ -108,12 +115,6 @@ class CommandList
     /// <param name="rootParamIdx">ルートパラメータのインデックス</param>
     /// <param name="hSRV">SRVのCPUデスクリプタハンドル</param>
     void SetGraphicsRootDescriptorTable( uint32_t rootParamIdx, DescriptorHandle* hSRV );
-
-    /// <summary>
-    /// 頂点バッファをセット
-    /// </summary>
-    /// <param name="vertexBuffer">頂点バッファ</param>
-    void SetVertexBuffer( VertexBuffer* vertexBuffer );
 
     /// <summary>
     /// ルートシグネチャをセット
@@ -128,15 +129,17 @@ class CommandList
     void SetPipelineState( GraphicsPSO* pso );
 
     /// <summary>
-    /// ビューポートをセット
+    /// プリミティブ型をセット
     /// </summary>
-    /// <param name="topLeftX">左上X座標</param>
-    /// <param name="topLeftY">左上Y座標</param>
-    /// <param name="width">幅</param>
-    /// <param name="height">高さ</param>
-    /// <param name="minDepth">最小深度値</param>
-    /// <param name="maxDepth">最大深度値</param>
-    void SetViewport( float topLeftX, float topLeftY, float width, float height, float minDepth = 0.0f, float maxDepth = 1.0f );
+    /// <param name="primitiveTopology">プリミティブ型</param>
+    void SetPrimitiveTopology( D3D12_PRIMITIVE_TOPOLOGY primitiveTopology );
+
+    /// <summary>
+    /// レンダーターゲットをセット
+    /// </summary>
+    /// <param name="hRTV">RTVのCPUデスクリプタハンドル</param>
+    /// <param name="hDSV">DSVのCPUデスクリプタハンドル</param>
+    void SetRenderTarget( DescriptorHandle* hRTV, DescriptorHandle* hDSV );
 
     /// <summary>
     /// シザー矩形をセット
@@ -148,16 +151,21 @@ class CommandList
     void SetScissorRect( float left, float top, float right, float bottom );
 
     /// <summary>
-    /// プリミティブ型をセット
+    /// 頂点バッファをセット
     /// </summary>
-    /// <param name="primitiveTopology">プリミティブ型</param>
-    void SetPrimitiveTopology( D3D12_PRIMITIVE_TOPOLOGY primitiveTopology );
+    /// <param name="vertexBuffer">頂点バッファ</param>
+    void SetVertexBuffer( VertexBuffer* vertexBuffer );
 
     /// <summary>
-    /// 描画
+    /// ビューポートをセット
     /// </summary>
-    /// <param name="vertexCount">頂点数</param>
-    void DrawInstanced(uint32_t vertexCount);
+    /// <param name="topLeftX">左上X座標</param>
+    /// <param name="topLeftY">左上Y座標</param>
+    /// <param name="width">幅</param>
+    /// <param name="height">高さ</param>
+    /// <param name="minDepth">最小深度値</param>
+    /// <param name="maxDepth">最大深度値</param>
+    void SetViewport( float topLeftX, float topLeftY, float width, float height, float minDepth = 0.0f, float maxDepth = 1.0f );
 
 #pragma endregion
 

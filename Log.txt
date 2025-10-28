@@ -1,25 +1,25 @@
-[2025-10-26 22:58:44] [INFO ] Window created successfully.
-[2025-10-26 22:58:44] [INFO ] Back Buffer Count: 2
-[2025-10-26 22:58:44] [INFO ] Enable debug layer.
-[2025-10-26 22:58:44] [INFO ] DXGIFactory created successfully.
-[2025-10-26 22:58:44] [INFO ] Use Adapter: NVIDIA GeForce RTX 3070
-[2025-10-26 22:58:44] [INFO ] Feature Level: 12.2
-[2025-10-26 22:58:44] [INFO ] D3D12Device created successfully.
-[2025-10-26 22:58:44] [INFO ] CommandQueue created successfully.
-[2025-10-26 22:58:44] [INFO ] DXGISwapChain created successfully.
-[2025-10-26 22:58:44] [INFO ] CommandList created successfully.
-[2025-10-26 22:58:44] [INFO ] DirectX initialized successfully.
-[2025-10-26 22:58:44] [INFO ] Editor initialized successfully.
-[2025-10-26 22:58:44] [INFO ] Resource manager initialized successfully.
-[2025-10-26 22:58:44] [INFO ] Shader compiled successfully: assets/shader/SpriteVS.hlsl
-[2025-10-26 22:58:44] [INFO ] Shader compiled successfully: assets/shader/SpritePS.hlsl
-[2025-10-26 22:58:44] [INFO ] Sprite renderer initialized successfully.
-[2025-10-26 22:58:44] [INFO ] Renderer initialized successfully.
-[2025-10-26 22:58:44] [INFO ] Shader compiled successfully: assets/shader/SimpleVS.hlsl
-[2025-10-26 22:58:44] [INFO ] Shader compiled successfully: assets/shader/SimplePS.hlsl
-[2025-10-26 22:58:46] [INFO ] Sprite renderer terminated.
-[2025-10-26 22:58:46] [INFO ] Renderer terminated.
-[2025-10-26 22:58:46] [INFO ] Resource manager terminated.
-[2025-10-26 22:58:46] [INFO ] Editor terminated.
-[2025-10-26 22:58:46] [INFO ] DirectX terminated.
-[2025-10-26 22:58:46] [INFO ] Window destroyed.
+[2025-10-28 22:58:59] [INFO ] Window created successfully.
+[2025-10-28 22:58:59] [INFO ] Back Buffer Count: 2
+[2025-10-28 22:58:59] [INFO ] Enable debug layer.
+[2025-10-28 22:58:59] [INFO ] DXGIFactory created successfully.
+[2025-10-28 22:58:59] [INFO ] Use Adapter: NVIDIA GeForce RTX 3070
+[2025-10-28 22:59:00] [INFO ] Feature Level: 12.2
+[2025-10-28 22:59:00] [INFO ] D3D12Device created successfully.
+[2025-10-28 22:59:00] [INFO ] CommandQueue created successfully.
+[2025-10-28 22:59:00] [INFO ] DXGISwapChain created successfully.
+[2025-10-28 22:59:00] [INFO ] CommandList created successfully.
+[2025-10-28 22:59:00] [INFO ] DirectX initialized successfully.
+[2025-10-28 22:59:00] [INFO ] Editor initialized successfully.
+[2025-10-28 22:59:00] [INFO ] Resource manager initialized successfully.
+[2025-10-28 22:59:00] [INFO ] Shader compiled successfully: assets/shader/SpriteVS.hlsl
+[2025-10-28 22:59:00] [INFO ] Shader compiled successfully: assets/shader/SpritePS.hlsl
+[2025-10-28 22:59:00] [INFO ] Sprite renderer initialized successfully.
+[2025-10-28 22:59:00] [INFO ] Renderer initialized successfully.
+[2025-10-28 22:59:00] [INFO ] Shader compiled successfully: assets/shader/SimpleVS.hlsl
+[2025-10-28 22:59:00] [INFO ] Shader compiled successfully: assets/shader/SimplePS.hlsl
+[2025-10-28 22:59:01] [INFO ] Sprite renderer terminated.
+[2025-10-28 22:59:01] [INFO ] Renderer terminated.
+[2025-10-28 22:59:01] [INFO ] Resource manager terminated.
+[2025-10-28 22:59:01] [INFO ] Editor terminated.
+[2025-10-28 22:59:01] [INFO ] DirectX terminated.
+[2025-10-28 22:59:01] [INFO ] Window destroyed.

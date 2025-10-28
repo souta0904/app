@@ -21,12 +21,14 @@ extern D3D12_BLEND_DESC gBlendScreen;
 
 // ラスタライザ設定
 extern D3D12_RASTERIZER_DESC gRasterizerDefault;
+extern D3D12_RASTERIZER_DESC gRasterizerNoCulling;
 
 // 深度ステンシル設定
 extern D3D12_DEPTH_STENCIL_DESC gDepthDefault;
+extern D3D12_DEPTH_STENCIL_DESC gDepthDisable;
 
 // サンプラー設定
-extern D3D12_STATIC_SAMPLER_DESC gSamplerLinearClamp;
+extern D3D12_STATIC_SAMPLER_DESC gSamplerLinearWrap;
 
 /// <summary>
 /// 初期化

@@ -45,13 +45,6 @@ class Texture
     /// <returns>成否</returns>
     bool Create( const std::string& path );
 
-    /// <summary>
-    /// テクスチャをバインド
-    /// </summary>
-    /// <param name="cmdList">コマンドリスト</param>
-    /// <param name="rootParamIdx">ルートパラメータのインデックス</param>
-    void Bind( CommandList* cmdList, uint32_t rootParamIdx );
-
     /// <summary>テクスチャのパスを取得</summary>
     const std::string& GetPath() const { return mPath; }
 

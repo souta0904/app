@@ -157,6 +157,8 @@ copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\graphics\Camera.cpp" />
+    <ClCompile Include="engine\core\ConstantBuffer.cpp" />
     <ClCompile Include="engine\editor\EditorBase.cpp" />
     <ClCompile Include="engine\utils\Logger.cpp" />
     <ClCompile Include="engine\core\VertexBuffer.cpp" />
@@ -180,10 +182,15 @@ copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir
     <ClCompile Include="engine\math\Vector2.cpp" />
     <ClCompile Include="engine\math\Vector3.cpp" />
     <ClCompile Include="engine\graphics\Renderer.cpp" />
+    <ClCompile Include="engine\graphics\Sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\graphics\Camera.h" />
+    <ClInclude Include="engine\core\ConstantBuffer.h" />
     <ClInclude Include="engine\editor\EditorBase.h" />
     <ClInclude Include="engine\math\MathUtil.h" />
+    <ClInclude Include="engine\math\Quaternion.h" />
+    <ClInclude Include="engine\math\Rect.h" />
     <ClInclude Include="engine\utils\Logger.h" />
     <ClInclude Include="engine\core\VertexBuffer.h" />
     <ClInclude Include="engine\math\Color.h" />
@@ -208,6 +215,7 @@ copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir
     <ClInclude Include="engine\math\Matrix4.h" />
     <ClInclude Include="engine\math\Vector3.h" />
     <ClInclude Include="engine\graphics\Renderer.h" />
+    <ClInclude Include="engine\graphics\Sprite.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="external\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

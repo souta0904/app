@@ -2,6 +2,7 @@
 #include <cassert>
 #include <cstdint>
 
+#include "Quaternion.h"
 #include "Vector3.h"
 
 /// <summary>
@@ -108,7 +109,7 @@ inline float Determinant( const Matrix4& a )
 inline Matrix4 Inverse( const Matrix4& a )
 {
     float det = Determinant( a );
-    assert( std::fabs( det ) <= MathUtil::kEpsilon );
+    assert( std::fabs( det ) > MathUtil::kEpsilon );
     float invDet = 1.0f / det;
 
     Matrix4 mat;
@@ -211,6 +212,28 @@ inline Matrix4 CreateRotateZ( float rotate )
     mat.m[1][0] = -sin;
     mat.m[1][1] = cos;
     return mat;
+}
+
+/// <summary>
+/// 回転行列を作成
+/// </summary>
+inline Matrix4 CreateRotate( const Quaternion& q )
+{
+    float ww = 2.0f * q.w;
+    float xx = 2.0f * q.x;
+    float yy = 2.0f * q.y;
+    float zz = 2.0f * q.z;
+    Matrix4 quat;
+    quat.m[0][0] = 1.0f - yy * q.y - zz * q.z;
+    quat.m[0][1] = xx * q.y + ww * q.z;
+    quat.m[0][2] = xx * q.z - ww * q.y;
+    quat.m[1][0] = xx * q.y - ww * q.z;
+    quat.m[1][1] = 1.0f - xx * q.x - zz * q.z;
+    quat.m[1][2] = yy * q.z + ww * q.x;
+    quat.m[2][0] = xx * q.z + ww * q.y;
+    quat.m[2][1] = yy * q.z - ww * q.x;
+    quat.m[2][2] = 1.0f - xx * q.x - yy * q.y;
+    return quat;
 }
 
 /// <summary>
