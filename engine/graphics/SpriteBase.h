@@ -7,10 +7,6 @@
 #include "Sprite.h"
 #include "core/GraphicsPSO.h"
 #include "core/RootSignature.h"
-#include "math/Color.h"
-#include "math/Matrix4.h"
-#include "math/Vector2.h"
-#include "math/Vector4.h"
 
 /// <summary>
 /// スプライト基盤
@@ -20,25 +16,6 @@ class SpriteBase
     friend class Sprite;
 
    private:
-    /// <summary>
-    /// 頂点
-    /// </summary>
-    struct Vertex
-    {
-        Vector4 mPosition;
-        Vector2 mUV;
-    };
-
-    /// <summary>
-    /// 定数
-    /// </summary>
-    struct Constant
-    {
-        Matrix4 mWVP;
-        Matrix4 mUVTransform;
-        Color mColor;
-    };
-
     // ルートシグネチャ
     std::unique_ptr<RootSignature> mRS;
     // パイプラインステート

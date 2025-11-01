@@ -51,13 +51,13 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
     // エディタを初期化
     if( !editorBase.Init() )
     {
-        LOG_ERROR( "Failed to initialize editor." );
-        MessageBox( nullptr, L"Failed to initialize editor.", L"Error", MB_OK | MB_ICONERROR );
+        LOG_ERROR( "Failed to initialize editor base." );
+        MessageBox( nullptr, L"Failed to initialize editor base.", L"Error", MB_OK | MB_ICONERROR );
         return -1;
     }
     else
     {
-        LOG_INFO( "Editor initialized successfully." );
+        LOG_INFO( "Editor base initialized successfully." );
     }
 
     // リソース管理を初期化
@@ -84,61 +84,6 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         LOG_INFO( "Renderer initialized successfully." );
     }
 
-    // ルートシグネチャを作成
-    std::unique_ptr<RootSignature> rs = std::make_unique<RootSignature>();
-    rs->Init( 0, 0 );
-    if( !rs->Create() )
-    {
-        return -1;
-    }
-
-    // パイプラインステートを作成
-    PSOInit init = {};
-    init.mRootSignature = rs.get();
-    init.mVS = resMgr.GetShader( "assets/shader/SimpleVS.hlsl", "vs_6_0" );
-    init.mPS = resMgr.GetShader( "assets/shader/SimplePS.hlsl", "ps_6_0" );
-    init.mBlendState = DirectXCommonSettings::gBlendAlpha;
-    init.mRasterizerState = DirectXCommonSettings::gRasterizerDefault;
-    init.mDepthStencilState = DirectXCommonSettings::gDepthDefault;
-    init.mInputLayouts.resize( 2 );
-    init.mInputLayouts[0].SemanticName = "POSITION";
-    init.mInputLayouts[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-    init.mInputLayouts[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-    init.mInputLayouts[1].SemanticName = "COLOR";
-    init.mInputLayouts[1].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-    init.mInputLayouts[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-    std::unique_ptr<GraphicsPSO> pso = std::make_unique<GraphicsPSO>();
-    if( !pso->Create( init ) )
-    {
-        return -1;
-    }
-
-    // 頂点を作成
-    struct Vertex
-    {
-        Vector4 mPosition;
-        Color mColor;
-    };
-    auto vb = std::make_unique<VertexBuffer>();
-    const uint32_t kVertexCount = 3;
-    if( !vb->Create( sizeof( Vertex ) * kVertexCount, sizeof( Vertex ) ) )
-    {
-        return -1;
-    }
-    Vertex v[kVertexCount] =
-        {
-            { Vector4( -0.3f, -0.5f, 0.0f, 1.0f ), Color::kRed },
-            { Vector4( +0.0f, +0.5f, 0.0f, 1.0f ), Color::kGreen },
-            { Vector4( +0.3f, -0.5f, 0.0f, 1.0f ), Color::kBlue },
-        };
-    vb->Update( v );
-
-    auto texture = resMgr.GetTexture( "assets/texture/bird_fukurou_run.png" );
-    if( !texture )
-    {
-        return -1;
-    }
-
     // ゲームループ
     while( !window.ProcessMessage() )
     {
@@ -151,7 +96,7 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         auto clearColor = dxBase.GetClearColor();
         ImGui::ColorPicker3( "Clear Color", &clearColor.r );
         dxBase.SetClearColor( clearColor );
-        ImGui::Image( texture->GetSRVHdl()->mGPU.ptr, ImVec2( 256.0f, 256.0f ) );
+        //ImGui::Image( texture->GetSRVHdl()->mGPU.ptr, ImVec2( 256.0f, 256.0f ) );
         ImGui::End();
 
         editorBase.End();
@@ -160,20 +105,8 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 
         dxBase.BeginDraw();
 
-        // 描画コマンド
         auto cmdList = dxBase.GetCmdList();
-        auto windowWidth = static_cast<float>( window.GetWidth() );
-        auto windowHeight = static_cast<float>( window.GetHeight() );
-        cmdList->SetViewport( 0.0f, 0.0f, windowWidth, windowHeight );
-        cmdList->SetScissorRect( 0.0f, 0.0f, windowWidth, windowHeight );
-
         renderer.Draw( cmdList );
-
-        cmdList->SetGraphicsRootSignature( rs.get() );
-        cmdList->SetPipelineState( pso.get() );
-        cmdList->SetPrimitiveTopology( D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
-        cmdList->SetVertexBuffer( vb.get() );
-        cmdList->DrawInstanced( kVertexCount );
 
         editorBase.Draw( cmdList );
 
@@ -187,7 +120,7 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
     LOG_INFO( "Resource manager terminated." );
 
     editorBase.Term();
-    LOG_INFO( "Editor terminated." );
+    LOG_INFO( "Editor base terminated." );
 
     dxBase.Term();
     LOG_INFO( "DirectX terminated." );

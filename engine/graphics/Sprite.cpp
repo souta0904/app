@@ -29,13 +29,13 @@ bool Sprite::Create( Texture* texture )
 
     // 頂点バッファを作成
     mVB = std::make_unique<VertexBuffer>();
-    if( !mVB->Create( sizeof( SpriteBase::Vertex ) * kVertexCount, sizeof( SpriteBase::Vertex ) ) )
+    if( !mVB->Create( sizeof( Vertex ) * kVertexCount, sizeof( Vertex ) ) )
     {
         return false;
     }
     // 定数バッファを作成
     mCB = std::make_unique<ConstantBuffer>();
-    if( !mCB->Create( sizeof( SpriteBase::Constant ) ) )
+    if( !mCB->Create( sizeof( Constant ) ) )
     {
         return false;
     }
@@ -46,22 +46,21 @@ bool Sprite::Create( Texture* texture )
 // 描画
 void Sprite::Draw( const Matrix4& worldMat, Camera* camera )
 {
-    if( !camera ) return;
+    if( !camera || !mTexture ) return;
 
-    if( mTexture )
-    {
-        // 頂点バッファを更新
-        UpdateVB();
-        // 定数バッファを更新
-        UpdateCB( worldMat, camera );
+    // 頂点バッファを更新
+    UpdateVB();
+    // 定数バッファを更新
+    UpdateCB( worldMat, camera );
 
-        // コマンドを積む
-        auto cmdList = SpriteBase::GetInstance().mCmdList;
-        cmdList->SetVertexBuffer( mVB.get() );
-        cmdList->SetConstantBuffer( 0, mCB.get() );
-        cmdList->SetGraphicsRootDescriptorTable( 1, mTexture->GetSRVHdl() );
-        cmdList->DrawInstanced( kVertexCount );
-    }
+    // コマンドを積む
+    auto cmdList = SpriteBase::GetInstance().mCmdList;
+    if( !cmdList ) return;
+
+    cmdList->SetVertexBuffer( mVB.get() );
+    cmdList->SetConstantBuffer( 0, mCB.get() );
+    cmdList->SetGraphicsRootDescriptorTable( 1, mTexture->GetSRVHdl() );
+    cmdList->DrawInstanced( kVertexCount );
 }
 
 // テクスチャを設定
@@ -80,7 +79,7 @@ void Sprite::SetTexture( Texture* texture )
 // 頂点バッファを更新
 void Sprite::UpdateVB()
 {
-    SpriteBase::Vertex v[4] = {};
+    Vertex v[kVertexCount] = {};
     enum
     {
         LT,
@@ -129,7 +128,7 @@ void Sprite::UpdateVB()
 // 定数バッファを更新
 void Sprite::UpdateCB( const Matrix4& worldMat, Camera* camera )
 {
-    SpriteBase::Constant c = {};
+    Constant c = {};
 
     // ワールドビュープロジェクション行列
     c.mWVP = worldMat * camera->GetView() * camera->GetProjection();

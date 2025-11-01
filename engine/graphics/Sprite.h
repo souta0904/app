@@ -7,6 +7,7 @@
 #include "math/Matrix4.h"
 #include "math/Rect.h"
 #include "math/Vector2.h"
+#include "math/Vector4.h"
 
 class Camera;
 class CommandList;
@@ -17,6 +18,26 @@ class Texture;
 /// </summary>
 class Sprite
 {
+   private:
+    /// <summary>
+    /// 頂点
+    /// </summary>
+    struct Vertex
+    {
+        Vector4 mPosition;
+        Vector2 mUV;
+    };
+
+    /// <summary>
+    /// 定数
+    /// </summary>
+    struct Constant
+    {
+        Matrix4 mWVP;
+        Matrix4 mUVTransform;
+        Color mColor;
+    };
+
    public:
     /// <summary>
     /// ブレンドモード

@@ -21,6 +21,12 @@ class Renderer
     std::unique_ptr<Sprite> mOwlSprite;
     std::unique_ptr<Sprite> mStarSprite;
 
+    // テスト
+    static const uint32_t kVertexCount = 3;
+    std::unique_ptr<RootSignature> mSimpleRS;
+    std::unique_ptr<GraphicsPSO> mSimplePSO;
+    std::unique_ptr<VertexBuffer> mSimpleVB;
+
    public:
     /// <summary>
     /// インスタンスを取得
