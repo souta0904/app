@@ -10,7 +10,6 @@
 #include "math/Vector4.h"
 
 class Camera;
-class CommandList;
 class Texture;
 
 /// <summary>
@@ -106,9 +105,6 @@ class Sprite
     /// <param name="worldMat">ワールド行列</param>
     /// <param name="camera">カメラ</param>
     void Draw( const Matrix4& worldMat, Camera* camera );
-
-    /// <summary>テクスチャを取得</summary>
-    Texture* GetTexture() const { return mTexture; }
 
     /// <summary>テクスチャを設定</summary>
     void SetTexture( Texture* texture );

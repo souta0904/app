@@ -109,7 +109,8 @@ inline float Determinant( const Matrix4& a )
 inline Matrix4 Inverse( const Matrix4& a )
 {
     float det = Determinant( a );
-    assert( std::fabs( det ) > MathUtil::kEpsilon );
+    //assert( std::fabs( det ) > MathUtil::kEpsilon );
+    assert( det != 0.0f );
     float invDet = 1.0f / det;
 
     Matrix4 mat;
@@ -246,6 +247,14 @@ inline Matrix4 CreateTranslate( const Vector3& translate )
     mat.m[3][1] = translate.y;
     mat.m[3][2] = translate.z;
     return mat;
+}
+
+/// <summary>
+/// アフィン変換行列を作成
+/// </summary>
+inline Matrix4 CreateAffine( const Vector3& scale, const Quaternion& rotate, const Vector3& translate )
+{
+    return CreateScale( scale ) * CreateRotate( rotate ) * CreateTranslate( translate );
 }
 
 /// <summary>

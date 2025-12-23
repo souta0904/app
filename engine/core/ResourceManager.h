@@ -9,6 +9,7 @@
 
 #include "graphics/ShaderObject.h"
 #include "graphics/Texture.h"
+#include "graphics/model/ModelData.h"
 
 /// <summary>
 /// リソース管理
@@ -27,6 +28,8 @@ class ResourceManager
     std::unordered_map<std::string, std::unique_ptr<ShaderObject>> mShaders;
     // テクスチャ
     std::unordered_map<std::string, std::unique_ptr<Texture>> mTextures;
+    // モデルデータ
+    std::unordered_map<std::string, std::unique_ptr<ModelData>> mModels;
 
    public:
     /// <summary>
@@ -64,6 +67,13 @@ class ResourceManager
     /// <param name="path">テクスチャのパス</param>
     /// <returns>テクスチャ</returns>
     Texture* GetTexture( const std::string& path );
+
+    /// <summary>
+    /// モデルデータを取得
+    /// </summary>
+    /// <param name="path">モデルのパス</param>
+    /// <returns>モデルデータ</returns>
+    ModelData* GetModel( const std::string& path );
 
    private:
     /// <summary>

@@ -5,15 +5,15 @@
 #include <cstdint>
 
 /// <summary>
-/// 頂点バッファ
+/// インデックスバッファ
 /// </summary>
-class VertexBuffer
+class IndexBuffer
 {
    private:
     // リソース
     Microsoft::WRL::ComPtr<ID3D12Resource> mResource;
-    // 頂点バッファビュー
-    D3D12_VERTEX_BUFFER_VIEW mView;
+    // インデックスバッファビュー
+    D3D12_INDEX_BUFFER_VIEW mView;
     // データへのポインタ
     void* mData;
 
@@ -21,20 +21,19 @@ class VertexBuffer
     /// <summary>
     /// コンストラクタ
     /// </summary>
-    VertexBuffer();
+    IndexBuffer();
 
     /// <summary>
     /// デストラクタ
     /// </summary>
-    ~VertexBuffer() = default;
+    ~IndexBuffer() = default;
 
     /// <summary>
     /// 作成
     /// </summary>
-    /// <param name="size">頂点バッファのサイズ</param>
-    /// <param name="strideSize">1頂点のサイズ</param>
+    /// <param name="size">サイズ</param>
     /// <returns>成否</returns>
-    bool Create( uint32_t size, uint32_t strideSize );
+    bool Create( uint32_t size );
 
     /// <summary>
     /// 更新
@@ -42,6 +41,6 @@ class VertexBuffer
     /// <param name="data">データ</param>
     void Update( void* data );
 
-    /// <summary>頂点バッファビューを取得</summary>
-    const D3D12_VERTEX_BUFFER_VIEW& GetView() const { return mView; }
+    /// <summary>インデックスバッファビューを取得</summary>
+    const D3D12_INDEX_BUFFER_VIEW& GetView() const { return mView; }
 };

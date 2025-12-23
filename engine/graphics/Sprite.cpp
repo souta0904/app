@@ -54,7 +54,10 @@ void Sprite::Draw( const Matrix4& worldMat, Camera* camera )
     UpdateCB( worldMat, camera );
 
     // コマンドを積む
-    auto cmdList = SpriteBase::GetInstance().mCmdList;
+    auto& spriteBase = SpriteBase::GetInstance();
+    spriteBase.SetGraphicsPSO( mBlendMode );
+
+    auto cmdList = spriteBase.mCmdList;
     if( !cmdList ) return;
 
     cmdList->SetVertexBuffer( mVB.get() );

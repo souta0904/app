@@ -18,6 +18,7 @@ D3D12_BLEND_DESC gBlendScreen = {};
 // ラスタライザ設定
 D3D12_RASTERIZER_DESC gRasterizerDefault = {};
 D3D12_RASTERIZER_DESC gRasterizerNoCulling = {};
+D3D12_RASTERIZER_DESC gRasterizerWireframe = {};
 
 // 深度ステンシル設定
 D3D12_DEPTH_STENCIL_DESC gDepthDefault = {};
@@ -80,6 +81,10 @@ bool Init()
     // カリングなし
     gRasterizerNoCulling = gRasterizerDefault;
     gRasterizerNoCulling.CullMode = D3D12_CULL_MODE_NONE;
+
+    // ワイヤーフレーム
+    gRasterizerWireframe = gRasterizerDefault;
+    gRasterizerWireframe.FillMode = D3D12_FILL_MODE_WIREFRAME;
 
     // 深度ステンシル設定
     gDepthDefault.DepthEnable = true;

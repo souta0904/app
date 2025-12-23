@@ -8,6 +8,7 @@
 
 class ConstantBuffer;
 class GraphicsPSO;
+class IndexBuffer;
 class RootSignature;
 class VertexBuffer;
 
@@ -91,6 +92,12 @@ class CommandList
     void DrawInstanced( uint32_t vertexCount );
 
     /// <summary>
+    /// 描画
+    /// </summary>
+    /// <param name="indexCount">インデックス数</param>
+    void DrawIndexedInstanced( uint32_t indexCount );
+
+    /// <summary>
     /// リソースバリアをセット
     /// </summary>
     /// <param name="barrier">リソースバリア</param>
@@ -121,6 +128,12 @@ class CommandList
     /// </summary>
     /// <param name="rootSignature">ルートシグネチャ</param>
     void SetGraphicsRootSignature( RootSignature* rootSignature );
+
+    /// <summary>
+    /// インデックスバッファをセット
+    /// </summary>
+    /// <param name="indexBuffer"></param>
+    void SetIndexBuffer( IndexBuffer* indexBuffer );
 
     /// <summary>
     /// パイプラインステートをセット

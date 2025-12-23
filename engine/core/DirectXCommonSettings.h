@@ -22,6 +22,7 @@ extern D3D12_BLEND_DESC gBlendScreen;
 // ラスタライザ設定
 extern D3D12_RASTERIZER_DESC gRasterizerDefault;
 extern D3D12_RASTERIZER_DESC gRasterizerNoCulling;
+extern D3D12_RASTERIZER_DESC gRasterizerWireframe;
 
 // 深度ステンシル設定
 extern D3D12_DEPTH_STENCIL_DESC gDepthDefault;

@@ -3,6 +3,7 @@
 #include "ConstantBuffer.h"
 #include "DirectXBase.h"
 #include "GraphicsPSO.h"
+#include "IndexBuffer.h"
 #include "RootSignature.h"
 #include "VertexBuffer.h"
 #include "graphics/Texture.h"
@@ -98,6 +99,14 @@ void CommandList::DrawInstanced( uint32_t vertexCount )
     mCmdList->DrawInstanced( vertexCount, 1, 0, 0 );
 }
 
+// 描画
+void CommandList::DrawIndexedInstanced( uint32_t indexCount )
+{
+    if( !mCmdList ) return;
+
+    mCmdList->DrawIndexedInstanced( indexCount, 1, 0, 0, 0 );
+}
+
 // リソースバリアをセット
 void CommandList::ResourceBarrier( const D3D12_RESOURCE_BARRIER& barrier )
 {
@@ -137,6 +146,14 @@ void CommandList::SetGraphicsRootSignature( RootSignature* rootSignature )
     if( !mCmdList || !rootSignature ) return;
 
     mCmdList->SetGraphicsRootSignature( rootSignature->GetRootSignature().Get() );
+}
+
+// インデックスバッファをセット
+void CommandList::SetIndexBuffer( IndexBuffer* indexBuffer )
+{
+    if( !mCmdList || !indexBuffer ) return;
+
+    mCmdList->IASetIndexBuffer( &indexBuffer->GetView() );
 }
 
 // パイプラインステートをセット

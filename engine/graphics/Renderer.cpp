@@ -9,9 +9,10 @@
 // コンストラクタ
 Renderer::Renderer()
     : mSpriteBase( nullptr )
+    , mModelBase( nullptr )
     , mSpriteCamera( nullptr )
-    , mOwlSprite( nullptr )
-    , mStarSprite( nullptr )
+    , mModelCamera( nullptr )
+    , mSorter( nullptr )
 {
 }
 
@@ -26,13 +27,13 @@ bool Renderer::Init()
     mSpriteBase = &SpriteBase::GetInstance();
     if( !mSpriteBase->Init( spriteVS, spritePS ) )
     {
-        LOG_ERROR( "Failed to initialize sprite renderer." );
-        MessageBox( nullptr, L"Failed to initialize sprite renderer.", L"Error", MB_OK | MB_ICONERROR );
+        LOG_ERROR( "Failed to initialize sprite base." );
+        MessageBox( nullptr, L"Failed to initialize sprite base.", L"Error", MB_OK | MB_ICONERROR );
         return false;
     }
     else
     {
-        LOG_INFO( "Sprite renderer initialized successfully." );
+        LOG_INFO( "Sprite base initialized successfully." );
     }
 
     // スプライト用カメラを初期化
@@ -64,7 +65,7 @@ bool Renderer::Init()
     init.mPS = resMgr.GetShader( "assets/shader/SimplePS.hlsl", "ps_6_0" );
     init.mBlendState = DirectXCommonSettings::gBlendAlpha;
     init.mRasterizerState = DirectXCommonSettings::gRasterizerDefault;
-    init.mDepthStencilState = DirectXCommonSettings::gDepthDefault;
+    init.mDepthStencilState = DirectXCommonSettings::gDepthDisable;
     init.mInputLayouts.resize( 2 );
     init.mInputLayouts[0].SemanticName = "POSITION";
     init.mInputLayouts[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -97,17 +98,52 @@ bool Renderer::Init()
         };
     mSimpleVB->Update( v );
 
+    // モデル基盤を初期化
+    mModelBase = &ModelBase::GetInstance();
+    if( !mModelBase->Init() )
+    {
+        LOG_ERROR( "Failed to initialize model base." );
+        MessageBox( nullptr, L"Failed to initialize model base.", L"Error", MB_OK | MB_ICONERROR );
+        return false;
+    }
+    else
+    {
+        LOG_INFO( "Model base initialized successfully." );
+    }
+
+    mModelCamera = std::make_unique<Camera>();
+    mModelCamera->mPosition = Vector3( 0.0f, 10.0f, -15.0f );
+
+    // ソーターの初期化
+    mSorter = std::make_unique<MeshSorter>();
+    if( !mSorter->Initialize( mModelCamera.get() ) )
+    {
+        return false;
+    }
+
+    mBotModel1 = std::make_unique<ModelInstance>();
+    mBotModel1->Create( resMgr.GetModel( "assets/model/bot/bot.fbx" ) );
+
+    mBotModel2 = std::make_unique<ModelInstance>();
+    mBotModel2->Create( resMgr.GetModel( "assets/model/box/box.obj" ) );
+
     return true;
 }
 
 // 終了処理
 void Renderer::Term()
 {
+    if( mModelBase )
+    {
+        mModelBase->Term();
+        mModelBase = nullptr;
+        LOG_INFO( "Model base terminated." );
+    }
     if( mSpriteBase )
     {
         mSpriteBase->Term();
         mSpriteBase = nullptr;
-        LOG_INFO( "Sprite renderer terminated." );
+        LOG_INFO( "Sprite base terminated." );
     }
 }
 
@@ -115,9 +151,14 @@ void Renderer::Term()
 void Renderer::Update()
 {
     mSpriteCamera->Update();
+    mModelCamera->Update();
 
     // UVスクロール
     mStarSprite->mUVTranslate += Vector2( 0.001f, -0.001f );
+
+    // TODO: デルタタイムに差し替え
+    mBotModel1->Update( 1.0f / 60.0f );
+    mBotModel2->Update( 1.0f / 60.0f );
 }
 
 // 描画
@@ -136,6 +177,33 @@ void Renderer::Draw( CommandList* cmdList )
     cmdList->SetPrimitiveTopology( D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
     cmdList->SetVertexBuffer( mSimpleVB.get() );
     cmdList->DrawInstanced( kVertexCount );
+
+    DrawModel( cmdList );
+}
+
+// モデルを描画
+void Renderer::DrawModel( CommandList* cmdList )
+{
+    if( !mModelBase ) return;
+
+    mModelBase->Begin( cmdList );
+
+    auto mat1 =
+        CreateScale( Vector3::kOne * 0.1f ) *
+        CreateRotate( Quaternion( Vector3::kUnitY, MathUtil::kPi ) ) *
+        CreateTranslate( Vector3( -10.0f, 0.0f, 0.0f ) );
+    mBotModel1->Draw( mSorter.get(), mat1 );
+
+    auto mat2 =
+        CreateScale( Vector3::kOne ) *
+        CreateTranslate( Vector3( 10.0f, 0.0f, 0.0f ) );
+    mBotModel2->Draw( mSorter.get(), mat2 );
+
+    mSorter->Sort();
+
+    mSorter->Render( cmdList );
+
+    mModelBase->End();
 }
 
 // スプライトを描画
@@ -143,12 +211,10 @@ void Renderer::DrawSprite( CommandList* cmdList )
 {
     if( !mSpriteBase ) return;
 
-    // スプライト描画開始
     mSpriteBase->Begin( cmdList );
 
     mStarSprite->Draw( Matrix4(), mSpriteCamera.get() );
     mOwlSprite->Draw( Matrix4(), mSpriteCamera.get() );
 
-    // スプライト描画終了
     mSpriteBase->End();
 }

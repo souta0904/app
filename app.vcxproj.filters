@@ -77,6 +77,27 @@
     <ClCompile Include="engine\graphics\Camera.cpp">
       <Filter>engine\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="engine\core\IndexBuffer.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\graphics\model\Material.cpp">
+      <Filter>engine\graphics\model</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\graphics\model\Mesh.cpp">
+      <Filter>engine\graphics\model</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\graphics\model\MeshSorter.cpp">
+      <Filter>engine\graphics\model</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\graphics\model\ModelData.cpp">
+      <Filter>engine\graphics\model</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\graphics\model\ModelInstance.cpp">
+      <Filter>engine\graphics\model</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\graphics\model\ModelBase.cpp">
+      <Filter>engine\graphics\model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
@@ -99,6 +120,9 @@
     </Filter>
     <Filter Include="shader">
       <UniqueIdentifier>{6ddf98de-50ad-4b31-acc4-2ce90db133c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\graphics\model">
+      <UniqueIdentifier>{de8b4bfd-c0f7-4c2b-8f2b-840edb4b7489}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -195,6 +219,36 @@
     <ClInclude Include="engine\graphics\Camera.h">
       <Filter>engine\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="engine\core\IndexBuffer.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\utils\EnumFlags.h">
+      <Filter>engine\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\graphics\model\Material.h">
+      <Filter>engine\graphics\model</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\graphics\model\Mesh.h">
+      <Filter>engine\graphics\model</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\graphics\model\MeshSorter.h">
+      <Filter>engine\graphics\model</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\graphics\model\ModelData.h">
+      <Filter>engine\graphics\model</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\graphics\model\PSOKey.h">
+      <Filter>engine\graphics\model</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\graphics\model\RenderQueue.h">
+      <Filter>engine\graphics\model</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\graphics\model\ModelInstance.h">
+      <Filter>engine\graphics\model</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\graphics\model\ModelBase.h">
+      <Filter>engine\graphics\model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shader\SimplePS.hlsl">
@@ -209,12 +263,24 @@
     <FxCompile Include="assets\shader\SpriteVS.hlsl">
       <Filter>shader</Filter>
     </FxCompile>
+    <FxCompile Include="assets\shader\ModelPS.hlsl">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shader\ModelVS.hlsl">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shader\NoTextureModelPS.hlsl">
+      <Filter>shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shader\Simple.hlsli">
       <Filter>shader</Filter>
     </None>
     <None Include="assets\shader\Sprite.hlsli">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="assets\shader\Model.hlsli">
       <Filter>shader</Filter>
     </None>
   </ItemGroup>

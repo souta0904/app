@@ -7,6 +7,9 @@
 #include "Camera.h"
 #include "Sprite.h"
 #include "SpriteBase.h"
+#include "model/MeshSorter.h"
+#include "model/ModelBase.h"
+#include "model/ModelInstance.h"
 
 class CommandList;
 
@@ -18,13 +21,22 @@ class Renderer
    private:
     // スプライト基盤
     SpriteBase* mSpriteBase;
+    // モデル基盤
+    ModelBase* mModelBase;
 
-    // スプライト用カメラ
+    // カメラ
     std::unique_ptr<Camera> mSpriteCamera;
+    std::unique_ptr<Camera> mModelCamera;
+    // ソーター
+    std::unique_ptr<MeshSorter> mSorter;
 
     // スプライト
     std::unique_ptr<Sprite> mOwlSprite;
     std::unique_ptr<Sprite> mStarSprite;
+
+    // モデル
+    std::unique_ptr<ModelInstance> mBotModel1;
+    std::unique_ptr<ModelInstance> mBotModel2;
 
     // テスト
     static const uint32_t kVertexCount = 3;
@@ -98,6 +110,12 @@ class Renderer
     void Draw( CommandList* cmdList );
 
    private:
+    /// <summary>
+    /// モデルを描画
+    /// </summary>
+    /// <param name="cmdList">コマンドリスト</param>
+    void DrawModel( CommandList* cmdList );
+
     /// <summary>
     /// スプライトを描画
     /// </summary>

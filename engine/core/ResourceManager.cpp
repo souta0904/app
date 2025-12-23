@@ -8,6 +8,8 @@ ResourceManager::ResourceManager()
     , mCompiler( nullptr )
     , mIncludeHandler( nullptr )
     , mShaders()
+    , mTextures()
+    , mModels()
 {
 }
 
@@ -63,6 +65,27 @@ Texture* ResourceManager::GetTexture( const std::string& path )
         {
             auto* ptr = texture.get();
             mTextures.emplace( path, std::move( texture ) );
+            return ptr;
+        }
+    }
+    return nullptr;
+}
+
+// モデルデータを取得
+ModelData* ResourceManager::GetModel( const std::string& path )
+{
+    auto it = mModels.find( path );
+    if( it != mModels.end() )
+    {
+        return it->second.get();
+    }
+    else
+    {
+        auto model = std::make_unique<ModelData>();
+        if( model->Build( path ) )
+        {
+            auto* ptr = model.get();
+            mModels.emplace( path, std::move( model ) );
             return ptr;
         }
     }

@@ -128,7 +128,8 @@
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)"
-copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)"</Command>
+copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)"
+copy /Y "$(ProjectDir)external\assimp\bin\Debug\assimp-vc143-mtd.dll" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -157,13 +158,15 @@ copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir
     </Link>
     <PostBuildEvent>
       <Command>copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)"
-copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)"</Command>
+copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)"
+copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="engine\graphics\Camera.cpp" />
     <ClCompile Include="engine\core\ConstantBuffer.cpp" />
     <ClCompile Include="engine\editor\EditorBase.cpp" />
+    <ClCompile Include="engine\graphics\model\ModelData.cpp" />
     <ClCompile Include="engine\utils\Logger.cpp" />
     <ClCompile Include="engine\core\VertexBuffer.cpp" />
     <ClCompile Include="engine\math\Color.cpp" />
@@ -173,6 +176,7 @@ copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir
     <ClCompile Include="engine\core\DescriptorHeap.cpp" />
     <ClCompile Include="engine\core\DirectXBase.cpp" />
     <ClCompile Include="engine\core\GraphicsPSO.cpp" />
+    <ClCompile Include="engine\core\IndexBuffer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\core\Window.cpp" />
     <ClCompile Include="engine\utils\StringHelper.cpp" />
@@ -187,14 +191,21 @@ copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir
     <ClCompile Include="engine\math\Vector3.cpp" />
     <ClCompile Include="engine\graphics\Renderer.cpp" />
     <ClCompile Include="engine\graphics\Sprite.cpp" />
+    <ClCompile Include="engine\graphics\model\Mesh.cpp" />
+    <ClCompile Include="engine\graphics\model\MeshSorter.cpp" />
+    <ClCompile Include="engine\graphics\model\Material.cpp" />
+    <ClCompile Include="engine\graphics\model\ModelInstance.cpp" />
+    <ClCompile Include="engine\graphics\model\ModelBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\graphics\Camera.h" />
     <ClInclude Include="engine\core\ConstantBuffer.h" />
     <ClInclude Include="engine\editor\EditorBase.h" />
+    <ClInclude Include="engine\graphics\model\PSOKey.h" />
     <ClInclude Include="engine\math\MathUtil.h" />
     <ClInclude Include="engine\math\Quaternion.h" />
     <ClInclude Include="engine\math\Rect.h" />
+    <ClInclude Include="engine\utils\EnumFlags.h" />
     <ClInclude Include="engine\utils\Logger.h" />
     <ClInclude Include="engine\core\VertexBuffer.h" />
     <ClInclude Include="engine\math\Color.h" />
@@ -220,6 +231,14 @@ copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir
     <ClInclude Include="engine\math\Vector3.h" />
     <ClInclude Include="engine\graphics\Renderer.h" />
     <ClInclude Include="engine\graphics\Sprite.h" />
+    <ClInclude Include="engine\core\IndexBuffer.h" />
+    <ClInclude Include="engine\graphics\model\Mesh.h" />
+    <ClInclude Include="engine\graphics\model\MeshSorter.h" />
+    <ClInclude Include="engine\graphics\model\Material.h" />
+    <ClInclude Include="engine\graphics\model\RenderQueue.h" />
+    <ClInclude Include="engine\graphics\model\ModelData.h" />
+    <ClInclude Include="engine\graphics\model\ModelInstance.h" />
+    <ClInclude Include="engine\graphics\model\ModelBase.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="external\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
@@ -230,6 +249,22 @@ copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="assets\shader\ModelPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="assets\shader\ModelVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="assets\shader\SimplePS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -262,8 +297,20 @@ copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="assets\shader\NoTextureModelPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\shader\Model.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="assets\shader\Simple.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

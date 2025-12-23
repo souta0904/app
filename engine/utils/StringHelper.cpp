@@ -47,4 +47,50 @@ std::string Convert( const std::wstring& str )
     return result;
 }
 
+// パスから親パスを取得
+std::string GetParentPath( const std::string& path )
+{
+    auto pos = path.find_last_of( "/\\" );
+    if( pos != std::string::npos )
+    {
+        return path.substr( 0, pos );
+    }
+    return "";
+}
+
+// パスからファイル名を取得
+std::string GetFilename( const std::string& path )
+{
+    auto pos = path.find_last_of( "/\\" );
+    if( pos != std::string::npos )
+    {
+        return path.substr( pos + 1 );
+    }
+    return path;
+}
+
+// パスから拡張子を除いたファイル名を取得
+std::string GetStem( const std::string& path )
+{
+    auto filename = GetFilename( path );
+    auto pos = filename.find_last_of( "." );
+    if( pos != std::string::npos )
+    {
+        return filename.substr( 0, pos );
+    }
+    return filename;
+}
+
+// パスから拡張子を取得
+std::string GetExtension( const std::string& path )
+{
+    auto filename = GetFilename( path );
+    auto pos = filename.find_last_of( "." );
+    if( pos != std::string::npos )
+    {
+        return filename.substr( pos );
+    }
+    return "";
+}
+
 }  // namespace StringHelper
