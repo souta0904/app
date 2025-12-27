@@ -25,7 +25,7 @@ class ModelInstance
     // ノードリスト
     std::vector<ModelNode> mNodes;
     // 変換行列
-    std::vector<std::unique_ptr<ConstantBuffer>> mTransformationMatrices;
+    std::vector<std::unique_ptr<ConstantBuffer>> mTransMatCBs;
     // マテリアルリスト
     std::vector<Material*> mMaterials;
 
@@ -68,10 +68,12 @@ class ModelInstance
     void SetMaterial( uint32_t idx, Material* material );
 
    private:
+    /*
     /// <summary>
     /// 定数バッファを更新
     /// </summary>
     /// <param name="worldMat">ワールド行列</param>
     /// <param name="camera">カメラ</param>
     void UpdateCB( const Matrix4& worldMat, Camera* camera );
+    */
 };

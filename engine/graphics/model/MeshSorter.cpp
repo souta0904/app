@@ -41,7 +41,7 @@ void MeshSorter::Add( uint64_t psoKey, float distance, ConstantBuffer* transMatC
     item.mPSOKey = psoKey;
     item.mDistance = distance;
     item.mQuantizedDist = QuantizeDist( distance );
-    item.mTransformationMatrixCB = transMatCB;
+    item.mTransMatCB = transMatCB;
     item.mMesh = mesh;
     item.mMaterial = material;
     mSortItems.emplace_back( item );
@@ -62,7 +62,8 @@ void MeshSorter::Sort()
             switch( rqA )
             {
                 case RenderQueue::Opaque:
-                    // 量子化距離 → state → 距離
+                    // Front-to-Back
+                    // 量子化距離 → PSOキー → 距離
                     if( a.mQuantizedDist != b.mQuantizedDist ) return a.mQuantizedDist < b.mQuantizedDist;
 
                     if( a.mPSOKey != b.mPSOKey ) return a.mPSOKey < b.mPSOKey;
@@ -70,7 +71,7 @@ void MeshSorter::Sort()
                     return a.mDistance < b.mDistance;
 
                 case RenderQueue::Transparent:
-                    // 距離
+                    // Back-to-Front
                     return a.mDistance > b.mDistance;
 
                 default:
@@ -91,22 +92,26 @@ void MeshSorter::Render( CommandList* cmdList )
     auto& modelBase = ModelBase::GetInstance();
     for( auto& item : mSortItems )
     {
+        // パイプラインステート
         if( currPSOKey != item.mPSOKey )
         {
             modelBase.SetGraphicsPSO( item.mPSOKey );
             currPSOKey = item.mPSOKey;
         }
 
-        if( item.mTransformationMatrixCB )
+        // 変換行列
+        if( item.mTransMatCB )
         {
-            cmdList->SetConstantBuffer( 0, item.mTransformationMatrixCB );
+            cmdList->SetConstantBuffer( 0, item.mTransMatCB );
         }
 
+        // マテリアル
         if( item.mMaterial )
         {
             item.mMaterial->Bind( cmdList, 1, 3 );
         }
 
+        // カメラ
         cmdList->SetConstantBuffer( 2, mCameraCB.get() );
 
         if( item.mMesh )

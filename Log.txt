@@ -1,28 +1,29 @@
-[2025-12-23 21:28:37] [INFO ] Window created successfully.
-[2025-12-23 21:28:37] [INFO ] Back Buffer Count: 2
-[2025-12-23 21:28:37] [INFO ] DXGIFactory created successfully.
-[2025-12-23 21:28:37] [INFO ] Use Adapter: NVIDIA GeForce RTX 3070
-[2025-12-23 21:28:37] [INFO ] Feature Level: 12.2
-[2025-12-23 21:28:37] [INFO ] D3D12Device created successfully.
-[2025-12-23 21:28:37] [INFO ] CommandQueue created successfully.
-[2025-12-23 21:28:37] [INFO ] DXGISwapChain created successfully.
-[2025-12-23 21:28:37] [INFO ] CommandList created successfully.
-[2025-12-23 21:28:37] [INFO ] DirectX initialized successfully.
-[2025-12-23 21:28:37] [INFO ] Editor base initialized successfully.
-[2025-12-23 21:28:37] [INFO ] Resource manager initialized successfully.
-[2025-12-23 21:28:37] [INFO ] Shader compiled successfully: assets/shader/SpriteVS.hlsl
-[2025-12-23 21:28:37] [INFO ] Shader compiled successfully: assets/shader/SpritePS.hlsl
-[2025-12-23 21:28:37] [INFO ] Sprite base initialized successfully.
-[2025-12-23 21:28:38] [INFO ] Shader compiled successfully: assets/shader/SimpleVS.hlsl
-[2025-12-23 21:28:38] [INFO ] Shader compiled successfully: assets/shader/SimplePS.hlsl
-[2025-12-23 21:28:38] [INFO ] Shader compiled successfully: assets/shader/ModelVS.hlsl
-[2025-12-23 21:28:38] [INFO ] Shader compiled successfully: assets/shader/NoTextureModelPS.hlsl
-[2025-12-23 21:28:38] [INFO ] Model base initialized successfully.
-[2025-12-23 21:28:38] [INFO ] Renderer initialized successfully.
-[2025-12-23 21:29:20] [INFO ] Model base terminated.
-[2025-12-23 21:29:20] [INFO ] Sprite base terminated.
-[2025-12-23 21:29:20] [INFO ] Renderer terminated.
-[2025-12-23 21:29:20] [INFO ] Resource manager terminated.
-[2025-12-23 21:29:20] [INFO ] Editor base terminated.
-[2025-12-23 21:29:20] [INFO ] DirectX terminated.
-[2025-12-23 21:29:20] [INFO ] Window destroyed.
+[2025-12-27 22:26:54] [INFO ] Window created successfully.
+[2025-12-27 22:26:54] [INFO ] Back Buffer Count: 2
+[2025-12-27 22:26:54] [INFO ] Enable debug layer.
+[2025-12-27 22:26:54] [INFO ] DXGIFactory created successfully.
+[2025-12-27 22:26:54] [INFO ] Use Adapter: NVIDIA GeForce RTX 3070
+[2025-12-27 22:26:54] [INFO ] Feature Level: 12.2
+[2025-12-27 22:26:54] [INFO ] D3D12Device created successfully.
+[2025-12-27 22:26:54] [INFO ] CommandQueue created successfully.
+[2025-12-27 22:26:54] [INFO ] DXGISwapChain created successfully.
+[2025-12-27 22:26:54] [INFO ] CommandList created successfully.
+[2025-12-27 22:26:54] [INFO ] DirectX initialized successfully.
+[2025-12-27 22:26:54] [INFO ] Editor base initialized successfully.
+[2025-12-27 22:26:54] [INFO ] Resource manager initialized successfully.
+[2025-12-27 22:26:54] [INFO ] Shader compiled successfully: assets/shader/SpriteVS.hlsl
+[2025-12-27 22:26:54] [INFO ] Shader compiled successfully: assets/shader/SpritePS.hlsl
+[2025-12-27 22:26:54] [INFO ] Sprite base initialized successfully.
+[2025-12-27 22:26:55] [INFO ] Shader compiled successfully: assets/shader/SimpleVS.hlsl
+[2025-12-27 22:26:55] [INFO ] Shader compiled successfully: assets/shader/SimplePS.hlsl
+[2025-12-27 22:26:55] [INFO ] Shader compiled successfully: assets/shader/ModelVS.hlsl
+[2025-12-27 22:26:55] [INFO ] Shader compiled successfully: assets/shader/NoTextureModelPS.hlsl
+[2025-12-27 22:26:55] [INFO ] Model base initialized successfully.
+[2025-12-27 22:26:55] [INFO ] Renderer initialized successfully.
+[2025-12-27 22:27:32] [INFO ] Model base terminated.
+[2025-12-27 22:27:32] [INFO ] Sprite base terminated.
+[2025-12-27 22:27:32] [INFO ] Renderer terminated.
+[2025-12-27 22:27:32] [INFO ] Resource manager terminated.
+[2025-12-27 22:27:32] [INFO ] Editor base terminated.
+[2025-12-27 22:27:32] [INFO ] DirectX terminated.
+[2025-12-27 22:27:32] [INFO ] Window destroyed.

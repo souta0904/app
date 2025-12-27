@@ -24,7 +24,7 @@ class MeshSorter
         uint64_t mPSOKey;
         float mDistance;
         uint32_t mQuantizedDist;
-        ConstantBuffer* mTransformationMatrixCB;
+        ConstantBuffer* mTransMatCB;
         Mesh* mMesh;
         Material* mMaterial;
     };

@@ -9,7 +9,7 @@
 ModelInstance::ModelInstance()
     : mModelData( nullptr )
     , mNodes()
-    , mTransformationMatrices()
+    , mTransMatCBs()
     , mMaterials()
 {
 }
@@ -19,7 +19,7 @@ bool ModelInstance::Create( ModelData* modelData )
 {
     // クリア
     mNodes.clear();
-    mTransformationMatrices.clear();
+    mTransMatCBs.clear();
     mMaterials.clear();
 
     mModelData = modelData;
@@ -29,11 +29,11 @@ bool ModelInstance::Create( ModelData* modelData )
         mNodes = mModelData->mNodes;
 
         // 変換行列
-        mTransformationMatrices.resize( mModelData->mMeshCount );
+        mTransMatCBs.resize( mModelData->mMeshCount );
         for( uint32_t i = 0; i < mModelData->mMeshCount; ++i )
         {
-            mTransformationMatrices[i] = std::make_unique<ConstantBuffer>();
-            if( !mTransformationMatrices[i]->Create( sizeof( TransformationMatrix ) ) ) return false;
+            mTransMatCBs[i] = std::make_unique<ConstantBuffer>();
+            if( !mTransMatCBs[i]->Create( sizeof( TransformationMatrix ) ) ) return false;
         }
 
         // マテリアルリスト
@@ -73,8 +73,10 @@ void ModelInstance::Draw( MeshSorter* sorter, const Matrix4& worldMat )
     auto camera = sorter->GetCamera();
     if( !camera ) return;
 
+    /*
     // 定数バッファを更新
     UpdateCB( worldMat, sorter->GetCamera() );
+    */
 
     // メッシュごと描画
     auto view = camera->GetView();
@@ -87,31 +89,22 @@ void ModelInstance::Draw( MeshSorter* sorter, const Matrix4& worldMat )
             material = mModelData->mMaterials[mesh->mMaterialIdx].get();
         }
 
-        auto wvMat = mNodes[mModelData->mMeshes[i].mNodeIdx].mModelMat * worldMat * view;
-        auto distance = wvMat.m[3][2];
+        TransformationMatrix c = {};
+        c.mWorld = mNodes[mModelData->mMeshes[i].mNodeIdx].mModelMat * worldMat;
+        auto wvMat = c.mWorld * view;
+        c.mWVP = wvMat * camera->GetProjection();
+        c.mWorldInvTranspose = Transpose( Inverse( c.mWorld ) );
+        mTransMatCBs[i]->Update( &c );
 
         // TODO: フラスタムカリングの実装
 
         // ソーターへ登録
         sorter->Add(
             MakePSOKey( mesh->mFlags, material->mFlags ),
-            distance,
-            mTransformationMatrices[i].get(),
+            wvMat.m[3][2],  // Z値(カメラからの距離)
+            mTransMatCBs[i].get(),
             mesh,
             material );
-
-        /*
-        // コマンドを積む
-        auto& modelBase = ModelBase::GetInstance();
-        modelBase.SetGraphicsPSO( mesh->mFlags, material->mFlags );
-
-        auto cmdList = modelBase.mCmdList;
-        if( !cmdList ) return;
-
-        cmdList->SetConstantBuffer( 0, mTransformationMatrices[i].get() );
-        material->Bind( cmdList, 1, 2 );
-        mesh->Draw( cmdList );
-        */
     }
 }
 
@@ -123,6 +116,7 @@ void ModelInstance::SetMaterial( uint32_t idx, Material* material )
     mMaterials[idx] = material;
 }
 
+/*
 // 定数バッファを更新
 void ModelInstance::UpdateCB( const Matrix4& worldMat, Camera* camera )
 {
@@ -135,3 +129,4 @@ void ModelInstance::UpdateCB( const Matrix4& worldMat, Camera* camera )
         mTransformationMatrices[i]->Update( &c );
     }
 }
+*/
