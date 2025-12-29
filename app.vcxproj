@@ -204,6 +204,7 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     <ClInclude Include="engine\editor\EditorBase.h" />
     <ClInclude Include="engine\graphics\light\DirectionalLight.h" />
     <ClInclude Include="engine\graphics\light\PointLight.h" />
+    <ClInclude Include="engine\graphics\light\SpotLight.h" />
     <ClInclude Include="engine\graphics\model\PSOKey.h" />
     <ClInclude Include="engine\math\MathUtil.h" />
     <ClInclude Include="engine\math\Quaternion.h" />

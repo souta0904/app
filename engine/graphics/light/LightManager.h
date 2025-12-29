@@ -4,6 +4,7 @@
 
 #include "DirectionalLight.h"
 #include "PointLight.h"
+#include "SpotLight.h"
 #include "core/ConstantBuffer.h"
 #include "math/Color.h"
 #include "math/Vector3.h"
@@ -20,6 +21,8 @@ class LightManager
     static const uint32_t kMaxDirectionalLightCount = 8;
     // 点光源の最大数
     static const uint32_t kMaxPointLightCount = 8;
+    // スポットライトの最大数
+    static const uint32_t kMaxSpotLightCount = 8;
 
     /// <summary>
     /// 平行光源用
@@ -46,11 +49,36 @@ class LightManager
         // 明るさ
         float mIntensity;
         // 半径
-        float mRadius = 10.0f;
-        // 距離減衰の指数
+        float mRadius;
+        // 減衰率
         float mDecay;
 
-        float mPadding[2];
+        float pad[2];
+    };
+
+    /// <summary>
+    /// スポットライト用
+    /// </summary>
+    struct SpotLightConstant
+    {
+        // 色
+        Color mColor;
+        // 向き
+        Vector3 mDirection;
+        // 明るさ
+        float mIntensity;
+        // 位置
+        Vector3 mPosition;
+        // 半径
+        float mRadius;
+        // 減衰率
+        float mDecay;
+        // 内角
+        float mInnerCos;
+        // 外角
+        float mOuterCos;
+
+        float pad;
     };
 
     /// <summary>
@@ -62,12 +90,16 @@ class LightManager
         DirectionalLightConstant mDirectionalLights[kMaxDirectionalLightCount];
         // 点光源のリスト
         PointLightConstant mPointLights[kMaxPointLightCount];
+        // スポットライトのリスト
+        SpotLightConstant mSpotLights[kMaxSpotLightCount];
         // 平行光源の数
         uint32_t mDirectionalLightCount;
         // 点光源の数
         uint32_t mPointLightCount;
+        // スポットライトの数
+        uint32_t mSpotLightCount;
 
-        float mPadding[2];
+        float pad;
     };
 
     // 定数バッファ
@@ -76,6 +108,8 @@ class LightManager
     std::vector<DirectionalLight*> mDirectionalLights;
     // 点光源
     std::vector<PointLight*> mPointLights;
+    // スポットライト
+    std::vector<SpotLight*> mSpotLights;
 
    public:
     /// <summary>
@@ -162,6 +196,18 @@ class LightManager
     /// </summary>
     /// <param name="pointLight">点光源</param>
     void RemovePointLight( PointLight* pointLight );
+
+    /// <summary>
+    /// スポットライトを追加
+    /// </summary>
+    /// <param name="spotLight">スポットライト</param>
+    void AddSpotLight( SpotLight* spotLight );
+
+    /// <summary>
+    /// スポットライトを削除
+    /// </summary>
+    /// <param name="spotLight">スポットライト</param>
+    void RemoveSpotLight( SpotLight* spotLight );
 
    private:
     /// <summary>

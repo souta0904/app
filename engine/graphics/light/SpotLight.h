@@ -3,18 +3,24 @@
 #include "math/Vector3.h"
 
 /// <summary>
-/// 点光源
+/// スポットライト
 /// </summary>
-struct PointLight
+struct SpotLight
 {
     // 色
     Color mColor;
-    // 位置
-    Vector3 mPosition;
+    // 向き
+    Vector3 mDirection;
     // 明るさ
     float mIntensity;
+    // 位置
+    Vector3 mPosition;
     // 半径
     float mRadius;
     // 減衰率
     float mDecay;
+    // 内角
+    float mInnerAngle;
+    // 外角
+    float mOuterAngle;
 };

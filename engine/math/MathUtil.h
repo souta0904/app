@@ -12,4 +12,7 @@ inline constexpr float kPiOverTwo = kPi * 0.5f;
 
 inline constexpr float kEpsilon = 1e-6f;
 
+inline constexpr float kRadToDeg = 180.0f / kPi;
+inline constexpr float kDegToRad = kPi / 180.0f;
+
 }  // namespace MathUtil

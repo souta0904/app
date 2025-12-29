@@ -17,6 +17,7 @@ Renderer::Renderer()
     : mLightManager( nullptr )
     , mDirectionalLight( nullptr )
     , mPointLight( nullptr )
+    , mSpotLight( nullptr )
     , mSpriteBase( nullptr )
     , mModelBase( nullptr )
     , mSpriteCamera( nullptr )
@@ -56,6 +57,18 @@ bool Renderer::Init()
     mPointLight->mRadius = 20.0f;
     mPointLight->mDecay = 2.0f;
     mLightManager->AddPointLight( mPointLight.get() );
+
+    // スポットライト
+    mSpotLight = std::make_unique<SpotLight>();
+    mSpotLight->mColor = Color( 1.0f, 1.0f, 1.0f );
+    mSpotLight->mPosition = Vector3( 0.0f, 10.0f, 0.0f );
+    mSpotLight->mIntensity = 1.0f;
+    mSpotLight->mDirection = Vector3( 1.0f, -2.0f, 3.0f );
+    mSpotLight->mRadius = 20.0f;
+    mSpotLight->mDecay = 2.0f;
+    mSpotLight->mInnerAngle = 10.0f;
+    mSpotLight->mOuterAngle = 20.0f;
+    mLightManager->AddSpotLight( mSpotLight.get() );
 
     auto& resMgr = ResourceManager::GetInstance();
     auto* spriteVS = resMgr.GetShader( "assets/shader/SpriteVS.hlsl", "vs_6_0" );
@@ -192,6 +205,10 @@ void Renderer::Term()
         mSpriteBase = nullptr;
         LOG_INFO( "Sprite base terminated." );
     }
+    if( mSpotLight )
+    {
+        mLightManager->RemoveSpotLight( mSpotLight.get() );
+    }
     if( mPointLight )
     {
         mLightManager->RemovePointLight( mPointLight.get() );
@@ -240,6 +257,21 @@ void Renderer::UpdateGUI()
         ImGui::DragFloat( "Intensity", &mPointLight->mIntensity, 0.01f, 0.0f, FLT_MAX );
         ImGui::DragFloat( "Radius", &mPointLight->mRadius, 0.01f, 0.0f, FLT_MAX );
         ImGui::DragFloat( "Decay", &mPointLight->mDecay, 0.01f, 0.0f, FLT_MAX );
+        ImGui::TreePop();
+    }
+
+    // スポットライト
+    ImGui::SetNextItemOpen( true );
+    if( ImGui::TreeNode( "Spot Light" ) )
+    {
+        ImGui::ColorEdit3( "Color", &mSpotLight->mColor.r );
+        ImGui::DragFloat3( "Position", &mSpotLight->mPosition.x, 0.01f );
+        ImGui::DragFloat( "Intensity", &mSpotLight->mIntensity, 0.01f, 0.0f, FLT_MAX );
+        ImGui::DragFloat3( "Direction", &mSpotLight->mDirection.x, 0.01f );
+        ImGui::DragFloat( "Radius", &mSpotLight->mRadius, 0.01f, 0.0f, FLT_MAX );
+        ImGui::DragFloat( "Decay", &mSpotLight->mDecay, 0.01f, 0.0f, FLT_MAX );
+        ImGui::DragFloat( "Inner Angle", &mSpotLight->mInnerAngle, 0.01f, 0.0f, mSpotLight->mOuterAngle );
+        ImGui::DragFloat( "Outer Angle", &mSpotLight->mOuterAngle, 0.01f, mSpotLight->mInnerAngle, 180.0f );
         ImGui::TreePop();
     }
 

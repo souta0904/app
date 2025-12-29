@@ -10,6 +10,7 @@
 #include "core/RootSignature.h"
 #include "light/DirectionalLight.h"
 #include "light/PointLight.h"
+#include "light/SpotLight.h"
 #include "model/MeshSorter.h"
 #include "model/ModelInstance.h"
 
@@ -26,10 +27,10 @@ class Renderer
    private:
     // ライト管理
     LightManager* mLightManager;
-    // 平行光源
+    // ライト
     std::unique_ptr<DirectionalLight> mDirectionalLight;
-    // 点光源
     std::unique_ptr<PointLight> mPointLight;
+    std::unique_ptr<SpotLight> mSpotLight;
 
     // スプライト基盤
     SpriteBase* mSpriteBase;

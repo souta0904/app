@@ -2,6 +2,7 @@
 
 #define MAX_DIRECTIONAL_LIGHT_COUNT 8
 #define MAX_POINT_LIGHT_COUNT 8
+#define MAX_SPOT_LIGHT_COUNT 8
 
 struct PSOutput
 {
@@ -42,18 +43,31 @@ struct PointLight
     float32_t mIntensity;
     float32_t mRadius;
     float32_t mDecay;
-    
-    float32_t2 mPadding;
+    float32_t2 pad;
+};
+
+struct SpotLight
+{
+    float32_t4 mColor;
+    float32_t3 mDirection;
+    float32_t mIntensity;
+    float32_t3 mPosition;
+    float32_t mRadius;
+    float32_t mDecay;
+    float32_t mInnerCos;
+    float32_t mOuterCos;
+    float32_t pad;
 };
 
 struct Light
 {
     DirectionalLight mDirectionalLights[MAX_DIRECTIONAL_LIGHT_COUNT];
     PointLight mPointLights[MAX_POINT_LIGHT_COUNT];
+    SpotLight mSpotLights[MAX_SPOT_LIGHT_COUNT];
     uint32_t mDirectionalLightCount;
     uint32_t mPointLightCount;
-    
-    float32_t2 mPadding;
+    uint32_t mSpotLightCount;
+    float32_t pad;
 };
 
 ConstantBuffer<Material> gMaterial : register(b0);
@@ -99,8 +113,8 @@ PSOutput main(VSOutput input)
         
         // diffuse
         float32_t NdotL = saturate(dot(N, L));
-        float32_t cos = NdotL * 0.5f + 0.5f;
-        diffuse += surfaceColor.rgb * lightColor * cos * cos;
+        float32_t hl = NdotL * 0.5f + 0.5f;
+        diffuse += surfaceColor.rgb * lightColor * hl * hl;
         
         // specular
         if (isSpecular)
@@ -127,7 +141,10 @@ PSOutput main(VSOutput input)
         float32_t3 toLight = gLight.mPointLights[i].mPosition - input.wpos;
         float32_t distanceSq = dot(toLight, toLight);
         float32_t radiusSq = gLight.mPointLights[i].mRadius * gLight.mPointLights[i].mRadius;
-        if (distanceSq >= radiusSq) continue;
+        if (distanceSq >= radiusSq)
+        {
+            continue;
+        }
         
         float32_t3 L = toLight * rsqrt(distanceSq);
         float32_t3 lightColor = gLight.mPointLights[i].mColor.rgb * gLight.mPointLights[i].mIntensity;
@@ -135,8 +152,49 @@ PSOutput main(VSOutput input)
         
         // diffuse
         float32_t NdotL = saturate(dot(N, L));
-        float32_t cos = NdotL * 0.5f + 0.5f;
-        diffuse += surfaceColor.rgb * lightColor * cos * cos * factor;
+        float32_t hl = NdotL * 0.5f + 0.5f;
+        diffuse += surfaceColor.rgb * lightColor * hl * hl * factor;
+        
+        // specular
+        if (isSpecular)
+        {
+            float32_t specularPower = 0.0f;
+            if (!isBlinnPhong)
+            {
+                float32_t3 R = reflect(-L, N);
+                specularPower = pow(saturate(dot(R, toEye)), gMaterial.mShininess);
+            }
+            else
+            {
+                float32_t3 H = normalize(L + toEye);
+                specularPower = pow(saturate(dot(N, H)), gMaterial.mShininess);
+            }
+            specular += float32_t3(1.0f, 1.0f, 1.0f) * lightColor * specularPower * factor;
+        }
+    }
+    
+    // spot light
+    [loop]
+    for (i = 0; i < gLight.mSpotLightCount; ++i)
+    {
+        float32_t3 toLight = gLight.mSpotLights[i].mPosition - input.wpos;
+        float32_t distanceSq = dot(toLight, toLight);
+        float32_t radiusSq = gLight.mSpotLights[i].mRadius * gLight.mSpotLights[i].mRadius;
+        if (distanceSq >= radiusSq)
+        {
+            continue;
+        }
+        
+        float32_t3 L = toLight * rsqrt(distanceSq);
+        float32_t3 lightColor = gLight.mSpotLights[i].mColor.rgb * gLight.mSpotLights[i].mIntensity;
+        float32_t factor = pow(saturate(1.0f - sqrt(distanceSq / radiusSq)), gLight.mSpotLights[i].mDecay);
+        float32_t cos = dot(-L, gLight.mSpotLights[i].mDirection);
+        factor *= saturate((cos - gLight.mSpotLights[i].mOuterCos) / (gLight.mSpotLights[i].mInnerCos - gLight.mSpotLights[i].mOuterCos));
+        
+        // diffuse
+        float32_t NdotL = saturate(dot(N, L));
+        float32_t hl = NdotL * 0.5f + 0.5f;
+        diffuse += surfaceColor.rgb * lightColor * hl * hl * factor;
         
         // specular
         if (isSpecular)
