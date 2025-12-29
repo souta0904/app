@@ -15,8 +15,8 @@
 // コンストラクタ
 Renderer::Renderer()
     : mLightManager( nullptr )
-    , mDirectionalLight1( nullptr )
-    , mDirectionalLight2( nullptr )
+    , mDirectionalLight( nullptr )
+    , mPointLight( nullptr )
     , mSpriteBase( nullptr )
     , mModelBase( nullptr )
     , mSpriteCamera( nullptr )
@@ -41,18 +41,21 @@ bool Renderer::Init()
         LOG_INFO( "Light manager initialized successfully." );
     }
 
-    // 平行光源の初期化
-    mDirectionalLight1 = std::make_unique<DirectionalLight>();
-    mDirectionalLight1->mColor = Color::kWhite;
-    mDirectionalLight1->mDirection = Vector3( 1.0f, -2.0f, 3.0f );
-    mDirectionalLight1->mIntensity = 1.0f;
-    mLightManager->AddDirectionalLight( mDirectionalLight1.get() );
+    // 平行光源
+    mDirectionalLight = std::make_unique<DirectionalLight>();
+    mDirectionalLight->mColor = Color::kWhite;
+    mDirectionalLight->mDirection = Vector3( 1.0f, -2.0f, 3.0f );
+    mDirectionalLight->mIntensity = 1.0f;
+    mLightManager->AddDirectionalLight( mDirectionalLight.get() );
 
-    mDirectionalLight2 = std::make_unique<DirectionalLight>();
-    mDirectionalLight2->mColor = Color( 0.5f, 1.0f, 1.0f );
-    mDirectionalLight2->mDirection = Vector3( 3.0f, -2.0f, 1.0f );
-    mDirectionalLight2->mIntensity = 0.0f;  // 無効
-    mLightManager->AddDirectionalLight( mDirectionalLight2.get() );
+    // 点光源
+    mPointLight = std::make_unique<PointLight>();
+    mPointLight->mColor = Color( 1.0f, 1.0f, 1.0f );
+    mPointLight->mPosition = Vector3( 0.0f, 10.0f, 0.0f );
+    mPointLight->mIntensity = 1.0f;
+    mPointLight->mRadius = 20.0f;
+    mPointLight->mDecay = 2.0f;
+    mLightManager->AddPointLight( mPointLight.get() );
 
     auto& resMgr = ResourceManager::GetInstance();
     auto* spriteVS = resMgr.GetShader( "assets/shader/SpriteVS.hlsl", "vs_6_0" );
@@ -189,13 +192,13 @@ void Renderer::Term()
         mSpriteBase = nullptr;
         LOG_INFO( "Sprite base terminated." );
     }
-    if( mDirectionalLight2 )
+    if( mPointLight )
     {
-        mLightManager->RemoveDirectionalLight( mDirectionalLight2.get() );
+        mLightManager->RemovePointLight( mPointLight.get() );
     }
-    if( mDirectionalLight1 )
+    if( mDirectionalLight )
     {
-        mLightManager->RemoveDirectionalLight( mDirectionalLight1.get() );
+        mLightManager->RemoveDirectionalLight( mDirectionalLight.get() );
     }
     if( mLightManager )
     {
@@ -220,19 +223,23 @@ void Renderer::UpdateGUI()
 
     // 平行光源
     ImGui::SetNextItemOpen( true );
-    if( ImGui::TreeNode( "Directional Light [0]" ) )
+    if( ImGui::TreeNode( "Directional Light" ) )
     {
-        ImGui::ColorEdit3( "Color", &mDirectionalLight1->mColor.r );
-        ImGui::DragFloat3( "Direction", &mDirectionalLight1->mDirection.x, 0.01f );
-        ImGui::DragFloat( "Intensity", &mDirectionalLight1->mIntensity, 0.01f, 0.0f, FLT_MAX );
+        ImGui::ColorEdit3( "Color", &mDirectionalLight->mColor.r );
+        ImGui::DragFloat3( "Direction", &mDirectionalLight->mDirection.x, 0.01f );
+        ImGui::DragFloat( "Intensity", &mDirectionalLight->mIntensity, 0.01f, 0.0f, FLT_MAX );
         ImGui::TreePop();
     }
+
+    // 点光源
     ImGui::SetNextItemOpen( true );
-    if( ImGui::TreeNode( "Directional Light [1]" ) )
+    if( ImGui::TreeNode( "Point Light" ) )
     {
-        ImGui::ColorEdit3( "Color", &mDirectionalLight2->mColor.r );
-        ImGui::DragFloat3( "Direction", &mDirectionalLight2->mDirection.x, 0.01f );
-        ImGui::DragFloat( "Intensity", &mDirectionalLight2->mIntensity, 0.01f, 0.0f, FLT_MAX );
+        ImGui::ColorEdit3( "Color", &mPointLight->mColor.r );
+        ImGui::DragFloat3( "Position", &mPointLight->mPosition.x, 0.01f );
+        ImGui::DragFloat( "Intensity", &mPointLight->mIntensity, 0.01f, 0.0f, FLT_MAX );
+        ImGui::DragFloat( "Radius", &mPointLight->mRadius, 0.01f, 0.0f, FLT_MAX );
+        ImGui::DragFloat( "Decay", &mPointLight->mDecay, 0.01f, 0.0f, FLT_MAX );
         ImGui::TreePop();
     }
 

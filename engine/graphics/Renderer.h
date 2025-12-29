@@ -9,6 +9,7 @@
 #include "core/GraphicsPSO.h"
 #include "core/RootSignature.h"
 #include "light/DirectionalLight.h"
+#include "light/PointLight.h"
 #include "model/MeshSorter.h"
 #include "model/ModelInstance.h"
 
@@ -26,8 +27,9 @@ class Renderer
     // ライト管理
     LightManager* mLightManager;
     // 平行光源
-    std::unique_ptr<DirectionalLight> mDirectionalLight1;
-    std::unique_ptr<DirectionalLight> mDirectionalLight2;
+    std::unique_ptr<DirectionalLight> mDirectionalLight;
+    // 点光源
+    std::unique_ptr<PointLight> mPointLight;
 
     // スプライト基盤
     SpriteBase* mSpriteBase;

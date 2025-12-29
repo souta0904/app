@@ -1,6 +1,7 @@
 #include "Model.hlsli"
 
 #define MAX_DIRECTIONAL_LIGHT_COUNT 8
+#define MAX_POINT_LIGHT_COUNT 8
 
 struct PSOutput
 {
@@ -34,10 +35,25 @@ struct DirectionalLight
     float32_t mIntensity;
 };
 
+struct PointLight
+{
+    float32_t4 mColor;
+    float32_t3 mPosition;
+    float32_t mIntensity;
+    float32_t mRadius;
+    float32_t mDecay;
+    
+    float32_t2 mPadding;
+};
+
 struct Light
 {
     DirectionalLight mDirectionalLights[MAX_DIRECTIONAL_LIGHT_COUNT];
+    PointLight mPointLights[MAX_POINT_LIGHT_COUNT];
     uint32_t mDirectionalLightCount;
+    uint32_t mPointLightCount;
+    
+    float32_t2 mPadding;
 };
 
 ConstantBuffer<Material> gMaterial : register(b0);
@@ -67,9 +83,12 @@ PSOutput main(VSOutput input)
     }
     
     float32_t3 N = normalize(input.normal);
-    float32_t3 V = normalize(gCamera.mPosition - input.wpos);
+    float32_t3 toEye = normalize(gCamera.mPosition - input.wpos);
     float32_t3 diffuse = 0.0f;
     float32_t3 specular = 0.0f;
+    
+    bool isSpecular = gMaterial.mSpecularType != SpecularType::None;
+    bool isBlinnPhong = gMaterial.mSpecularType == SpecularType::BlinnPhong;
     
     // directional light
     [loop]
@@ -82,22 +101,58 @@ PSOutput main(VSOutput input)
         float32_t NdotL = saturate(dot(N, L));
         float32_t cos = NdotL * 0.5f + 0.5f;
         diffuse += surfaceColor.rgb * lightColor * cos * cos;
-
+        
         // specular
-        if (gMaterial.mSpecularType != SpecularType::None)
+        if (isSpecular)
         {
             float32_t specularPower = 0.0f;
-            if (gMaterial.mSpecularType == SpecularType::Phong)
+            if (!isBlinnPhong)
             {
                 float32_t3 R = reflect(-L, N);
-                specularPower = pow(saturate(dot(R, V)), gMaterial.mShininess);
+                specularPower = pow(saturate(dot(R, toEye)), gMaterial.mShininess);
             }
-            else if (gMaterial.mSpecularType == SpecularType::BlinnPhong)
+            else
             {
-                float32_t3 H = normalize(L + V);
+                float32_t3 H = normalize(L + toEye);
                 specularPower = pow(saturate(dot(N, H)), gMaterial.mShininess);
             }
             specular += float32_t3(1.0f, 1.0f, 1.0f) * lightColor * specularPower;
+        }
+    }
+    
+    // point light
+    [loop]
+    for (i = 0; i < gLight.mPointLightCount; ++i)
+    {
+        float32_t3 toLight = gLight.mPointLights[i].mPosition - input.wpos;
+        float32_t distanceSq = dot(toLight, toLight);
+        float32_t radiusSq = gLight.mPointLights[i].mRadius * gLight.mPointLights[i].mRadius;
+        if (distanceSq >= radiusSq) continue;
+        
+        float32_t3 L = toLight * rsqrt(distanceSq);
+        float32_t3 lightColor = gLight.mPointLights[i].mColor.rgb * gLight.mPointLights[i].mIntensity;
+        float32_t factor = pow(saturate(1.0f - sqrt(distanceSq / radiusSq)), gLight.mPointLights[i].mDecay);
+        
+        // diffuse
+        float32_t NdotL = saturate(dot(N, L));
+        float32_t cos = NdotL * 0.5f + 0.5f;
+        diffuse += surfaceColor.rgb * lightColor * cos * cos * factor;
+        
+        // specular
+        if (isSpecular)
+        {
+            float32_t specularPower = 0.0f;
+            if (!isBlinnPhong)
+            {
+                float32_t3 R = reflect(-L, N);
+                specularPower = pow(saturate(dot(R, toEye)), gMaterial.mShininess);
+            }
+            else
+            {
+                float32_t3 H = normalize(L + toEye);
+                specularPower = pow(saturate(dot(N, H)), gMaterial.mShininess);
+            }
+            specular += float32_t3(1.0f, 1.0f, 1.0f) * lightColor * specularPower * factor;
         }
     }
     

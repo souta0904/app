@@ -7,6 +7,7 @@
 LightManager::LightManager()
     : mCB( nullptr )
     , mDirectionalLights()
+    , mPointLights()
 {
 }
 
@@ -58,6 +59,26 @@ void LightManager::RemoveDirectionalLight( DirectionalLight* directionalLight )
     }
 }
 
+// 点光源を追加
+void LightManager::AddPointLight( PointLight* pointLight )
+{
+    if( !pointLight ) return;
+
+    mPointLights.push_back( pointLight );
+}
+
+// 点光源を削除
+void LightManager::RemovePointLight( PointLight* pointLight )
+{
+    if( !pointLight ) return;
+
+    auto it = std::find( mPointLights.begin(), mPointLights.end(), pointLight );
+    if( it != mPointLights.end() )
+    {
+        mPointLights.erase( it );
+    }
+}
+
 // 定数バッファを更新
 void LightManager::UpdateCB()
 {
@@ -71,7 +92,20 @@ void LightManager::UpdateCB()
         c.mDirectionalLights[i].mDirection = Normalize( mDirectionalLights[i]->mDirection );
         c.mDirectionalLights[i].mIntensity = mDirectionalLights[i]->mIntensity;
     }
+
+    // 点光源
+    auto pointLightCount = std::min<uint32_t>( kMaxPointLightCount, static_cast<uint32_t>( mPointLights.size() ) );
+    for( uint32_t i = 0; i < pointLightCount; ++i )
+    {
+        c.mPointLights[i].mColor = mPointLights[i]->mColor;
+        c.mPointLights[i].mPosition = mPointLights[i]->mPosition;
+        c.mPointLights[i].mIntensity = mPointLights[i]->mIntensity;
+        c.mPointLights[i].mRadius = mPointLights[i]->mRadius;
+        c.mPointLights[i].mDecay = mPointLights[i]->mDecay;
+    }
+
     c.mDirectionalLightCount = directionalLightCount;
+    c.mPointLightCount = pointLightCount;
 
     mCB->Update( &c );
 }

@@ -261,6 +261,7 @@
     <ClInclude Include="engine\graphics\light\LightManager.h">
       <Filter>engine\graphics\light</Filter>
     </ClInclude>
+    <ClInclude Include="engine\graphics\light\PointLight.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shader\SimplePS.hlsl">
