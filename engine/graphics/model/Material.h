@@ -11,6 +11,16 @@ class CommandList;
 class Texture;
 
 /// <summary>
+/// 鏡面反射種別
+/// </summary>
+enum class SpecularType
+{
+    None,
+    Phong,
+    BlinnPhong,
+};
+
+/// <summary>
 /// マテリアル
 /// </summary>
 class Material
@@ -24,7 +34,14 @@ class Material
     /// </summary>
     struct Constant
     {
+        // 色
         Color mColor;
+        // ライティング有無
+        uint32_t mIsLighting = true;
+        // 鏡面反射種別
+        SpecularType mSpecularType = SpecularType::BlinnPhong;
+        // 光沢度
+        float mShininess = 192.0f;
     };
 
    private:

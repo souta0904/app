@@ -99,6 +99,8 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         //ImGui::Image( texture->GetSRVHdl()->mGPU.ptr, ImVec2( 256.0f, 256.0f ) );
         ImGui::End();
 
+        renderer.UpdateGUI();
+
         editorBase.End();
 
         renderer.Update();

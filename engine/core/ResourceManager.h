@@ -7,7 +7,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "graphics/ShaderObject.h"
+#include "core/ShaderObject.h"
 #include "graphics/Texture.h"
 #include "graphics/model/ModelData.h"
 

@@ -1,14 +1,23 @@
 #include "Renderer.h"
 
+#include "SpriteBase.h"
 #include "core/CommandList.h"
 #include "core/DirectXCommonSettings.h"
 #include "core/ResourceManager.h"
 #include "core/Window.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_dx12.h"
+#include "imgui/imgui_impl_win32.h"
+#include "light/LightManager.h"
+#include "model/ModelBase.h"
 #include "utils/Logger.h"
 
 // コンストラクタ
 Renderer::Renderer()
-    : mSpriteBase( nullptr )
+    : mLightManager( nullptr )
+    , mDirectionalLight1( nullptr )
+    , mDirectionalLight2( nullptr )
+    , mSpriteBase( nullptr )
     , mModelBase( nullptr )
     , mSpriteCamera( nullptr )
     , mModelCamera( nullptr )
@@ -19,6 +28,32 @@ Renderer::Renderer()
 // 初期化
 bool Renderer::Init()
 {
+    // ライト管理を初期化
+    mLightManager = &LightManager::GetInstance();
+    if( !mLightManager->Init() )
+    {
+        LOG_ERROR( "Failed to initialize light manager." );
+        MessageBox( nullptr, L"Failed to initialize light manager.", L"Error", MB_OK | MB_ICONERROR );
+        return false;
+    }
+    else
+    {
+        LOG_INFO( "Light manager initialized successfully." );
+    }
+
+    // 平行光源の初期化
+    mDirectionalLight1 = std::make_unique<DirectionalLight>();
+    mDirectionalLight1->mColor = Color::kWhite;
+    mDirectionalLight1->mDirection = Vector3( 1.0f, -2.0f, 3.0f );
+    mDirectionalLight1->mIntensity = 1.0f;
+    mLightManager->AddDirectionalLight( mDirectionalLight1.get() );
+
+    mDirectionalLight2 = std::make_unique<DirectionalLight>();
+    mDirectionalLight2->mColor = Color( 0.5f, 1.0f, 1.0f );
+    mDirectionalLight2->mDirection = Vector3( 3.0f, -2.0f, 1.0f );
+    mDirectionalLight2->mIntensity = 0.0f;  // 無効
+    mLightManager->AddDirectionalLight( mDirectionalLight2.get() );
+
     auto& resMgr = ResourceManager::GetInstance();
     auto* spriteVS = resMgr.GetShader( "assets/shader/SpriteVS.hlsl", "vs_6_0" );
     auto* spritePS = resMgr.GetShader( "assets/shader/SpritePS.hlsl", "ps_6_0" );
@@ -122,10 +157,19 @@ bool Renderer::Init()
     }
 
     mBotModel1 = std::make_unique<ModelInstance>();
-    mBotModel1->Create( resMgr.GetModel( "assets/model/bot/bot.fbx" ) );
+    mBotModel1->Create( resMgr.GetModel( "assets/model/bot/y_bot.fbx" ) );
 
     mBotModel2 = std::make_unique<ModelInstance>();
-    mBotModel2->Create( resMgr.GetModel( "assets/model/box/box.obj" ) );
+    mBotModel2->Create( resMgr.GetModel( "assets/model/bot/x_bot.fbx" ) );
+
+    mBoxModel = std::make_unique<ModelInstance>();
+    mBoxModel->Create( resMgr.GetModel( "assets/model/box/box.obj" ) );
+
+    mSphereModel = std::make_unique<ModelInstance>();
+    mSphereModel->Create( resMgr.GetModel( "assets/model/sphere/sphere.obj" ) );
+
+    mFloorModel = std::make_unique<ModelInstance>();
+    mFloorModel->Create( resMgr.GetModel( "assets/model/floor/floor.glb" ) );
 
     return true;
 }
@@ -145,6 +189,54 @@ void Renderer::Term()
         mSpriteBase = nullptr;
         LOG_INFO( "Sprite base terminated." );
     }
+    if( mDirectionalLight2 )
+    {
+        mLightManager->RemoveDirectionalLight( mDirectionalLight2.get() );
+    }
+    if( mDirectionalLight1 )
+    {
+        mLightManager->RemoveDirectionalLight( mDirectionalLight1.get() );
+    }
+    if( mLightManager )
+    {
+        mLightManager->Term();
+        mLightManager = nullptr;
+        LOG_INFO( "Light manager terminated." );
+    }
+}
+
+// GUIの更新
+void Renderer::UpdateGUI()
+{
+    ImGui::Begin( "Renderer" );
+
+    // カメラ
+    ImGui::SetNextItemOpen( true );
+    if( ImGui::TreeNode( "Camera" ) )
+    {
+        ImGui::DragFloat3( "Position", &mModelCamera->mPosition.x, 0.01f );
+        ImGui::TreePop();
+    }
+
+    // 平行光源
+    ImGui::SetNextItemOpen( true );
+    if( ImGui::TreeNode( "Directional Light [0]" ) )
+    {
+        ImGui::ColorEdit3( "Color", &mDirectionalLight1->mColor.r );
+        ImGui::DragFloat3( "Direction", &mDirectionalLight1->mDirection.x, 0.01f );
+        ImGui::DragFloat( "Intensity", &mDirectionalLight1->mIntensity, 0.01f, 0.0f, FLT_MAX );
+        ImGui::TreePop();
+    }
+    ImGui::SetNextItemOpen( true );
+    if( ImGui::TreeNode( "Directional Light [1]" ) )
+    {
+        ImGui::ColorEdit3( "Color", &mDirectionalLight2->mColor.r );
+        ImGui::DragFloat3( "Direction", &mDirectionalLight2->mDirection.x, 0.01f );
+        ImGui::DragFloat( "Intensity", &mDirectionalLight2->mIntensity, 0.01f, 0.0f, FLT_MAX );
+        ImGui::TreePop();
+    }
+
+    ImGui::End();
 }
 
 // 更新
@@ -159,6 +251,9 @@ void Renderer::Update()
     // TODO: デルタタイムに差し替え
     mBotModel1->Update( 1.0f / 60.0f );
     mBotModel2->Update( 1.0f / 60.0f );
+    mBoxModel->Update( 1.0f / 60.0f );
+    mSphereModel->Update( 1.0f / 60.0f );
+    mFloorModel->Update( 1.0f / 60.0f );
 }
 
 // 描画
@@ -188,16 +283,29 @@ void Renderer::DrawModel( CommandList* cmdList )
 
     mModelBase->Begin( cmdList );
 
-    auto mat1 =
+    mLightManager->Bind( cmdList, 4 );
+
+    mFloorModel->Draw( mSorter.get(), Matrix4() );
+
+    auto botWorld1 =
+        CreateScale( Vector3::kOne * 0.1f ) *
+        CreateRotate( Quaternion( Vector3::kUnitY, MathUtil::kPi ) ) *
+        CreateTranslate( Vector3( 10.0f, 0.0f, 0.0f ) );
+    mBotModel1->Draw( mSorter.get(), botWorld1 );
+
+    auto botWorld2 =
         CreateScale( Vector3::kOne * 0.1f ) *
         CreateRotate( Quaternion( Vector3::kUnitY, MathUtil::kPi ) ) *
         CreateTranslate( Vector3( -10.0f, 0.0f, 0.0f ) );
-    mBotModel1->Draw( mSorter.get(), mat1 );
+    mBotModel2->Draw( mSorter.get(), botWorld2 );
 
-    auto mat2 =
-        CreateScale( Vector3::kOne ) *
-        CreateTranslate( Vector3( 10.0f, 0.0f, 0.0f ) );
-    mBotModel2->Draw( mSorter.get(), mat2 );
+    /*
+    auto boxWorld = CreateTranslate( Vector3( 2.5f, 0.0f, 0.0f ) );
+    mBoxModel->Draw( mSorter.get(), boxWorld );
+
+    auto sphereWorld = CreateTranslate( Vector3( -2.5f, 0.0f, 0.0f ) );
+    mSphereModel->Draw( mSorter.get(), sphereWorld );
+    */
 
     mSorter->Sort();
 

@@ -6,12 +6,16 @@
 
 #include "Camera.h"
 #include "Sprite.h"
-#include "SpriteBase.h"
+#include "core/GraphicsPSO.h"
+#include "core/RootSignature.h"
+#include "light/DirectionalLight.h"
 #include "model/MeshSorter.h"
-#include "model/ModelBase.h"
 #include "model/ModelInstance.h"
 
 class CommandList;
+class LightManager;
+class ModelBase;
+class SpriteBase;
 
 /// <summary>
 /// レンダラー
@@ -19,6 +23,12 @@ class CommandList;
 class Renderer
 {
    private:
+    // ライト管理
+    LightManager* mLightManager;
+    // 平行光源
+    std::unique_ptr<DirectionalLight> mDirectionalLight1;
+    std::unique_ptr<DirectionalLight> mDirectionalLight2;
+
     // スプライト基盤
     SpriteBase* mSpriteBase;
     // モデル基盤
@@ -37,6 +47,9 @@ class Renderer
     // モデル
     std::unique_ptr<ModelInstance> mBotModel1;
     std::unique_ptr<ModelInstance> mBotModel2;
+    std::unique_ptr<ModelInstance> mBoxModel;
+    std::unique_ptr<ModelInstance> mSphereModel;
+    std::unique_ptr<ModelInstance> mFloorModel;
 
     // テスト
     static const uint32_t kVertexCount = 3;
@@ -97,6 +110,11 @@ class Renderer
     /// 終了処理
     /// </summary>
     void Term();
+
+    /// <summary>
+    /// GUIの更新
+    /// </summary>
+    void UpdateGUI();
 
     /// <summary>
     /// 更新

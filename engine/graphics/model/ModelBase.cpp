@@ -19,12 +19,13 @@ ModelBase::ModelBase()
 bool ModelBase::Init()
 {
     mRS = std::make_unique<RootSignature>();
-    mRS->Init( 4, 1 );
+    mRS->Init( 5, 1 );
     mRS->GetParameter( 0 ).InitAsCBV( 0, D3D12_SHADER_VISIBILITY_VERTEX );
     mRS->GetParameter( 1 ).InitAsCBV( 0, D3D12_SHADER_VISIBILITY_PIXEL );
     mRS->GetParameter( 2 ).InitAsCBV( 1, D3D12_SHADER_VISIBILITY_PIXEL );
     mRS->GetParameter( 3 ).InitAsDescriptorTable( 1 );
     mRS->GetParameter( 3 ).SetDescriptorRange( 0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0 );
+    mRS->GetParameter( 4 ).InitAsCBV( 2, D3D12_SHADER_VISIBILITY_PIXEL );
     mRS->GetSampler( 0 ) = DirectXCommonSettings::gSamplerLinearWrap;
     // ルートシグネチャの作成
     if( !mRS->Create() )

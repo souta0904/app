@@ -81,7 +81,7 @@ int32_t ModelData::BuildNode( aiNode* assimpNode, const std::optional<int32_t>& 
     aiVector3D translate;
     assimpNode->mTransformation.Decompose( scale, rotate, translate );
     node.mScale = Vector3( scale.x, scale.y, scale.z );
-    node.mRotate = Quaternion( rotate.x, -rotate.y, -rotate.z, rotate.w );
+    node.mRotate = Quaternion( rotate.w, rotate.x, -rotate.y, -rotate.z );
     node.mTranslate = Vector3( -translate.x, translate.y, translate.z );
     node.mLocalMat = CreateAffine( node.mScale, node.mRotate, node.mTranslate );  // ローカル行列
     // モデル行列を計算

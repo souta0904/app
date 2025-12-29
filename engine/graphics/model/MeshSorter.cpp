@@ -7,6 +7,7 @@
 #include "ModelBase.h"
 #include "PSOKey.h"
 #include "core/CommandList.h"
+#include "graphics/Camera.h"
 #include "math/Vector3.h"
 
 // コンストラクタ
@@ -87,6 +88,8 @@ void MeshSorter::Render( CommandList* cmdList )
     {
         return;
     }
+
+    mCameraCB->Update( &mCamera->mPosition );
 
     auto currPSOKey = UINT64_MAX;
     auto& modelBase = ModelBase::GetInstance();

@@ -177,6 +177,7 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     <ClCompile Include="engine\core\DirectXBase.cpp" />
     <ClCompile Include="engine\core\GraphicsPSO.cpp" />
     <ClCompile Include="engine\core\IndexBuffer.cpp" />
+    <ClCompile Include="engine\graphics\light\LightManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\core\Window.cpp" />
     <ClCompile Include="engine\utils\StringHelper.cpp" />
@@ -184,7 +185,7 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     <ClCompile Include="engine\core\RootParameter.cpp" />
     <ClCompile Include="engine\core\RootSignature.cpp" />
     <ClCompile Include="engine\core\ResourceManager.cpp" />
-    <ClCompile Include="engine\graphics\ShaderObject.cpp" />
+    <ClCompile Include="engine\core\ShaderObject.cpp" />
     <ClCompile Include="engine\math\Vector4.cpp" />
     <ClCompile Include="engine\graphics\SpriteBase.cpp" />
     <ClCompile Include="engine\math\Vector2.cpp" />
@@ -201,6 +202,7 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     <ClInclude Include="engine\graphics\Camera.h" />
     <ClInclude Include="engine\core\ConstantBuffer.h" />
     <ClInclude Include="engine\editor\EditorBase.h" />
+    <ClInclude Include="engine\graphics\light\DirectionalLight.h" />
     <ClInclude Include="engine\graphics\model\PSOKey.h" />
     <ClInclude Include="engine\math\MathUtil.h" />
     <ClInclude Include="engine\math\Quaternion.h" />
@@ -223,7 +225,7 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     <ClInclude Include="engine\core\GraphicsPSO.h" />
     <ClInclude Include="engine\core\PSOInit.h" />
     <ClInclude Include="engine\core\ResourceManager.h" />
-    <ClInclude Include="engine\graphics\ShaderObject.h" />
+    <ClInclude Include="engine\core\ShaderObject.h" />
     <ClInclude Include="engine\math\Vector4.h" />
     <ClInclude Include="engine\graphics\SpriteBase.h" />
     <ClInclude Include="engine\math\Vector2.h" />
@@ -239,6 +241,7 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     <ClInclude Include="engine\graphics\model\ModelData.h" />
     <ClInclude Include="engine\graphics\model\ModelInstance.h" />
     <ClInclude Include="engine\graphics\model\ModelBase.h" />
+    <ClInclude Include="engine\graphics\light\LightManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="external\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

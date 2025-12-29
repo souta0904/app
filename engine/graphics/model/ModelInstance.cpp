@@ -79,7 +79,6 @@ void ModelInstance::Draw( MeshSorter* sorter, const Matrix4& worldMat )
     */
 
     // メッシュごと描画
-    auto view = camera->GetView();
     for( uint32_t i = 0; i < mModelData->mMeshCount; ++i )
     {
         auto mesh = mModelData->mMeshes[i].mMesh.get();
@@ -91,7 +90,7 @@ void ModelInstance::Draw( MeshSorter* sorter, const Matrix4& worldMat )
 
         TransformationMatrix c = {};
         c.mWorld = mNodes[mModelData->mMeshes[i].mNodeIdx].mModelMat * worldMat;
-        auto wvMat = c.mWorld * view;
+        auto wvMat = c.mWorld * camera->GetView();
         c.mWVP = wvMat * camera->GetProjection();
         c.mWorldInvTranspose = Transpose( Inverse( c.mWorld ) );
         mTransMatCBs[i]->Update( &c );
