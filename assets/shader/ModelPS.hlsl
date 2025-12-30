@@ -85,8 +85,9 @@ PSOutput main(VSOutput input)
 #ifdef NO_TEXTURE
     surfaceColor = gMaterial.mColor;
 #else
-    float32_t4 transformedUV = mul(float32_t4(input.uv, 0.0f, 1.0f), gConstant.mUVTransform);
-    float32_t4 texColor = gTexture.Sample(gSampler, transformedUV.xy);
+    //float32_t4 transformedUV = mul(float32_t4(input.uv, 0.0f, 1.0f), gConstant.mUVTransform);
+    //float32_t4 texColor = gTexture.Sample(gSampler, transformedUV.xy);
+    float32_t4 texColor = gTexture.Sample(gSampler, input.uv);
     surfaceColor = gMaterial.mColor * texColor;
 #endif
     

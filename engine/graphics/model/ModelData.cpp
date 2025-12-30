@@ -215,7 +215,12 @@ void ModelData::BuildMaterial()
             texture = resMgr.GetTexture( parentPath + "/" + filename );
             if( !texture )
             {
-                texture = resMgr.GetTexture( kErrorTex );
+                // なければテクスチャフォルダから探す
+                texture = resMgr.GetTexture( "assets/texture/" + filename );
+                if( !texture )
+                {
+                    texture = resMgr.GetTexture( kErrorTex );
+                }
             }
         }
 

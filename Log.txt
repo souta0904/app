@@ -1,30 +1,32 @@
-[2025-12-30 09:11:03] [INFO ] Window created successfully.
-[2025-12-30 09:11:03] [INFO ] Back Buffer Count: 2
-[2025-12-30 09:11:03] [INFO ] DXGIFactory created successfully.
-[2025-12-30 09:11:03] [INFO ] Use Adapter: NVIDIA GeForce RTX 3070
-[2025-12-30 09:11:03] [INFO ] Feature Level: 12.2
-[2025-12-30 09:11:03] [INFO ] D3D12Device created successfully.
-[2025-12-30 09:11:03] [INFO ] CommandQueue created successfully.
-[2025-12-30 09:11:03] [INFO ] DXGISwapChain created successfully.
-[2025-12-30 09:11:03] [INFO ] CommandList created successfully.
-[2025-12-30 09:11:03] [INFO ] DirectX initialized successfully.
-[2025-12-30 09:11:03] [INFO ] Editor base initialized successfully.
-[2025-12-30 09:11:03] [INFO ] Resource manager initialized successfully.
-[2025-12-30 09:11:03] [INFO ] Light manager initialized successfully.
-[2025-12-30 09:11:03] [INFO ] Shader compiled successfully: assets/shader/SpriteVS.hlsl
-[2025-12-30 09:11:03] [INFO ] Shader compiled successfully: assets/shader/SpritePS.hlsl
-[2025-12-30 09:11:03] [INFO ] Sprite base initialized successfully.
-[2025-12-30 09:11:03] [INFO ] Shader compiled successfully: assets/shader/SimpleVS.hlsl
-[2025-12-30 09:11:03] [INFO ] Shader compiled successfully: assets/shader/SimplePS.hlsl
-[2025-12-30 09:11:03] [INFO ] Shader compiled successfully: assets/shader/ModelVS.hlsl
-[2025-12-30 09:11:03] [INFO ] Shader compiled successfully: assets/shader/NoTextureModelPS.hlsl
-[2025-12-30 09:11:03] [INFO ] Model base initialized successfully.
-[2025-12-30 09:11:03] [INFO ] Renderer initialized successfully.
-[2025-12-30 09:11:06] [INFO ] Model base terminated.
-[2025-12-30 09:11:06] [INFO ] Sprite base terminated.
-[2025-12-30 09:11:06] [INFO ] Light manager terminated.
-[2025-12-30 09:11:06] [INFO ] Renderer terminated.
-[2025-12-30 09:11:06] [INFO ] Resource manager terminated.
-[2025-12-30 09:11:06] [INFO ] Editor base terminated.
-[2025-12-30 09:11:06] [INFO ] DirectX terminated.
-[2025-12-30 09:11:06] [INFO ] Window destroyed.
+[2025-12-30 09:59:27] [INFO ] Window created successfully.
+[2025-12-30 09:59:27] [INFO ] Back Buffer Count: 2
+[2025-12-30 09:59:27] [INFO ] Enable debug layer.
+[2025-12-30 09:59:27] [INFO ] DXGIFactory created successfully.
+[2025-12-30 09:59:27] [INFO ] Use Adapter: NVIDIA GeForce RTX 3070
+[2025-12-30 09:59:27] [INFO ] Feature Level: 12.2
+[2025-12-30 09:59:27] [INFO ] D3D12Device created successfully.
+[2025-12-30 09:59:27] [INFO ] CommandQueue created successfully.
+[2025-12-30 09:59:27] [INFO ] DXGISwapChain created successfully.
+[2025-12-30 09:59:27] [INFO ] CommandList created successfully.
+[2025-12-30 09:59:27] [INFO ] DirectX initialized successfully.
+[2025-12-30 09:59:27] [INFO ] Editor base initialized successfully.
+[2025-12-30 09:59:27] [INFO ] Resource manager initialized successfully.
+[2025-12-30 09:59:27] [INFO ] Light manager initialized successfully.
+[2025-12-30 09:59:27] [INFO ] Shader compiled successfully: assets/shader/SpriteVS.hlsl
+[2025-12-30 09:59:27] [INFO ] Shader compiled successfully: assets/shader/SpritePS.hlsl
+[2025-12-30 09:59:27] [INFO ] Sprite base initialized successfully.
+[2025-12-30 09:59:28] [INFO ] Shader compiled successfully: assets/shader/SimpleVS.hlsl
+[2025-12-30 09:59:28] [INFO ] Shader compiled successfully: assets/shader/SimplePS.hlsl
+[2025-12-30 09:59:28] [INFO ] Shader compiled successfully: assets/shader/ModelVS.hlsl
+[2025-12-30 09:59:28] [INFO ] Shader compiled successfully: assets/shader/NoTextureModelPS.hlsl
+[2025-12-30 09:59:28] [INFO ] Model base initialized successfully.
+[2025-12-30 09:59:28] [INFO ] Renderer initialized successfully.
+[2025-12-30 09:59:29] [INFO ] Shader compiled successfully: assets/shader/ModelPS.hlsl
+[2025-12-30 09:59:38] [INFO ] Model base terminated.
+[2025-12-30 09:59:38] [INFO ] Sprite base terminated.
+[2025-12-30 09:59:38] [INFO ] Light manager terminated.
+[2025-12-30 09:59:38] [INFO ] Renderer terminated.
+[2025-12-30 09:59:38] [INFO ] Resource manager terminated.
+[2025-12-30 09:59:38] [INFO ] Editor base terminated.
+[2025-12-30 09:59:38] [INFO ] DirectX terminated.
+[2025-12-30 09:59:38] [INFO ] Window destroyed.

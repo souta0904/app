@@ -338,13 +338,11 @@ void Renderer::DrawModel( CommandList* cmdList )
         CreateTranslate( Vector3( -10.0f, 0.0f, 0.0f ) );
     mBotModel2->Draw( mSorter.get(), botWorld2 );
 
-    /*
     auto boxWorld = CreateTranslate( Vector3( 2.5f, 0.0f, 0.0f ) );
     mBoxModel->Draw( mSorter.get(), boxWorld );
 
     auto sphereWorld = CreateTranslate( Vector3( -2.5f, 0.0f, 0.0f ) );
     mSphereModel->Draw( mSorter.get(), sphereWorld );
-    */
 
     mSorter->Sort();
 
