@@ -47,9 +47,6 @@
     <ClCompile Include="engine\core\GraphicsPSO.cpp">
       <Filter>engine\core</Filter>
     </ClCompile>
-    <ClCompile Include="engine\core\ShaderObject.cpp">
-      <Filter>engine\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="engine\math\Vector4.cpp">
       <Filter>engine\math</Filter>
     </ClCompile>
@@ -100,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="engine\graphics\light\LightManager.cpp">
       <Filter>engine\graphics\light</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\ShaderObject.cpp">
+      <Filter>engine\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -183,9 +183,6 @@
     <ClInclude Include="engine\core\PSOInit.h">
       <Filter>engine\core</Filter>
     </ClInclude>
-    <ClInclude Include="engine\core\ShaderObject.h">
-      <Filter>engine\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="engine\math\Vector4.h">
       <Filter>engine\math</Filter>
     </ClInclude>
@@ -261,8 +258,15 @@
     <ClInclude Include="engine\graphics\light\LightManager.h">
       <Filter>engine\graphics\light</Filter>
     </ClInclude>
-    <ClInclude Include="engine\graphics\light\PointLight.h" />
-    <ClInclude Include="engine\graphics\light\SpotLight.h" />
+    <ClInclude Include="engine\graphics\light\PointLight.h">
+      <Filter>engine\graphics\light</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\graphics\light\SpotLight.h">
+      <Filter>engine\graphics\light</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\ShaderObject.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shader\SimplePS.hlsl">
