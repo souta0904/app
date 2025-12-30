@@ -365,3 +365,10 @@ MigrationBackup/
 FodyWeavers.xsd
 
 !assets/model/**/*.obj
+
+# assimpのdll
+!external/assimp/bin/
+!external/assimp/bin/Debug/
+!external/assimp/bin/Release/
+!external/assimp/bin/Debug/*.dll
+!external/assimp/bin/Release/*.dll
