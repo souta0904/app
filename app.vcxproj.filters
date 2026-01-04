@@ -101,6 +101,21 @@
     <ClCompile Include="engine\core\ShaderObject.cpp">
       <Filter>engine\core</Filter>
     </ClCompile>
+    <ClCompile Include="engine\input\Keyboard.cpp">
+      <Filter>engine\input</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\input\Mouse.cpp">
+      <Filter>engine\input</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\input\Gamepad.cpp">
+      <Filter>engine\input</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\input\InputBase.cpp">
+      <Filter>engine\input</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\graphics\DebugCamera.cpp">
+      <Filter>engine\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
@@ -129,6 +144,9 @@
     </Filter>
     <Filter Include="engine\graphics\light">
       <UniqueIdentifier>{153dbefa-e1e7-4112-8ba8-566cb19397ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\input">
+      <UniqueIdentifier>{0de6cb98-0b92-4fc8-8e35-12f6bb2f4daa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -266,6 +284,24 @@
     </ClInclude>
     <ClInclude Include="engine\core\ShaderObject.h">
       <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\input\Keyboard.h">
+      <Filter>engine\input</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\input\Mouse.h">
+      <Filter>engine\input</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\input\Gamepad.h">
+      <Filter>engine\input</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\input\InputBase.h">
+      <Filter>engine\input</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\input\InputState.h">
+      <Filter>engine\input</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\graphics\DebugCamera.h">
+      <Filter>engine\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

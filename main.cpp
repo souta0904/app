@@ -11,6 +11,7 @@
 #include "graphics/Renderer.h"
 #include "graphics/Texture.h"
 #include "imgui/imgui.h"
+#include "input/InputBase.h"
 #include "math/Vector4.h"
 #include "utils/Logger.h"
 #include "utils/StringHelper.h"
@@ -23,6 +24,7 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
     auto& editorBase = EditorBase::GetInstance();
     auto& resMgr = ResourceManager::GetInstance();
     auto& renderer = Renderer::GetInstance();
+    auto& inputBase = InputBase::GetInstance();
 
     // ウィンドウを作成
     if( !window.Create( 1920, 1080, L"Game" ) )
@@ -84,9 +86,43 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         LOG_INFO( "Renderer initialized successfully." );
     }
 
+    // 入力を初期化
+    if( !inputBase.Init() )
+    {
+        LOG_ERROR( "Failed to initialize input base." );
+        MessageBox( nullptr, L"Failed to initialize input base.", L"Error", MB_OK | MB_ICONERROR );
+        return -1;
+    }
+    else
+    {
+        LOG_INFO( "Input base initialized successfully." );
+    }
+
     // ゲームループ
     while( !window.ProcessMessage() )
     {
+        inputBase.Update();
+        // Escキーで終了
+        if (inputBase.GetState().mKeyboard.GetKeyUp(DIK_ESCAPE))
+        {
+            break;
+        }
+
+        /*
+        if( inputBase.GetState().mKeyboard.GetKey( DIK_SPACE ) ||
+            inputBase.GetState().mMouse.GetButton( 0 ) ||
+            inputBase.GetState().mGamepad.GetButton( XINPUT_GAMEPAD_A ) )
+        {
+            dxBase.SetClearColor( Color::kBlack );
+        }
+        else
+        {
+            dxBase.SetClearColor( Color::kBlue );
+        }
+        */
+
+        renderer.Input( inputBase.GetState() );
+
         editorBase.Begin();
 
         // imguiテストウィンドウ
@@ -114,6 +150,9 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 
         dxBase.EndDraw();
     }
+
+    inputBase.Term();
+    LOG_INFO( "Input base terminated." );
 
     renderer.Term();
     LOG_INFO( "Renderer terminated." );

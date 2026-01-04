@@ -79,6 +79,9 @@ class MeshSorter
     /// <summary>カメラを取得</summary>
     Camera* GetCamera() const { return mCamera; }
 
+    /// <summary>カメラを設定</summary>
+    void SetCamera( Camera* camera ) { mCamera = camera; }
+
    private:
     /// <summary>
     /// 距離を量子化

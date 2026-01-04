@@ -5,6 +5,7 @@
 #include <assimp/Importer.hpp>
 
 #include "Camera.h"
+#include "DebugCamera.h"
 #include "Sprite.h"
 #include "core/GraphicsPSO.h"
 #include "core/RootSignature.h"
@@ -40,6 +41,8 @@ class Renderer
     // カメラ
     std::unique_ptr<Camera> mSpriteCamera;
     std::unique_ptr<Camera> mModelCamera;
+    bool mUseDebugCamera;
+    std::unique_ptr<DebugCamera> mDebugCamera;
     // ソーター
     std::unique_ptr<MeshSorter> mSorter;
 
@@ -113,6 +116,12 @@ class Renderer
     /// 終了処理
     /// </summary>
     void Term();
+
+    /// <summary>
+    /// 入力処理
+    /// </summary>
+    /// <param name="state">入力状態</param>
+    void Input( const InputState& state );
 
     /// <summary>
     /// GUIの更新

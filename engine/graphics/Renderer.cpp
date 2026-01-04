@@ -22,6 +22,8 @@ Renderer::Renderer()
     , mModelBase( nullptr )
     , mSpriteCamera( nullptr )
     , mModelCamera( nullptr )
+    , mUseDebugCamera( false )
+    , mDebugCamera( nullptr )
     , mSorter( nullptr )
 {
 }
@@ -46,28 +48,28 @@ bool Renderer::Init()
     mDirectionalLight = std::make_unique<DirectionalLight>();
     mDirectionalLight->mColor = Color::kWhite;
     mDirectionalLight->mDirection = Vector3( 1.0f, -2.0f, 3.0f );
-    mDirectionalLight->mIntensity = 1.0f;
+    mDirectionalLight->mIntensity = 0.1f;
     mLightManager->AddDirectionalLight( mDirectionalLight.get() );
 
     // 点光源
     mPointLight = std::make_unique<PointLight>();
-    mPointLight->mColor = Color( 1.0f, 1.0f, 1.0f );
-    mPointLight->mPosition = Vector3( 0.0f, 10.0f, 0.0f );
-    mPointLight->mIntensity = 1.0f;
+    mPointLight->mColor = Color( 1.0f, 1.0f, 0.0f );
+    mPointLight->mPosition = Vector3( -10.0f, 10.0f, 0.0f );
+    mPointLight->mIntensity = 0.8f;
     mPointLight->mRadius = 20.0f;
     mPointLight->mDecay = 2.0f;
     mLightManager->AddPointLight( mPointLight.get() );
 
     // スポットライト
     mSpotLight = std::make_unique<SpotLight>();
-    mSpotLight->mColor = Color( 1.0f, 1.0f, 1.0f );
-    mSpotLight->mPosition = Vector3( 0.0f, 10.0f, 0.0f );
-    mSpotLight->mIntensity = 1.0f;
-    mSpotLight->mDirection = Vector3( 1.0f, -2.0f, 3.0f );
-    mSpotLight->mRadius = 20.0f;
+    mSpotLight->mColor = Color( 0.0f, 1.0f, 1.0f );
+    mSpotLight->mPosition = Vector3( 10.0f, 20.0f, -10.0f );
+    mSpotLight->mIntensity = 0.8f;
+    mSpotLight->mDirection = Vector3( 0.0f, -1.0f, 1.0f );
+    mSpotLight->mRadius = 60.0f;
     mSpotLight->mDecay = 2.0f;
-    mSpotLight->mInnerAngle = 10.0f;
-    mSpotLight->mOuterAngle = 20.0f;
+    mSpotLight->mInnerAngle = 0.0f;
+    mSpotLight->mOuterAngle = 25.0f;
     mLightManager->AddSpotLight( mSpotLight.get() );
 
     auto& resMgr = ResourceManager::GetInstance();
@@ -165,6 +167,8 @@ bool Renderer::Init()
     mModelCamera = std::make_unique<Camera>();
     mModelCamera->mPosition = Vector3( 0.0f, 10.0f, -15.0f );
 
+    mDebugCamera = std::make_unique<DebugCamera>();
+
     // ソーターの初期化
     mSorter = std::make_unique<MeshSorter>();
     if( !mSorter->Initialize( mModelCamera.get() ) )
@@ -225,21 +229,31 @@ void Renderer::Term()
     }
 }
 
+// 入力処理
+void Renderer::Input( const InputState& state )
+{
+    if( mUseDebugCamera )
+    {
+        mDebugCamera->Input( state );
+    }
+}
+
 // GUIの更新
 void Renderer::UpdateGUI()
 {
     ImGui::Begin( "Renderer" );
 
     // カメラ
-    ImGui::SetNextItemOpen( true );
+    ImGui::SetNextItemOpen( true, ImGuiCond_Once );
     if( ImGui::TreeNode( "Camera" ) )
     {
         ImGui::DragFloat3( "Position", &mModelCamera->mPosition.x, 0.01f );
+        ImGui::Checkbox( "Use Debug Camera", &mUseDebugCamera );
         ImGui::TreePop();
     }
 
     // 平行光源
-    ImGui::SetNextItemOpen( true );
+    ImGui::SetNextItemOpen( true, ImGuiCond_Once );
     if( ImGui::TreeNode( "Directional Light" ) )
     {
         ImGui::ColorEdit3( "Color", &mDirectionalLight->mColor.r );
@@ -249,7 +263,7 @@ void Renderer::UpdateGUI()
     }
 
     // 点光源
-    ImGui::SetNextItemOpen( true );
+    ImGui::SetNextItemOpen( true, ImGuiCond_Once );
     if( ImGui::TreeNode( "Point Light" ) )
     {
         ImGui::ColorEdit3( "Color", &mPointLight->mColor.r );
@@ -261,7 +275,7 @@ void Renderer::UpdateGUI()
     }
 
     // スポットライト
-    ImGui::SetNextItemOpen( true );
+    ImGui::SetNextItemOpen( true, ImGuiCond_Once );
     if( ImGui::TreeNode( "Spot Light" ) )
     {
         ImGui::ColorEdit3( "Color", &mSpotLight->mColor.r );
@@ -282,7 +296,16 @@ void Renderer::UpdateGUI()
 void Renderer::Update()
 {
     mSpriteCamera->Update();
-    mModelCamera->Update();
+    if( !mUseDebugCamera )
+    {
+        mModelCamera->Update();
+        mSorter->SetCamera( mModelCamera.get() );
+    }
+    else
+    {
+        mDebugCamera->Update();
+        mSorter->SetCamera( mDebugCamera->GetCamera() );
+    }
 
     // UVスクロール
     mStarSprite->mUVTranslate += Vector2( 0.001f, -0.001f );
