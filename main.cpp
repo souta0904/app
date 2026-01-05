@@ -111,9 +111,9 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         auto currTime = std::chrono::steady_clock::now();
         std::chrono::duration<float> elapsed = currTime - prevTime;
         deltaTime = elapsed.count();
-        if( deltaTime > 0.05f )
+        if( deltaTime > 0.1f )
         {
-            deltaTime = 0.05f;
+            deltaTime = 0.1f;
         }
         prevTime = currTime;
 
@@ -166,7 +166,10 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         ImGui::ColorPicker3( "Clear Color", &clearColor.r );
         dxBase.SetClearColor( clearColor );
         ImGui::Text( std::format( "Avg FPS: {:.1f}", avgFPS ).c_str() );
-        ImGui::Text( std::format( "Delta time: {:.3f} ms", deltaTime ).c_str() );
+        ImGui::Text( std::format( "Delta time: {:.3f} ms", deltaTime * 1000.0f ).c_str() );
+        auto useVSync = dxBase.GetUseVSync();
+        ImGui::Checkbox( "Use VSync", &useVSync );
+        dxBase.SetUseVSync( useVSync );
         // ImGui::Image( texture->GetSRVHdl()->mGPU.ptr, ImVec2( 256.0f, 256.0f ) );
         ImGui::End();
 

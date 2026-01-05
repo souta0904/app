@@ -28,6 +28,7 @@ DirectXBase::DirectXBase()
     , mBackBuffIdx( 0 )
     , mClearColor( 0.0f, 0.0f, 0.5f )
     , mAdapterName()
+    , mUseVSync( true )
 {
 }
 
@@ -116,7 +117,7 @@ void DirectXBase::EndDraw()
     mCmdList->Close();
     mCmdQueue->Execute( mCmdList.get(), mBackBuffIdx );
 
-    mSwapChain->Present( 1, 0 );
+    mSwapChain->Present( mUseVSync ? 1 : 0, 0 );
 
     // コマンドの実行を待つ
     mCmdQueue->WaitGPU( mBackBuffIdx );

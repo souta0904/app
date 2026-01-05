@@ -51,6 +51,8 @@ class DirectXBase
     Color mClearColor;
     // アダプタの名前
     std::wstring mAdapterName;
+    // 垂直同期するか
+    bool mUseVSync;
 
    public:
     /// <summary>
@@ -140,8 +142,14 @@ class DirectXBase
     /// <summary>アダプタの名前を取得</summary>
     const std::wstring& GetAdapterName() const { return mAdapterName; }
 
+    /// <summary>垂直同期するかを取得</summary>
+    bool GetUseVSync() const { return mUseVSync; }
+
     /// <summary>クリアカラーを設定</summary>
     void SetClearColor( const Color& clearColor ) { mClearColor = clearColor; }
+
+    /// <summary>垂直同期するかを設定</summary>
+    void SetUseVSync( bool useVSync ) { mUseVSync = useVSync; }
 
    private:
     /// <summary>
