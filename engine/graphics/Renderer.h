@@ -131,7 +131,7 @@ class Renderer
     /// <summary>
     /// 更新
     /// </summary>
-    void Update();
+    void Update( float deltaTime );
 
     /// <summary>
     /// 描画

@@ -202,6 +202,8 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     <ClCompile Include="engine\graphics\model\ModelInstance.cpp" />
     <ClCompile Include="engine\graphics\model\ModelBase.cpp" />
     <ClCompile Include="engine\input\Mouse.cpp" />
+    <ClCompile Include="engine\utils\Timer.cpp" />
+    <ClCompile Include="engine\utils\Stopwatch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\graphics\DebugCamera.h" />
@@ -255,6 +257,8 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     <ClInclude Include="engine\input\Mouse.h" />
     <ClInclude Include="engine\input\Gamepad.h" />
     <ClInclude Include="engine\input\InputBase.h" />
+    <ClInclude Include="engine\utils\Timer.h" />
+    <ClInclude Include="engine\utils\Stopwatch.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="external\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

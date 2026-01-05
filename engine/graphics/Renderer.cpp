@@ -293,7 +293,7 @@ void Renderer::UpdateGUI()
 }
 
 // 更新
-void Renderer::Update()
+void Renderer::Update( float deltaTime )
 {
     mSpriteCamera->Update();
     if( !mUseDebugCamera )
@@ -308,14 +308,14 @@ void Renderer::Update()
     }
 
     // UVスクロール
-    mStarSprite->mUVTranslate += Vector2( 0.001f, -0.001f );
+    mStarSprite->mUVTranslate += Vector2( 0.1f * deltaTime, -0.1f * deltaTime );
 
     // TODO: デルタタイムに差し替え
-    mBotModel1->Update( 1.0f / 60.0f );
-    mBotModel2->Update( 1.0f / 60.0f );
-    mBoxModel->Update( 1.0f / 60.0f );
-    mSphereModel->Update( 1.0f / 60.0f );
-    mFloorModel->Update( 1.0f / 60.0f );
+    mBotModel1->Update( deltaTime );
+    mBotModel2->Update( deltaTime );
+    mBoxModel->Update( deltaTime );
+    mSphereModel->Update( deltaTime );
+    mFloorModel->Update( deltaTime );
 }
 
 // 描画

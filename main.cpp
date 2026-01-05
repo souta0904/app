@@ -1,4 +1,6 @@
+#include <chrono>
 #include <format>
+#include <deque>
 
 #include "core/DirectXBase.h"
 #include "core/DirectXCommonSettings.h"
@@ -98,12 +100,43 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         LOG_INFO( "Input base initialized successfully." );
     }
 
+    float deltaTime = 0.0f;
+    std::chrono::steady_clock::time_point prevTime = std::chrono::steady_clock::now();
+    std::deque<float> deltaTimes;
+    const size_t kSampleCount = 30;
+
     // ゲームループ
     while( !window.ProcessMessage() )
     {
+        auto currTime = std::chrono::steady_clock::now();
+        std::chrono::duration<float> elapsed = currTime - prevTime;
+        deltaTime = elapsed.count();
+        if( deltaTime > 0.05f )
+        {
+            deltaTime = 0.05f;
+        }
+        prevTime = currTime;
+
+        deltaTimes.push_back( deltaTime );
+        if (deltaTimes.size() > kSampleCount)
+        {
+            deltaTimes.pop_front();
+        }
+
+        auto avgFPS = 0.0f;
+        if( deltaTimes.size() > 0 )
+        {
+            auto total = 0.0f;
+            for( auto dt : deltaTimes )
+            {
+                total += dt;
+            }
+            avgFPS = static_cast<float>( deltaTimes.size() ) / total;
+        }
+
         inputBase.Update();
         // Escキーで終了
-        if (inputBase.GetState().mKeyboard.GetKeyUp(DIK_ESCAPE))
+        if( inputBase.GetState().mKeyboard.GetKeyUp( DIK_ESCAPE ) )
         {
             break;
         }
@@ -132,14 +165,16 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         auto clearColor = dxBase.GetClearColor();
         ImGui::ColorPicker3( "Clear Color", &clearColor.r );
         dxBase.SetClearColor( clearColor );
-        //ImGui::Image( texture->GetSRVHdl()->mGPU.ptr, ImVec2( 256.0f, 256.0f ) );
+        ImGui::Text( std::format( "Avg FPS: {:.1f}", avgFPS ).c_str() );
+        ImGui::Text( std::format( "Delta time: {:.3f} ms", deltaTime ).c_str() );
+        // ImGui::Image( texture->GetSRVHdl()->mGPU.ptr, ImVec2( 256.0f, 256.0f ) );
         ImGui::End();
 
         renderer.UpdateGUI();
 
         editorBase.End();
 
-        renderer.Update();
+        renderer.Update( deltaTime );
 
         dxBase.BeginDraw();
 
