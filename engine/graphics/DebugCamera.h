@@ -16,8 +16,8 @@ class DebugCamera
     float mYaw;
     // ピッチ
     float mPitch;
-    // パン速度
-    Vector2 mPanVel;
+    // 平行移動速度
+    Vector2 mVelocity;
     // 距離
     float mDistance;
     // 注視点

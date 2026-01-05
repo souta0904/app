@@ -9,7 +9,7 @@ DebugCamera::DebugCamera()
     : mCamera( nullptr )
     , mYaw( 0.0f )
     , mPitch( 10.0f * MathUtil::kDegToRad )
-    , mPanVel( Vector2::kZero )
+    , mVelocity( Vector2::kZero )
     , mDistance( 20.0f )
     , mTarget( Vector3( 0.0f, 5.0f, 0.0f ) )
 {
@@ -27,18 +27,18 @@ void DebugCamera::Input( const InputState& state )
     {
         const auto kRotateSpeed = 0.002f;
         mYaw += moveDelta.x * kRotateSpeed;
-        mPitch += moveDelta.y * kRotateSpeed;
+        mPitch += moveDelta.y * kRotateSpeed;  // moveDelta.yは上がマイナス
     }
 
-    // パン
-    mPanVel = Vector2::kZero;
+    // 平行移動
+    mVelocity = Vector2::kZero;
     if( mouse.GetButton( 2 ) )
     {
         const auto kPanSpeed = 0.05f;
-        mPanVel = Vector2( -moveDelta.x * kPanSpeed, moveDelta.y * kPanSpeed );
+        mVelocity = Vector2( -moveDelta.x * kPanSpeed, moveDelta.y * kPanSpeed );
     }
 
-    // ドリー
+    // ドリーイン/ドリーアウト
     const auto kDollySpeed = 0.002f;
     mDistance -= mouse.GetWheelDelta() * kDollySpeed;
     const auto kMinDistance = 0.0f;
@@ -49,18 +49,16 @@ void DebugCamera::Input( const InputState& state )
 // 更新
 void DebugCamera::Update()
 {
-    const auto kPitchLimit = 89.0f * MathUtil::kDegToRad;
+    const auto kPitchLimit = 85.0f * MathUtil::kDegToRad;
     mPitch = std::clamp( mPitch, -kPitchLimit, kPitchLimit );
 
-    // 回転
     Quaternion yawRot( Vector3( 0.0f, 1.0f, 0.0f ), mYaw );
     Quaternion pitchRot( Vector3( 1.0f, 0.0f, 0.0f ), mPitch );
     auto cameraRot = pitchRot * yawRot;
     cameraRot.Normalize();
     auto invRot = Conjugate( cameraRot );
 
-    // パン
-    mTarget += Vector3( mPanVel.x, mPanVel.y, 0.0f ) * invRot;
+    mTarget += Vector3( mVelocity.x, mVelocity.y, 0.0f ) * invRot;
 
     mCamera->mPosition = mTarget + Vector3( 0.0f, 0.0f, -mDistance ) * invRot;
     mCamera->mRotate = cameraRot;
