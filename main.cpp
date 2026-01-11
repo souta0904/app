@@ -1,6 +1,6 @@
 #include <chrono>
-#include <format>
 #include <deque>
+#include <format>
 
 #include "core/DirectXBase.h"
 #include "core/DirectXCommonSettings.h"
@@ -100,14 +100,20 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         LOG_INFO( "Input base initialized successfully." );
     }
 
-    float deltaTime = 0.0f;
     std::chrono::steady_clock::time_point prevTime = std::chrono::steady_clock::now();
+    auto deltaTime = 0.0f;
+
     std::deque<float> deltaTimes;
-    const size_t kSampleCount = 30;
+    auto totalDeltaTime = 0.0f;
+    constexpr auto kFPSInterval = 0.5f;
+    auto avgDeltaTime = 0.0f;
+    auto minDeltaTime = FLT_MAX;
+    auto maxDeltaTime = 0.0f;
 
     // ゲームループ
     while( !window.ProcessMessage() )
     {
+        // デルタタイムを計測
         auto currTime = std::chrono::steady_clock::now();
         std::chrono::duration<float> elapsed = currTime - prevTime;
         deltaTime = elapsed.count();
@@ -117,42 +123,34 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         }
         prevTime = currTime;
 
+        // データ計算
         deltaTimes.push_back( deltaTime );
-        if (deltaTimes.size() > kSampleCount)
+        totalDeltaTime += deltaTime;
+        if( totalDeltaTime >= kFPSInterval )
         {
-            deltaTimes.pop_front();
-        }
-
-        auto avgFPS = 0.0f;
-        if( deltaTimes.size() > 0 )
-        {
-            auto total = 0.0f;
-            for( auto dt : deltaTimes )
+            avgDeltaTime = totalDeltaTime / deltaTimes.size();
+            if( !deltaTimes.empty() )
             {
-                total += dt;
+                minDeltaTime = deltaTimes[0];
+                maxDeltaTime = deltaTimes[0];
+                for( auto dt : deltaTimes )
+                {
+                    if( minDeltaTime > dt )
+                    {
+                        minDeltaTime = dt;
+                    }
+                    if( maxDeltaTime < dt )
+                    {
+                        maxDeltaTime = dt;
+                    }
+                }
             }
-            avgFPS = static_cast<float>( deltaTimes.size() ) / total;
+
+            deltaTimes.clear();
+            totalDeltaTime = 0.0f;
         }
 
         inputBase.Update();
-        // Escキーで終了
-        if( inputBase.GetState().mKeyboard.GetKeyUp( DIK_ESCAPE ) )
-        {
-            break;
-        }
-
-        /*
-        if( inputBase.GetState().mKeyboard.GetKey( DIK_SPACE ) ||
-            inputBase.GetState().mMouse.GetButton( 0 ) ||
-            inputBase.GetState().mGamepad.GetButton( XINPUT_GAMEPAD_A ) )
-        {
-            dxBase.SetClearColor( Color::kBlack );
-        }
-        else
-        {
-            dxBase.SetClearColor( Color::kBlue );
-        }
-        */
 
         renderer.Input( inputBase.GetState() );
 
@@ -165,7 +163,10 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         auto clearColor = dxBase.GetClearColor();
         ImGui::ColorPicker3( "Clear Color", &clearColor.r );
         dxBase.SetClearColor( clearColor );
-        ImGui::Text( std::format( "Avg FPS: {:.1f}", avgFPS ).c_str() );
+        ImGui::Text( std::format( "FPS ( Avg ) : {:.1f}", 1.0f / avgDeltaTime ).c_str() );
+        ImGui::Text( std::format( "FPS ( Max ) : {:.1f}", 1.0f / minDeltaTime ).c_str() );
+        ImGui::Text( std::format( "FPS ( Min ) : {:.1f}", 1.0f / maxDeltaTime ).c_str() );
+        ImGui::Text( std::format( "Delta time ( Avg ) : {:.3f} ms", avgDeltaTime * 1000.0f ).c_str() );
         ImGui::Text( std::format( "Delta time: {:.3f} ms", deltaTime * 1000.0f ).c_str() );
         auto useVSync = dxBase.GetUseVSync();
         ImGui::Checkbox( "Use VSync", &useVSync );

@@ -121,8 +121,8 @@ bool Texture::Upload( const DirectX::ScratchImage& mipChain )
 
     // コマンドリストを実行
     cmdList->Close();
-    cmdQueue->Execute( cmdList, 0 );
-    cmdQueue->WaitGPU( 0 );
+    cmdQueue->Execute( cmdList );
+    cmdQueue->WaitGPU();
 
     return true;
 }

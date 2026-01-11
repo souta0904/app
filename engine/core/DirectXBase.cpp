@@ -59,7 +59,7 @@ bool DirectXBase::Init()
 // 終了処理
 void DirectXBase::Term()
 {
-    mCmdQueue->WaitGPUTerm( mBackBuffIdx );
+    mCmdQueue->WaitGPUTerm();
 
     // デスクリプタハンドルを解放
     if( mRTVHeap )
@@ -82,6 +82,9 @@ void DirectXBase::Term()
 // 描画開始
 void DirectXBase::BeginDraw()
 {
+    // コマンドの実行を待つ
+    mCmdQueue->WaitGPU();
+
     // コマンドをリセット
     mCmdList->Reset( mBackBuffIdx );
 
@@ -115,12 +118,9 @@ void DirectXBase::EndDraw()
 
     // コマンドを実行
     mCmdList->Close();
-    mCmdQueue->Execute( mCmdList.get(), mBackBuffIdx );
+    mCmdQueue->Execute( mCmdList.get() );
 
     mSwapChain->Present( mUseVSync ? 1 : 0, 0 );
-
-    // コマンドの実行を待つ
-    mCmdQueue->WaitGPU( mBackBuffIdx );
 
     mBackBuffIdx = mSwapChain->GetCurrentBackBufferIndex();
 }
@@ -230,7 +230,7 @@ bool DirectXBase::CreateDevice()
 bool DirectXBase::CreateCmdQueue()
 {
     mCmdQueue = std::make_unique<CommandQueue>();
-    if( !mCmdQueue->Create( CommandList::Type::Direct, kBackBuffCount ) )
+    if( !mCmdQueue->Create( CommandList::Type::Direct ) )
     {
         LOG_ERROR( "Failed to create CommandQueue." );
         return false;

@@ -65,7 +65,7 @@ void CommandList::Close()
 // リセット
 void CommandList::Reset( uint32_t idx )
 {
-    if( idx < 0 || idx >= mCmdAllocators.size() ) return;
+    if( idx >= mCmdAllocators.size() ) return;
 
     if( !mCmdAllocators[idx] || !mCmdList ) return;
 
