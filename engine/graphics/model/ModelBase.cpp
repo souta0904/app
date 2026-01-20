@@ -101,18 +101,16 @@ void ModelBase::CreateGraphicsPSO( uint64_t psoKey )
     init.mBlendState = DirectXCommonSettings::gBlendNone;
 
     // ラスタライザ
+    auto rasterizerState = DirectXCommonSettings::gRasterizerDefault;
     if( ( materialFlags & MaterialFlags::NoCulling ) == MaterialFlags::NoCulling )
     {
-        init.mRasterizerState = DirectXCommonSettings::gRasterizerNoCulling;
+        rasterizerState.CullMode = D3D12_CULL_MODE_NONE;
     }
-    else if( ( materialFlags & MaterialFlags::Wireframe ) == MaterialFlags::Wireframe )
+    if( ( materialFlags & MaterialFlags::Wireframe ) == MaterialFlags::Wireframe )
     {
-        init.mRasterizerState = DirectXCommonSettings::gRasterizerWireframe;
+        rasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
     }
-    else
-    {
-        init.mRasterizerState = DirectXCommonSettings::gRasterizerDefault;
-    }
+    init.mRasterizerState = rasterizerState;
 
     // 深度ステンシル
     init.mDepthStencilState = DirectXCommonSettings::gDepthDefault;

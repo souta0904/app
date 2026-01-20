@@ -107,10 +107,26 @@ void ModelInstance::Draw( MeshSorter* sorter, const Matrix4& worldMat )
     }
 }
 
+// マテリアルを取得
+Material* ModelInstance::GetMaterial( uint32_t idx )
+{
+    if( idx >= mMaterials.size() ) return nullptr;
+
+    auto material = mMaterials[idx];
+    if( !material )
+    {
+        if( idx >= mModelData->mMaterials.size() ) return nullptr;
+
+        material = mModelData->mMaterials[idx].get();
+    }
+
+    return material;
+}
+
 // マテリアルを設定
 void ModelInstance::SetMaterial( uint32_t idx, Material* material )
 {
-    if( idx < 0 && idx >= mMaterials.size() ) return;
+    if( idx >= mMaterials.size() ) return;
 
     mMaterials[idx] = material;
 }

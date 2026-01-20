@@ -82,9 +82,6 @@ void DirectXBase::Term()
 // 描画開始
 void DirectXBase::BeginDraw()
 {
-    // コマンドの実行を待つ
-    mCmdQueue->WaitGPU();
-
     // コマンドをリセット
     mCmdList->Reset( mBackBuffIdx );
 
@@ -121,6 +118,9 @@ void DirectXBase::EndDraw()
     mCmdQueue->Execute( mCmdList.get() );
 
     mSwapChain->Present( mUseVSync ? 1 : 0, 0 );
+
+    // コマンドの実行を待つ
+    mCmdQueue->WaitGPU();
 
     mBackBuffIdx = mSwapChain->GetCurrentBackBufferIndex();
 }

@@ -107,7 +107,7 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
     auto totalDeltaTime = 0.0f;
     constexpr auto kFPSInterval = 0.5f;
     auto avgDeltaTime = 0.0f;
-    auto minDeltaTime = FLT_MAX;
+    auto minDeltaTime = 0.0f;
     auto maxDeltaTime = 0.0f;
 
     // ゲームループ
@@ -157,15 +157,15 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         editorBase.Begin();
 
         // imguiテストウィンドウ
-        ImGui::Begin( "Test" );
+        ImGui::Begin( "Info" );
         auto text = StringHelper::Convert( std::format( L"Adapter Name: {}", dxBase.GetAdapterName() ) );
         ImGui::Text( text.c_str() );
         auto clearColor = dxBase.GetClearColor();
         ImGui::ColorPicker3( "Clear Color", &clearColor.r );
         dxBase.SetClearColor( clearColor );
         ImGui::Text( std::format( "FPS ( Avg ) : {:.1f}", 1.0f / avgDeltaTime ).c_str() );
-        ImGui::Text( std::format( "FPS ( Max ) : {:.1f}", 1.0f / minDeltaTime ).c_str() );
-        ImGui::Text( std::format( "FPS ( Min ) : {:.1f}", 1.0f / maxDeltaTime ).c_str() );
+        ImGui::Text( std::format( "Max FPS : {:.1f}", 1.0f / minDeltaTime ).c_str() );
+        ImGui::Text( std::format( "Min FPS : {:.1f}", 1.0f / maxDeltaTime ).c_str() );
         ImGui::Text( std::format( "Delta time ( Avg ) : {:.3f} ms", avgDeltaTime * 1000.0f ).c_str() );
         ImGui::Text( std::format( "Delta time: {:.3f} ms", deltaTime * 1000.0f ).c_str() );
         auto useVSync = dxBase.GetUseVSync();

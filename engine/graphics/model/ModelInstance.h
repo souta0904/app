@@ -61,11 +61,21 @@ class ModelInstance
     void Draw( MeshSorter* sorter, const Matrix4& worldMat );
 
     /// <summary>
+    /// マテリアルを取得
+    /// </summary>
+    /// <param name="idx">インデックス</param>
+    /// <returns>マテリアル</returns>
+    Material* GetMaterial( uint32_t idx );
+
+    /// <summary>
     /// マテリアルを設定
     /// </summary>
     /// <param name="idx">インデックス</param>
     /// <param name="material">マテリアル</param>
     void SetMaterial( uint32_t idx, Material* material );
+
+    /// <summary>マテリアル数を取得</summary>
+    uint32_t GetMaterialCount() const { return static_cast<uint32_t>( mMaterials.size() ); }
 
    private:
     /*
