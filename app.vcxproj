@@ -204,6 +204,7 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     <ClCompile Include="engine\input\Mouse.cpp" />
     <ClCompile Include="engine\utils\Timer.cpp" />
     <ClCompile Include="engine\utils\Stopwatch.cpp" />
+    <ClCompile Include="engine\graphics\PrimitiveRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\graphics\DebugCamera.h" />
@@ -216,6 +217,7 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     <ClInclude Include="engine\graphics\model\PSOKey.h" />
     <ClInclude Include="engine\input\InputState.h" />
     <ClInclude Include="engine\math\MathUtil.h" />
+    <ClInclude Include="engine\math\Primitive.h" />
     <ClInclude Include="engine\math\Quaternion.h" />
     <ClInclude Include="engine\math\Rect.h" />
     <ClInclude Include="engine\utils\EnumFlags.h" />
@@ -259,6 +261,7 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     <ClInclude Include="engine\input\InputBase.h" />
     <ClInclude Include="engine\utils\Timer.h" />
     <ClInclude Include="engine\utils\Stopwatch.h" />
+    <ClInclude Include="engine\graphics\PrimitiveRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="external\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
@@ -325,6 +328,22 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="assets\shader\PrimitivePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="assets\shader\PrimitiveVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shader\Model.hlsli">
@@ -336,6 +355,10 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
     <None Include="assets\shader\Sprite.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="assets\shader\Primitive.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>

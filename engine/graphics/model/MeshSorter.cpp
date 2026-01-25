@@ -19,7 +19,7 @@ MeshSorter::MeshSorter()
 }
 
 // 初期化
-bool MeshSorter::Initialize( Camera* camera )
+bool MeshSorter::Init( Camera* camera )
 {
     mCamera = camera;
 

@@ -6,6 +6,7 @@
 
 #include "Camera.h"
 #include "DebugCamera.h"
+#include "PrimitiveRenderer.h"
 #include "Sprite.h"
 #include "core/GraphicsPSO.h"
 #include "core/RootSignature.h"
@@ -37,6 +38,8 @@ class Renderer
     SpriteBase* mSpriteBase;
     // モデル基盤
     ModelBase* mModelBase;
+    // プリミティブ描画
+    PrimitiveRenderer* mPrimitiveRenderer;
 
     // カメラ
     std::unique_ptr<Camera> mSpriteCamera;

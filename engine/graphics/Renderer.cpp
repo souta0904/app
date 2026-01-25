@@ -20,6 +20,7 @@ Renderer::Renderer()
     , mSpotLight( nullptr )
     , mSpriteBase( nullptr )
     , mModelBase( nullptr )
+    , mPrimitiveRenderer( nullptr )
     , mSpriteCamera( nullptr )
     , mModelCamera( nullptr )
     , mUseDebugCamera( false )
@@ -171,7 +172,7 @@ bool Renderer::Init()
 
     // ソーターの初期化
     mSorter = std::make_unique<MeshSorter>();
-    if( !mSorter->Initialize( mModelCamera.get() ) )
+    if( !mSorter->Init( mModelCamera.get() ) )
     {
         return false;
     }
@@ -190,6 +191,22 @@ bool Renderer::Init()
 
     mFloorModel = std::make_unique<ModelInstance>();
     mFloorModel->Create( resMgr.GetModel( "assets/model/floor/floor.glb" ) );
+
+    auto* primitiveVS = resMgr.GetShader( "assets/shader/PrimitiveVS.hlsl", "vs_6_0" );
+    auto* primitivePS = resMgr.GetShader( "assets/shader/PrimitivePS.hlsl", "ps_6_0" );
+
+    // プリミティブ描画の初期化
+    mPrimitiveRenderer = &PrimitiveRenderer::GetInstance();
+    if( !mPrimitiveRenderer->Init( primitiveVS, primitivePS, mSpriteCamera.get(), mModelCamera.get() ) )
+    {
+        LOG_ERROR( "Failed to initialize primitive renderer." );
+        MessageBox( nullptr, L"Failed to initialize primitive renderer.", L"Error", MB_OK | MB_ICONERROR );
+        return false;
+    }
+    else
+    {
+        LOG_INFO( "Primitive renderer initialized successfully." );
+    }
 
     return true;
 }
@@ -300,11 +317,13 @@ void Renderer::Update( float deltaTime )
     {
         mModelCamera->Update();
         mSorter->SetCamera( mModelCamera.get() );
+        mPrimitiveRenderer->SetCamera3D( mModelCamera.get() );
     }
     else
     {
         mDebugCamera->Update();
         mSorter->SetCamera( mDebugCamera->GetCamera() );
+        mPrimitiveRenderer->SetCamera3D( mDebugCamera->GetCamera() );
     }
 
     // UVスクロール
@@ -336,6 +355,67 @@ void Renderer::Draw( CommandList* cmdList )
     cmdList->DrawInstanced( kVertexCount );
 
     DrawModel( cmdList );
+
+    mPrimitiveRenderer->DrawLine2D( Vector2( 150.0f, 150.0f ), Vector2( 50.0f, 50.0f ), Color::kWhite );
+    mPrimitiveRenderer->DrawTriangle( Vector2( 200.0f, 150.0f ), Vector2( 300.0f, 50.0f ), Vector2( 300.0f, 150.0f ), Color::kRed );
+    mPrimitiveRenderer->DrawQuad( Vector2( 350.0f, 50.0f ), Vector2( 450.0f, 50.0f ), Vector2( 500.0f, 150.0f ), Vector2( 400.0f, 150.0f ), Color::kGreen );
+    mPrimitiveRenderer->DrawBox( Vector2( 550.0f, 50.0f ), Vector2( 100.0f, 100.0f ), Color::kBlue );
+
+    AABB2D aabb2D = {};
+    aabb2D.mMin = Vector2( 700.0f, 50.0f );
+    aabb2D.mMax = Vector2( 800.0f, 150.0f );
+    mPrimitiveRenderer->DrawAABB( aabb2D, Color::kYellow );
+
+    OBB2D obb2D = {};
+    obb2D.mCenter = Vector2( 900.0f, 100.0f );
+    obb2D.mHalfSize = Vector2( 50.0f, 25.0f );
+    auto rad = -20.0f * MathUtil::kDegToRad;
+    auto c = std::cos( rad );
+    auto s = std::sin( rad );
+    obb2D.mAxes[0] = Normalize( Vector2( c, s ) );
+    obb2D.mAxes[1] = Normalize( Vector2( -s, c ) );
+    mPrimitiveRenderer->DrawOBB( obb2D, Color::kCyan );
+
+    Circle circle = {};
+    circle.mCenter = Vector2( 1050.0f, 100.0f );
+    circle.mRadius = 50.0f;
+    mPrimitiveRenderer->DrawCircle( circle, Color::kMagenta );
+
+    Capsule2D capsule2D = {};
+    capsule2D.mSegment.mStart = Vector2( 1170.0f, 70.0f );
+    capsule2D.mSegment.mEnd = Vector2( 1230.0f, 130.0f );
+    capsule2D.mRadius = 20.0f;
+    mPrimitiveRenderer->DrawCapsule( capsule2D, Color::kWhite );
+
+    AABB3D aabb3D = {};
+    aabb3D.mMin = Vector3( -23.0f, 2.0f, 12.0f );
+    aabb3D.mMax = Vector3( -17.0f, 8.0f, 18.0f );
+    mPrimitiveRenderer->DrawAABB( aabb3D, Color::kRed );
+
+    OBB3D obb3D = {};
+    obb3D.mCenter = Vector3( -7.5f, 5.0f, 15.0f );
+    obb3D.mHalfSize = Vector3( 2.5f, 2.5f, 7.5f );
+    c = std::cos( rad );
+    s = std::sin( rad );
+    obb3D.mAxes[0] = Normalize( Vector3( c, 0.0f, -s ) );
+    obb3D.mAxes[1] = Vector3::kUnitY;
+    obb3D.mAxes[2] = Normalize( Vector3( s, 0.0f, c ) );
+    mPrimitiveRenderer->DrawOBB( obb3D, Color::kGreen );
+
+    Sphere sphere = {};
+    sphere.mCenter = Vector3( 5.0f, 5.0f, 15.0f );
+    sphere.mRadius = 5.0f;
+    mPrimitiveRenderer->DrawSphere( sphere, Color::kBlue );
+
+    Capsule3D capsule3D = {};
+    capsule3D.mSegment.mStart = Vector3( 18.0f, 3.0f,13.0f );
+    capsule3D.mSegment.mEnd = Vector3( 22.0f, 7.0f, 17.0f );
+    capsule3D.mRadius = 3.0f;
+    mPrimitiveRenderer->DrawCapsule( capsule3D, Color::kYellow );
+
+    mPrimitiveRenderer->DrawGrid();
+    mPrimitiveRenderer->Render3D( cmdList );
+    mPrimitiveRenderer->Render2D( cmdList );
 }
 
 // モデルを描画

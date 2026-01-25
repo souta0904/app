@@ -53,7 +53,7 @@ class MeshSorter
     /// </summary>
     /// <param name="camera">カメラ</param>
     /// <returns>成否</returns>
-    bool Initialize( Camera* camera );
+    bool Init( Camera* camera );
 
     /// <summary>
     /// 描画アイテムの追加

@@ -122,6 +122,9 @@
     <ClCompile Include="engine\utils\Stopwatch.cpp">
       <Filter>engine\utils</Filter>
     </ClCompile>
+    <ClCompile Include="engine\graphics\PrimitiveRenderer.cpp">
+      <Filter>engine\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
@@ -315,6 +318,10 @@
     <ClInclude Include="engine\utils\Stopwatch.h">
       <Filter>engine\utils</Filter>
     </ClInclude>
+    <ClInclude Include="engine\graphics\PrimitiveRenderer.h">
+      <Filter>engine\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Primitive.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shader\SimplePS.hlsl">
@@ -338,6 +345,12 @@
     <FxCompile Include="assets\shader\NoTextureModelPS.hlsl">
       <Filter>shader</Filter>
     </FxCompile>
+    <FxCompile Include="assets\shader\PrimitiveVS.hlsl">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shader\PrimitivePS.hlsl">
+      <Filter>shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shader\Simple.hlsli">
@@ -347,6 +360,9 @@
       <Filter>shader</Filter>
     </None>
     <None Include="assets\shader\Model.hlsli">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="assets\shader\Primitive.hlsli">
       <Filter>shader</Filter>
     </None>
   </ItemGroup>
