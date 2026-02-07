@@ -59,6 +59,7 @@ class Renderer
     std::unique_ptr<ModelInstance> mBoxModel;
     std::unique_ptr<ModelInstance> mSphereModel;
     std::unique_ptr<ModelInstance> mFloorModel;
+    float mRotate;
 
     // テスト
     static const uint32_t kVertexCount = 3;

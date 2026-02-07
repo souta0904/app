@@ -415,6 +415,42 @@ void PrimitiveRenderer::DrawCapsule( const Capsule3D& capsule, const Color& colo
     }
 }
 
+// 視錐台の描画
+void PrimitiveRenderer::DrawFrustum( const Matrix4& vpMat, const Color& color )
+{
+    Vector3 v[8] = {};
+    v[0] = Vector3( -1.0f, -1.0f, 0.0f );
+    v[1] = Vector3( +1.0f, -1.0f, 0.0f );
+    v[2] = Vector3( +1.0f, +1.0f, 0.0f );
+    v[3] = Vector3( -1.0f, +1.0f, 0.0f );
+    v[4] = Vector3( -1.0f, -1.0f, 1.0f );
+    v[5] = Vector3( +1.0f, -1.0f, 1.0f );
+    v[6] = Vector3( +1.0f, +1.0f, 1.0f );
+    v[7] = Vector3( -1.0f, +1.0f, 1.0f );
+
+    auto invMat = Inverse( vpMat );
+    for (uint32_t i = 0; i < 8; ++i)
+    {
+        auto p = Vector4( v[i].x, v[i].y, v[i].z, 1.0f ) * invMat;
+        v[i] = Vector3( p.x, p.y, p.z ) / p.w;
+    }
+
+    DrawLine3D( v[0], v[1], color );
+    DrawLine3D( v[1], v[2], color );
+    DrawLine3D( v[2], v[3], color );
+    DrawLine3D( v[3], v[0], color );
+
+    DrawLine3D( v[4], v[5], color );
+    DrawLine3D( v[5], v[6], color );
+    DrawLine3D( v[6], v[7], color );
+    DrawLine3D( v[7], v[4], color );
+
+    DrawLine3D( v[0], v[4], color );
+    DrawLine3D( v[1], v[5], color );
+    DrawLine3D( v[2], v[6], color );
+    DrawLine3D( v[3], v[7], color );
+}
+
 // グリッドの描画
 void PrimitiveRenderer::DrawGrid( uint32_t halfGridCount, float interval )
 {

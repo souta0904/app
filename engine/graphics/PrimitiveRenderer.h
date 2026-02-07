@@ -201,6 +201,13 @@ class PrimitiveRenderer
     void DrawCapsule( const Capsule3D& capsule, const Color& color );
 
     /// <summary>
+    /// 視錐台の描画
+    /// </summary>
+    /// <param name="vpMat"></param>
+    /// <param name="color"></param>
+    void DrawFrustum( const Matrix4& vpMat, const Color& color );
+
+    /// <summary>
     /// グリッドの描画
     /// </summary>
     /// <param name="halfGridCount">片側のグリッド数</param>

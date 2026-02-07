@@ -10,7 +10,7 @@ DebugCamera::DebugCamera()
     , mYaw( 0.0f )
     , mPitch( 10.0f * MathUtil::kDegToRad )
     , mVelocity( Vector2::kZero )
-    , mDistance( 20.0f )
+    , mDistance( 100.0f )
     , mTarget( Vector3( 0.0f, 5.0f, 0.0f ) )
 {
     mCamera = std::make_unique<Camera>();
@@ -34,15 +34,15 @@ void DebugCamera::Input( const InputState& state )
     mVelocity = Vector2::kZero;
     if( mouse.GetButton( 2 ) )
     {
-        const auto kPanSpeed = 0.05f;
+        const auto kPanSpeed = 0.1f;
         mVelocity = Vector2( -moveDelta.x * kPanSpeed, moveDelta.y * kPanSpeed );
     }
 
     // ドリーイン/ドリーアウト
-    const auto kDollySpeed = 0.002f;
+    const auto kDollySpeed = 0.005f;
     mDistance -= mouse.GetWheelDelta() * kDollySpeed;
     const auto kMinDistance = 0.0f;
-    const auto kMaxDistance = 500.0f;
+    const auto kMaxDistance = 1000.0f;
     mDistance = std::clamp( mDistance, kMinDistance, kMaxDistance );
 }
 

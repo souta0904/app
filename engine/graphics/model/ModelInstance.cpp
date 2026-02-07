@@ -1,8 +1,10 @@
 #include "ModelInstance.h"
 
 #include "MeshSorter.h"
+#include "collision/Collision.h"
 #include "core/CommandList.h"
 #include "graphics/Camera.h"
+#include "graphics/PrimitiveRenderer.h"
 #include "graphics/Texture.h"
 
 // コンストラクタ
@@ -52,6 +54,7 @@ void ModelInstance::Update( float )
 {
     if( !mModelData ) return;
 
+    // 共通マテリアルの更新
     mModelData->Update();
 
     // TODO: アニメーション
@@ -73,15 +76,22 @@ void ModelInstance::Draw( MeshSorter* sorter, const Matrix4& worldMat )
     auto camera = sorter->GetCamera();
     if( !camera ) return;
 
-    /*
-    // 定数バッファを更新
-    UpdateCB( worldMat, sorter->GetCamera() );
-    */
+    // AABB構築
+    UpdateAABB( worldMat );
+
+    // デバッグ描画
+    auto& pr = PrimitiveRenderer::GetInstance();
+    pr.DrawAABB( mWorldAABB, Color::kCyan );
+
+    // フラスタムカリング
+    auto& frustum = sorter->GetFrustumCamera()->GetFrustum();
+    if( !Intersect( mWorldAABB, frustum ) ) return;
 
     // メッシュごと描画
     for( uint32_t i = 0; i < mModelData->mMeshCount; ++i )
     {
-        auto mesh = mModelData->mMeshes[i].mMesh.get();
+        auto& meshData = mModelData->mMeshes[i];
+        auto mesh = meshData.mMesh.get();
         auto material = mMaterials[mesh->mMaterialIdx];
         if( !material )
         {
@@ -89,13 +99,11 @@ void ModelInstance::Draw( MeshSorter* sorter, const Matrix4& worldMat )
         }
 
         TransformationMatrix c = {};
-        c.mWorld = mNodes[mModelData->mMeshes[i].mNodeIdx].mModelMat * worldMat;
+        c.mWorld = mNodes[meshData.mNodeIdx].mModelMat * worldMat;
         auto wvMat = c.mWorld * camera->GetView();
         c.mWVP = wvMat * camera->GetProjection();
-        c.mWorldInvTranspose = Transpose( Inverse( c.mWorld ) );
+        c.mWorldInvTranspose = Transpose( InverseAffine( c.mWorld ) );
         mTransMatCBs[i]->Update( &c );
-
-        // TODO: フラスタムカリングの実装
 
         // ソーターへ登録
         sorter->Add(
@@ -131,17 +139,31 @@ void ModelInstance::SetMaterial( uint32_t idx, Material* material )
     mMaterials[idx] = material;
 }
 
-/*
-// 定数バッファを更新
-void ModelInstance::UpdateCB( const Matrix4& worldMat, Camera* camera )
+// AABBの更新
+void ModelInstance::UpdateAABB( const Matrix4& worldMat )
 {
+    mWorldAABB.Reset();
     for( uint32_t i = 0; i < mModelData->mMeshCount; ++i )
     {
-        TransformationMatrix c = {};
-        c.mWorld = mNodes[mModelData->mMeshes[i].mNodeIdx].mModelMat * worldMat;
-        c.mWVP = c.mWorld * camera->GetView() * camera->GetProjection();
-        c.mWorldInvTranspose = Transpose( Inverse( c.mWorld ) );
-        mTransformationMatrices[i]->Update( &c );
+        auto local = mModelData->mMeshes[i].mMesh->mAABB;
+        auto min = local.mMin;
+        auto max = local.mMax;
+
+        Vector3 v[8] = {};
+        v[0] = min;
+        v[1] = Vector3( max.x, min.y, min.z );
+        v[2] = Vector3( max.x, min.y, max.z );
+        v[3] = Vector3( min.x, min.y, max.z );
+        v[4] = Vector3( min.x, max.y, min.z );
+        v[5] = Vector3( max.x, max.y, min.z );
+        v[6] = max;
+        v[7] = Vector3( min.x, max.y, max.z );
+
+        auto mat = mNodes[mModelData->mMeshes[i].mNodeIdx].mModelMat * worldMat;
+        for( uint32_t j = 0; j < 8; ++j )
+        {
+            auto p = v[j] * mat;
+            mWorldAABB.Update( p );
+        }
     }
 }
-*/

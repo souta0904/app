@@ -29,6 +29,8 @@ class ModelInstance
     // マテリアルリスト
     std::vector<Material*> mMaterials;
 
+    AABB3D mWorldAABB;
+
    public:
     /// <summary>
     /// コンストラクタ
@@ -78,12 +80,5 @@ class ModelInstance
     uint32_t GetMaterialCount() const { return static_cast<uint32_t>( mMaterials.size() ); }
 
    private:
-    /*
-    /// <summary>
-    /// 定数バッファを更新
-    /// </summary>
-    /// <param name="worldMat">ワールド行列</param>
-    /// <param name="camera">カメラ</param>
-    void UpdateCB( const Matrix4& worldMat, Camera* camera );
-    */
+    void UpdateAABB( const Matrix4& worldMat );
 };

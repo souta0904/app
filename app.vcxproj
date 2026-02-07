@@ -207,6 +207,7 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     <ClCompile Include="engine\graphics\PrimitiveRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\collision\Collision.h" />
     <ClInclude Include="engine\graphics\DebugCamera.h" />
     <ClInclude Include="engine\graphics\Camera.h" />
     <ClInclude Include="engine\core\ConstantBuffer.h" />

@@ -4,6 +4,7 @@
 
 #include "Quaternion.h"
 #include "Vector3.h"
+#include "Vector4.h"
 
 /// <summary>
 /// 4x4行列
@@ -77,6 +78,19 @@ inline Vector3 operator*( const Vector3& a, const Matrix4& b )
 /// <summary>
 /// 乗算
 /// </summary>
+inline Vector4 operator*( const Vector4& a, const Matrix4& b )
+{
+    Vector4 vec;
+    vec.x = a.x * b.m[0][0] + a.y * b.m[1][0] + a.z * b.m[2][0] + a.w * b.m[3][0];
+    vec.y = a.x * b.m[0][1] + a.y * b.m[1][1] + a.z * b.m[2][1] + a.w * b.m[3][1];
+    vec.z = a.x * b.m[0][2] + a.y * b.m[1][2] + a.z * b.m[2][2] + a.w * b.m[3][2];
+    vec.w = a.x * b.m[0][3] + a.y * b.m[1][3] + a.z * b.m[2][3] + a.w * b.m[3][3];
+    return vec;
+}
+
+/// <summary>
+/// 乗算
+/// </summary>
 inline Matrix4 operator*=( Matrix4& a, const Matrix4& b )
 {
     a = a * b;
@@ -106,10 +120,10 @@ inline float Determinant( const Matrix4& a )
 /// <summary>
 /// 逆行列
 /// </summary>
-inline Matrix4 Inverse( const Matrix4& a )
+inline Matrix4 InverseAffine( const Matrix4& a )
 {
     float det = Determinant( a );
-    //assert( std::fabs( det ) > MathUtil::kEpsilon );
+    // assert( std::fabs( det ) > MathUtil::kEpsilon );
     assert( det != 0.0f );
     float invDet = 1.0f / det;
 
@@ -130,6 +144,36 @@ inline Matrix4 Inverse( const Matrix4& a )
     mat.m[3][1] = -( a.m[3][0] * mat.m[0][1] + a.m[3][1] * mat.m[1][1] + a.m[3][2] * mat.m[2][1] );
     mat.m[3][2] = -( a.m[3][0] * mat.m[0][2] + a.m[3][1] * mat.m[1][2] + a.m[3][2] * mat.m[2][2] );
     mat.m[3][3] = 1.0f;
+    return mat;
+}
+
+/// <summary>
+/// 逆行列
+/// </summary>
+inline Matrix4 Inverse( const Matrix4& a )
+{
+    float det = Determinant( a );
+    // assert( std::fabs( det ) > MathUtil::kEpsilon );
+    assert( det != 0.0f );
+    float invDet = 1.0f / det;
+
+    Matrix4 mat;
+    mat.m[0][0] = ( +a.m[1][1] * a.m[2][2] * a.m[3][3] - a.m[1][1] * a.m[2][3] * a.m[3][2] - a.m[2][1] * a.m[1][2] * a.m[3][3] + a.m[2][1] * a.m[1][3] * a.m[3][2] + a.m[3][1] * a.m[1][2] * a.m[2][3] - a.m[3][1] * a.m[1][3] * a.m[2][2] ) * invDet;
+    mat.m[0][1] = ( -a.m[0][1] * a.m[2][2] * a.m[3][3] + a.m[0][1] * a.m[2][3] * a.m[3][2] + a.m[2][1] * a.m[0][2] * a.m[3][3] - a.m[2][1] * a.m[0][3] * a.m[3][2] - a.m[3][1] * a.m[0][2] * a.m[2][3] + a.m[3][1] * a.m[0][3] * a.m[2][2] ) * invDet;
+    mat.m[0][2] = ( +a.m[0][1] * a.m[1][2] * a.m[3][3] - a.m[0][1] * a.m[1][3] * a.m[3][2] - a.m[1][1] * a.m[0][2] * a.m[3][3] + a.m[1][1] * a.m[0][3] * a.m[3][2] + a.m[3][1] * a.m[0][2] * a.m[1][3] - a.m[3][1] * a.m[0][3] * a.m[1][2] ) * invDet;
+    mat.m[0][3] = ( -a.m[0][1] * a.m[1][2] * a.m[2][3] + a.m[0][1] * a.m[1][3] * a.m[2][2] + a.m[1][1] * a.m[0][2] * a.m[2][3] - a.m[1][1] * a.m[0][3] * a.m[2][2] - a.m[2][1] * a.m[0][2] * a.m[1][3] + a.m[2][1] * a.m[0][3] * a.m[1][2] ) * invDet;
+    mat.m[1][0] = ( -a.m[1][0] * a.m[2][2] * a.m[3][3] + a.m[1][0] * a.m[2][3] * a.m[3][2] + a.m[2][0] * a.m[1][2] * a.m[3][3] - a.m[2][0] * a.m[1][3] * a.m[3][2] - a.m[3][0] * a.m[1][2] * a.m[2][3] + a.m[3][0] * a.m[1][3] * a.m[2][2] ) * invDet;
+    mat.m[1][1] = ( +a.m[0][0] * a.m[2][2] * a.m[3][3] - a.m[0][0] * a.m[2][3] * a.m[3][2] - a.m[2][0] * a.m[0][2] * a.m[3][3] + a.m[2][0] * a.m[0][3] * a.m[3][2] + a.m[3][0] * a.m[0][2] * a.m[2][3] - a.m[3][0] * a.m[0][3] * a.m[2][2] ) * invDet;
+    mat.m[1][2] = ( -a.m[0][0] * a.m[1][2] * a.m[3][3] + a.m[0][0] * a.m[1][3] * a.m[3][2] + a.m[1][0] * a.m[0][2] * a.m[3][3] - a.m[1][0] * a.m[0][3] * a.m[3][2] - a.m[3][0] * a.m[0][2] * a.m[1][3] + a.m[3][0] * a.m[0][3] * a.m[1][2] ) * invDet;
+    mat.m[1][3] = ( +a.m[0][0] * a.m[1][2] * a.m[2][3] - a.m[0][0] * a.m[1][3] * a.m[2][2] - a.m[1][0] * a.m[0][2] * a.m[2][3] + a.m[1][0] * a.m[0][3] * a.m[2][2] + a.m[2][0] * a.m[0][2] * a.m[1][3] - a.m[2][0] * a.m[0][3] * a.m[1][2] ) * invDet;
+    mat.m[2][0] = ( +a.m[1][0] * a.m[2][1] * a.m[3][3] - a.m[1][0] * a.m[2][3] * a.m[3][1] - a.m[2][0] * a.m[1][1] * a.m[3][3] + a.m[2][0] * a.m[1][3] * a.m[3][1] + a.m[3][0] * a.m[1][1] * a.m[2][3] - a.m[3][0] * a.m[1][3] * a.m[2][1] ) * invDet;
+    mat.m[2][1] = ( -a.m[0][0] * a.m[2][1] * a.m[3][3] + a.m[0][0] * a.m[2][3] * a.m[3][1] + a.m[2][0] * a.m[0][1] * a.m[3][3] - a.m[2][0] * a.m[0][3] * a.m[3][1] - a.m[3][0] * a.m[0][1] * a.m[2][3] + a.m[3][0] * a.m[0][3] * a.m[2][1] ) * invDet;
+    mat.m[2][2] = ( +a.m[0][0] * a.m[1][1] * a.m[3][3] - a.m[0][0] * a.m[1][3] * a.m[3][1] - a.m[1][0] * a.m[0][1] * a.m[3][3] + a.m[1][0] * a.m[0][3] * a.m[3][1] + a.m[3][0] * a.m[0][1] * a.m[1][3] - a.m[3][0] * a.m[0][3] * a.m[1][1] ) * invDet;
+    mat.m[2][3] = ( -a.m[0][0] * a.m[1][1] * a.m[2][3] + a.m[0][0] * a.m[1][3] * a.m[2][1] + a.m[1][0] * a.m[0][1] * a.m[2][3] - a.m[1][0] * a.m[0][3] * a.m[2][1] - a.m[2][0] * a.m[0][1] * a.m[1][3] + a.m[2][0] * a.m[0][3] * a.m[1][1] ) * invDet;
+    mat.m[3][0] = ( -a.m[1][0] * a.m[2][1] * a.m[3][2] + a.m[1][0] * a.m[2][2] * a.m[3][1] + a.m[2][0] * a.m[1][1] * a.m[3][2] - a.m[2][0] * a.m[1][2] * a.m[3][1] - a.m[3][0] * a.m[1][1] * a.m[2][2] + a.m[3][0] * a.m[1][2] * a.m[2][1] ) * invDet;
+    mat.m[3][1] = ( +a.m[0][0] * a.m[2][1] * a.m[3][2] - a.m[0][0] * a.m[2][2] * a.m[3][1] - a.m[2][0] * a.m[0][1] * a.m[3][2] + a.m[2][0] * a.m[0][2] * a.m[3][1] + a.m[3][0] * a.m[0][1] * a.m[2][2] - a.m[3][0] * a.m[0][2] * a.m[2][1] ) * invDet;
+    mat.m[3][2] = ( -a.m[0][0] * a.m[1][1] * a.m[3][2] + a.m[0][0] * a.m[1][2] * a.m[3][1] + a.m[1][0] * a.m[0][1] * a.m[3][2] - a.m[1][0] * a.m[0][2] * a.m[3][1] - a.m[3][0] * a.m[0][1] * a.m[1][2] + a.m[3][0] * a.m[0][2] * a.m[1][1] ) * invDet;
+    mat.m[3][3] = ( +a.m[0][0] * a.m[1][1] * a.m[2][2] - a.m[0][0] * a.m[1][2] * a.m[2][1] - a.m[1][0] * a.m[0][1] * a.m[2][2] + a.m[1][0] * a.m[0][2] * a.m[2][1] + a.m[2][0] * a.m[0][1] * a.m[1][2] - a.m[2][0] * a.m[0][2] * a.m[1][1] ) * invDet;
     return mat;
 }
 
@@ -299,7 +343,7 @@ inline Matrix4 CreateOrthographic( float left, float top, float right, float bot
 /// <summary>
 /// 透視投影行列を作成
 /// </summary>
-inline Matrix4 CreatePerspectiveFov( float fovY, float aspectRatio, float nearZ, float farZ )
+inline Matrix4 CreatePerspectiveFovY( float fovY, float aspectRatio, float nearZ, float farZ )
 {
     float yScale = 1.0f / std::tan( fovY * 0.5f );
     Matrix4 mat;
@@ -310,6 +354,15 @@ inline Matrix4 CreatePerspectiveFov( float fovY, float aspectRatio, float nearZ,
     mat.m[3][2] = ( -nearZ * farZ ) / ( farZ - nearZ );
     mat.m[3][3] = 0.0f;
     return mat;
+}
+
+/// <summary>
+/// 透視投影行列を作成
+/// </summary>
+inline Matrix4 CreatePerspectiveFovX( float fovX, float aspectRatio, float nearZ, float farZ )
+{
+    auto fovY = 2.0f * std::atan( std::tan( fovX * 0.5f ) / aspectRatio );
+    return CreatePerspectiveFovY( fovY, aspectRatio, nearZ, farZ );
 }
 
 /// <summary>

@@ -129,6 +129,7 @@ void ModelData::BuildMesh( ModelNode* node )
         auto meshFlags = MeshFlags::Required;
         // メッシュ名
         mesh->mName = assimpMesh->mName.C_Str();
+        mesh->mAABB.Reset();
 
         // 頂点データ
         std::vector<Mesh::Vertex> vertices( assimpMesh->mNumVertices );
@@ -141,6 +142,8 @@ void ModelData::BuildMesh( ModelNode* node )
                 Vector4( -position.x, position.y, position.z, 1.0f ),
                 Vector3( -normal.x, normal.y, normal.z ),
                 Vector2( uv.x, uv.y ) };
+
+            mesh->mAABB.Update( Vector3( -position.x, position.y, position.z ) );
         }
 
         // 頂点インデックスデータ

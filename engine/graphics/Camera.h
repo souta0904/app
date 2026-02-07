@@ -1,5 +1,6 @@
 #pragma once
 #include "math/Matrix4.h"
+#include "math/Primitive.h"
 #include "math/Quaternion.h"
 #include "math/Vector3.h"
 
@@ -37,6 +38,8 @@ class Camera
     // プロジェクション行列
     Matrix4 mProjection;
 
+    Frustum mFrustum;
+
    public:
     /// <summary>
     /// コンストラクタ
@@ -58,4 +61,7 @@ class Camera
 
     /// <summary>プロジェクション行列を取得</summary>
     const Matrix4& GetProjection() const { return mProjection; }
+
+    /// <summary>視錐台を取得</summary>
+    const Frustum& GetFrustum() const { return mFrustum; }
 };

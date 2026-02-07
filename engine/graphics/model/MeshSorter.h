@@ -31,6 +31,7 @@ class MeshSorter
 
     // カメラ
     Camera* mCamera;
+    Camera* mFrustumCamera;
     // カメラ用定数バッファ
     std::unique_ptr<ConstantBuffer> mCameraCB;
 
@@ -79,8 +80,12 @@ class MeshSorter
     /// <summary>カメラを取得</summary>
     Camera* GetCamera() const { return mCamera; }
 
+    Camera* GetFrustumCamera() const { return mFrustumCamera; }
+
     /// <summary>カメラを設定</summary>
     void SetCamera( Camera* camera ) { mCamera = camera; }
+
+    void SetFrustumCamera( Camera* camera ) { mFrustumCamera = camera; }
 
    private:
     /// <summary>

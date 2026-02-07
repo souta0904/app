@@ -7,9 +7,9 @@ Camera::Camera()
     : mProjectionMode( ProjectionMode::Perspective )
     , mRotate()
     , mPosition( Vector3::kZero )
-    , mFov( MathUtil::kPi * 0.5f )
+    , mFov( MathUtil::kPi / 3.0f )
     , mNearZ( 0.1f )
-    , mFarZ( 1000.0f )
+    , mFarZ( 10000.0f )
     , mView()
     , mProjection()
 {
@@ -20,7 +20,7 @@ void Camera::Update()
 {
     // ビュー行列を更新
     auto worldMat = CreateRotate( mRotate ) * CreateTranslate( mPosition );
-    mView = Inverse( worldMat );
+    mView = InverseAffine( worldMat );
 
     // プロジェクション行列を更新
     auto& window = Window::GetInstance();
@@ -39,11 +39,13 @@ void Camera::Update()
             break;
 
         case ProjectionMode::Perspective:
-            mProjection = CreatePerspectiveFov(
+            mProjection = CreatePerspectiveFovX(
                 mFov,
                 windowWidth / windowHeight,
                 mNearZ,
                 mFarZ );
             break;
     }
+
+    mFrustum.Build( mView * mProjection );
 }

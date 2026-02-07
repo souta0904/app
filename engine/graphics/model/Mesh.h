@@ -6,6 +6,7 @@
 #include "PSOKey.h"
 #include "core/IndexBuffer.h"
 #include "core/VertexBuffer.h"
+#include "math/Primitive.h"
 #include "math/Vector2.h"
 #include "math/Vector3.h"
 #include "math/Vector4.h"
@@ -45,6 +46,8 @@ class Mesh
     std::vector<uint32_t> mIndices;
     // インデックスバッファ
     std::unique_ptr<IndexBuffer> mIB;
+
+    AABB3D mAABB;
 
     // マテリアルのインデックス
     uint32_t mMaterialIdx;

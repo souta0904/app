@@ -157,6 +157,9 @@
     <Filter Include="engine\input">
       <UniqueIdentifier>{0de6cb98-0b92-4fc8-8e35-12f6bb2f4daa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine\collision">
+      <UniqueIdentifier>{027cf8b4-6cb1-415e-a931-6b39bcc0a0d0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\math\Color.h">
@@ -321,7 +324,12 @@
     <ClInclude Include="engine\graphics\PrimitiveRenderer.h">
       <Filter>engine\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="engine\math\Primitive.h" />
+    <ClInclude Include="engine\collision\Collision.h">
+      <Filter>engine\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Primitive.h">
+      <Filter>engine\math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shader\SimplePS.hlsl">

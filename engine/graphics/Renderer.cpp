@@ -166,7 +166,9 @@ bool Renderer::Init()
     }
 
     mModelCamera = std::make_unique<Camera>();
-    mModelCamera->mPosition = Vector3( 0.0f, 10.0f, -15.0f );
+    mModelCamera->mPosition = Vector3( 0.0f, 10.0f, -50.0f );
+    mModelCamera->mNearZ = 10.0f;
+    mModelCamera->mFarZ = 250.0f;
 
     mDebugCamera = std::make_unique<DebugCamera>();
 
@@ -176,12 +178,14 @@ bool Renderer::Init()
     {
         return false;
     }
+    mSorter->SetFrustumCamera( mModelCamera.get() );
 
     mBotModel1 = std::make_unique<ModelInstance>();
     mBotModel1->Create( resMgr.GetModel( "assets/model/bot/y_bot.fbx" ) );
 
     mBotModel2 = std::make_unique<ModelInstance>();
     mBotModel2->Create( resMgr.GetModel( "assets/model/bot/x_bot.fbx" ) );
+    mRotate = 0.0f;
 
     mBoxModel = std::make_unique<ModelInstance>();
     mBoxModel->Create( resMgr.GetModel( "assets/model/box/box.obj" ) );
@@ -313,9 +317,10 @@ void Renderer::UpdateGUI()
 void Renderer::Update( float deltaTime )
 {
     mSpriteCamera->Update();
+    mModelCamera->Update();
+
     if( !mUseDebugCamera )
     {
-        mModelCamera->Update();
         mSorter->SetCamera( mModelCamera.get() );
         mPrimitiveRenderer->SetCamera3D( mModelCamera.get() );
     }
@@ -329,7 +334,8 @@ void Renderer::Update( float deltaTime )
     // UVスクロール
     mStarSprite->mUVTranslate += Vector2( 0.1f * deltaTime, -0.1f * deltaTime );
 
-    // TODO: デルタタイムに差し替え
+    mRotate += MathUtil::kPi * deltaTime;
+
     mBotModel1->Update( deltaTime );
     mBotModel2->Update( deltaTime );
     mBoxModel->Update( deltaTime );
@@ -356,6 +362,7 @@ void Renderer::Draw( CommandList* cmdList )
 
     DrawModel( cmdList );
 
+    /*
     mPrimitiveRenderer->DrawLine2D( Vector2( 150.0f, 150.0f ), Vector2( 50.0f, 50.0f ), Color::kWhite );
     mPrimitiveRenderer->DrawTriangle( Vector2( 200.0f, 150.0f ), Vector2( 300.0f, 50.0f ), Vector2( 300.0f, 150.0f ), Color::kRed );
     mPrimitiveRenderer->DrawQuad( Vector2( 350.0f, 50.0f ), Vector2( 450.0f, 50.0f ), Vector2( 500.0f, 150.0f ), Vector2( 400.0f, 150.0f ), Color::kGreen );
@@ -412,7 +419,9 @@ void Renderer::Draw( CommandList* cmdList )
     capsule3D.mSegment.mEnd = Vector3( 22.0f, 7.0f, 17.0f );
     capsule3D.mRadius = 3.0f;
     mPrimitiveRenderer->DrawCapsule( capsule3D, Color::kYellow );
+    */
 
+    mPrimitiveRenderer->DrawFrustum( mModelCamera->GetView() * mModelCamera->GetProjection(), Color::kWhite );
     mPrimitiveRenderer->DrawGrid();
     mPrimitiveRenderer->Render3D( cmdList );
     mPrimitiveRenderer->Render2D( cmdList );
@@ -441,10 +450,14 @@ void Renderer::DrawModel( CommandList* cmdList )
         CreateTranslate( Vector3( -10.0f, 0.0f, 0.0f ) );
     mBotModel2->Draw( mSorter.get(), botWorld2 );
 
-    auto boxWorld = CreateTranslate( Vector3( 2.5f, 0.0f, 0.0f ) );
+    auto boxWorld =
+        CreateRotate( Quaternion( Vector3::kUnitY, mRotate ) ) *
+        CreateTranslate( Vector3( 2.5f, 0.0f, 0.0f ) );
     mBoxModel->Draw( mSorter.get(), boxWorld );
 
-    auto sphereWorld = CreateTranslate( Vector3( -2.5f, 0.0f, 0.0f ) );
+    auto sphereWorld =
+        CreateRotate( Quaternion( Vector3::kUnitY, mRotate ) ) *
+        CreateTranslate( Vector3( -2.5f, 0.0f, 0.0f ) );
     mSphereModel->Draw( mSorter.get(), sphereWorld );
 
     mSorter->Sort();
