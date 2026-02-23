@@ -5,6 +5,7 @@
 #include "core/CommandList.h"
 #include "graphics/Camera.h"
 #include "graphics/PrimitiveRenderer.h"
+#include "graphics/Renderer.h"
 #include "graphics/Texture.h"
 
 // コンストラクタ
@@ -81,10 +82,10 @@ void ModelInstance::Draw( MeshSorter* sorter, const Matrix4& worldMat )
 
     // デバッグ描画
     auto& pr = PrimitiveRenderer::GetInstance();
-    pr.DrawAABB( mWorldAABB, Color::kCyan );
+    pr.DrawAABB( mWorldAABB, Color( 0.2f, 1.0f, 0.2f ) );
 
-    // フラスタムカリング
     auto& frustum = sorter->GetFrustumCamera()->GetFrustum();
+    // フラスタムの外側はスキップ
     if( !Intersect( mWorldAABB, frustum ) ) return;
 
     // メッシュごと描画
@@ -111,7 +112,8 @@ void ModelInstance::Draw( MeshSorter* sorter, const Matrix4& worldMat )
             wvMat.m[3][2],  // Z値(カメラからの距離)
             mTransMatCBs[i].get(),
             mesh,
-            material );
+            material,
+            mWorldAABB );
     }
 }
 

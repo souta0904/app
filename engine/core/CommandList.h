@@ -6,6 +6,7 @@
 
 #include "DescriptorHeap.h"
 
+class ComputePSO;
 class ConstantBuffer;
 class GraphicsPSO;
 class IndexBuffer;
@@ -86,6 +87,28 @@ class CommandList
     void ClearRenderTargetView( DescriptorHandle* hRTV, const float clearColor[4] );
 
     /// <summary>
+    /// リソースをコピー
+    /// </summary>
+    /// <param name="dst"></param>
+    /// <param name="src"></param>
+    void CopyResource( ID3D12Resource* dst, ID3D12Resource* src );
+
+    /// <summary>
+    /// テクスチャをコピー
+    /// </summary>
+    /// <param name="dst"></param>
+    /// <param name="src"></param>
+    void CopyTexture( const D3D12_TEXTURE_COPY_LOCATION* dst, const D3D12_TEXTURE_COPY_LOCATION* src );
+
+    /// <summary>
+    /// コンピュートシェーダを実行
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="z"></param>
+    void Dispatch( uint32_t x, uint32_t y, uint32_t z );
+
+    /// <summary>
     /// 描画
     /// </summary>
     /// <param name="vertexCount">頂点数</param>
@@ -108,7 +131,14 @@ class CommandList
     /// </summary>
     /// <param name="rootParamIdx">ルートパラメータのインデックス</param>
     /// <param name="constantBuffer">定数バッファ</param>
-    void SetConstantBuffer( uint32_t rootParamIdx, ConstantBuffer* constantBuffer );
+    void SetComputeConstantBuffer( uint32_t rootParamIdx, ConstantBuffer* constantBuffer );
+
+    /// <summary>
+    /// 定数バッファをセット
+    /// </summary>
+    /// <param name="rootParamIdx">ルートパラメータのインデックス</param>
+    /// <param name="constantBuffer">定数バッファ</param>
+    void SetGraphicsConstantBuffer( uint32_t rootParamIdx, ConstantBuffer* constantBuffer );
 
     /// <summary>
     /// デスクリプタヒープをセット
@@ -120,8 +150,21 @@ class CommandList
     /// デスクリプタテーブルをルートシグネチャへセット
     /// </summary>
     /// <param name="rootParamIdx">ルートパラメータのインデックス</param>
-    /// <param name="hSRV">SRVのCPUデスクリプタハンドル</param>
-    void SetGraphicsRootDescriptorTable( uint32_t rootParamIdx, DescriptorHandle* hSRV );
+    /// <param name="descriptorHandle">デスクリプタハンドル</param>
+    void SetComputeRootDescriptorTable( uint32_t rootParamIdx, DescriptorHandle* descriptorHandle );
+
+    /// <summary>
+    /// デスクリプタテーブルをルートシグネチャへセット
+    /// </summary>
+    /// <param name="rootParamIdx">ルートパラメータのインデックス</param>
+    /// <param name="descriptorHandle">デスクリプタハンドル</param>
+    void SetGraphicsRootDescriptorTable( uint32_t rootParamIdx, DescriptorHandle* descriptorHandle );
+
+    /// <summary>
+    /// ルートシグネチャをセット
+    /// </summary>
+    /// <param name="rootSignature">ルートシグネチャ</param>
+    void SetComputeRootSignature( RootSignature* rootSignature );
 
     /// <summary>
     /// ルートシグネチャをセット
@@ -138,7 +181,13 @@ class CommandList
     /// <summary>
     /// パイプラインステートをセット
     /// </summary>
-    /// <param name="pso">パイプラインステート</param>
+    /// <param name="pso">コンピュートパイプライン</param>
+    void SetPipelineState( ComputePSO* pso );
+
+    /// <summary>
+    /// パイプラインステートをセット
+    /// </summary>
+    /// <param name="pso">グラフィックスパイプライン</param>
     void SetPipelineState( GraphicsPSO* pso );
 
     /// <summary>
@@ -150,9 +199,10 @@ class CommandList
     /// <summary>
     /// レンダーターゲットをセット
     /// </summary>
+    /// <param name="numRenderTarget">レンダーターゲットの数</param>
     /// <param name="hRTV">RTVのCPUデスクリプタハンドル</param>
     /// <param name="hDSV">DSVのCPUデスクリプタハンドル</param>
-    void SetRenderTarget( DescriptorHandle* hRTV, DescriptorHandle* hDSV );
+    void SetRenderTarget( uint32_t numRenderTarget, DescriptorHandle* hRTV, DescriptorHandle* hDSV );
 
     /// <summary>
     /// シザー矩形をセット
@@ -179,6 +229,20 @@ class CommandList
     /// <param name="minDepth">最小深度値</param>
     /// <param name="maxDepth">最大深度値</param>
     void SetViewport( float topLeftX, float topLeftY, float width, float height, float minDepth = 0.0f, float maxDepth = 1.0f );
+
+    /// <summary>
+    /// Transitionバリア
+    /// </summary>
+    /// <param name="resource"></param>
+    /// <param name="before"></param>
+    /// <param name="after"></param>
+    void TransitionBarrier( ID3D12Resource* resource, D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after );
+
+    /// <summary>
+    /// UAVバリア
+    /// </summary>
+    /// <param name="resource"></param>
+    void UAVBarrier( ID3D12Resource* resource );
 
 #pragma endregion
 

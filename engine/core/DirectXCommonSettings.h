@@ -10,6 +10,7 @@ namespace DirectXCommonSettings
 // ヒーププロパティ
 extern D3D12_HEAP_PROPERTIES gHeapDefault;
 extern D3D12_HEAP_PROPERTIES gHeapUpload;
+extern D3D12_HEAP_PROPERTIES gHeapReadback;
 
 // ブレンド設定
 extern D3D12_BLEND_DESC gBlendNone;
@@ -25,11 +26,13 @@ extern D3D12_RASTERIZER_DESC gRasterizerNoCulling;
 extern D3D12_RASTERIZER_DESC gRasterizerWireframe;
 
 // 深度ステンシル設定
-extern D3D12_DEPTH_STENCIL_DESC gDepthDefault;
+extern D3D12_DEPTH_STENCIL_DESC gDepthLess;
+extern D3D12_DEPTH_STENCIL_DESC gDepthEqual;
 extern D3D12_DEPTH_STENCIL_DESC gDepthDisable;
 
 // サンプラー設定
 extern D3D12_STATIC_SAMPLER_DESC gSamplerLinearWrap;
+extern D3D12_STATIC_SAMPLER_DESC gSamplerLinearClamp;
 
 /// <summary>
 /// 初期化

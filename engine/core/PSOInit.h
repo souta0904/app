@@ -7,9 +7,9 @@ class RootSignature;
 class ShaderObject;
 
 /// <summary>
-/// PSO初期化構造体
+/// GraphicsPSO作成用
 /// </summary>
-struct PSOInit
+struct GraphicsPSOInit
 {
     // ルートシグネチャ
     RootSignature* mRootSignature = nullptr;
@@ -27,4 +27,20 @@ struct PSOInit
     std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayouts;
     // プリミティブ型
     D3D12_PRIMITIVE_TOPOLOGY_TYPE mPrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+    // レンダーターゲット
+    UINT mNumRenderTargets = 1;
+    DXGI_FORMAT mRTVFormats[8] = { DXGI_FORMAT_R8G8B8A8_UNORM_SRGB };
+    // 深度ステンシル
+    DXGI_FORMAT mDSVFormat = DXGI_FORMAT_D32_FLOAT;
+};
+
+/// <summary>
+/// ComputePSO作成用
+/// </summary>
+struct ComputePSOInit
+{
+    // ルートシグネチャ
+    RootSignature* mRootSignature = nullptr;
+    // コンピュートシェーダー
+    ShaderObject* mCS = nullptr;
 };

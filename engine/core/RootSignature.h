@@ -60,7 +60,7 @@ class RootSignature
     /// 作成
     /// </summary>
     /// <returns>成否</returns>
-    bool Create();
+    bool Create( D3D12_ROOT_SIGNATURE_FLAGS flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT );
 
     /// <summary>ルートシグネチャを取得</summary>
     Microsoft::WRL::ComPtr<ID3D12RootSignature> GetRootSignature() const { return mRootSignature; }

@@ -46,7 +46,7 @@ D3D12_STATIC_SAMPLER_DESC& RootSignature::GetSampler( uint32_t idx )
 }
 
 // 作成
-bool RootSignature::Create()
+bool RootSignature::Create( D3D12_ROOT_SIGNATURE_FLAGS flags )
 {
     // ルートパラメータ
     std::vector<D3D12_ROOT_PARAMETER> tmpParameters( mNumParameters );
@@ -60,7 +60,7 @@ bool RootSignature::Create()
     desc.pParameters = tmpParameters.data();
     desc.NumStaticSamplers = mNumSamplers;
     desc.pStaticSamplers = mSamplers.get();
-    desc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+    desc.Flags = flags;
 
     // シリアライズ
     Microsoft::WRL::ComPtr<ID3DBlob> blob = nullptr;

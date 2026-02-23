@@ -34,7 +34,7 @@ bool MeshSorter::Init( Camera* camera )
 }
 
 // 描画アイテムの追加
-void MeshSorter::Add( uint64_t psoKey, float distance, ConstantBuffer* transMatCB, Mesh* mesh, Material* material )
+void MeshSorter::Add( uint64_t psoKey, float distance, ConstantBuffer* transMatCB, Mesh* mesh, Material* material, const AABB3D& aabb )
 {
     if( !transMatCB || !mesh || !material ) return;
 
@@ -45,6 +45,7 @@ void MeshSorter::Add( uint64_t psoKey, float distance, ConstantBuffer* transMatC
     item.mTransMatCB = transMatCB;
     item.mMesh = mesh;
     item.mMaterial = material;
+    item.mWorldAABB = aabb;
     mSortItems.emplace_back( item );
 }
 
@@ -81,6 +82,30 @@ void MeshSorter::Sort()
         } );
 }
 
+// z-prepass描画
+void MeshSorter::RenderZPrepass( CommandList* cmdList )
+{
+    if( !cmdList || mSortItems.empty() )
+    {
+        return;
+    }
+
+    for( auto& item : mSortItems )
+    {
+        if( !item.mIsVisible ) continue;
+
+        if( item.mTransMatCB )
+        {
+            cmdList->SetGraphicsConstantBuffer( 0, item.mTransMatCB );
+        }
+
+        if( item.mMesh )
+        {
+            item.mMesh->Draw( cmdList );
+        }
+    }
+}
+
 // 描画
 void MeshSorter::Render( CommandList* cmdList )
 {
@@ -95,6 +120,8 @@ void MeshSorter::Render( CommandList* cmdList )
     auto& modelBase = ModelBase::GetInstance();
     for( auto& item : mSortItems )
     {
+        if( !item.mIsVisible ) continue;
+
         // パイプラインステート
         if( currPSOKey != item.mPSOKey )
         {
@@ -105,7 +132,7 @@ void MeshSorter::Render( CommandList* cmdList )
         // 変換行列
         if( item.mTransMatCB )
         {
-            cmdList->SetConstantBuffer( 0, item.mTransMatCB );
+            cmdList->SetGraphicsConstantBuffer( 0, item.mTransMatCB );
         }
 
         // マテリアル
@@ -115,7 +142,7 @@ void MeshSorter::Render( CommandList* cmdList )
         }
 
         // カメラ
-        cmdList->SetConstantBuffer( 2, mCameraCB.get() );
+        cmdList->SetGraphicsConstantBuffer( 2, mCameraCB.get() );
 
         if( item.mMesh )
         {

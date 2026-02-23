@@ -3,6 +3,7 @@
 #include <format>
 
 #include "core/CommandList.h"
+#include "core/DirectXBase.h"
 #include "core/DirectXCommonSettings.h"
 #include "core/ResourceManager.h"
 #include "utils/Logger.h"
@@ -35,6 +36,15 @@ bool ModelBase::Init()
 
     // パイプラインステートの作成
     CreateGraphicsPSO( MakePSOKey( MeshFlags::Required, MaterialFlags::None ) );
+
+    if( DirectXBase::kUseZPrepass )
+    {
+        // z-prepassの初期化
+        if( !InitZPrepass() )
+        {
+            return false;
+        }
+    }
 
     return true;
 }
@@ -74,14 +84,31 @@ void ModelBase::SetGraphicsPSO( uint64_t psoKey )
     mCmdList->SetPipelineState( it->second.get() );
 }
 
+// z-prepass開始
+void ModelBase::BeginZPrepass( CommandList* cmdList )
+{
+    if( !cmdList ) return;
+
+    mCmdList = cmdList;
+    mCmdList->SetGraphicsRootSignature( mZPrepassRS.get() );
+    mCmdList->SetPipelineState( mZPrepassPSO.get() );
+    mCmdList->SetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
+}
+
+// z-prepass終了
+void ModelBase::EndZPrepass()
+{
+    mCmdList = nullptr;
+}
+
 // パイプラインステートの作成
 void ModelBase::CreateGraphicsPSO( uint64_t psoKey )
 {
     auto& resMgr = ResourceManager::GetInstance();
-    //auto meshFlags = GetMeshFlags( psoKey );
+    // auto meshFlags = GetMeshFlags( psoKey );
     auto materialFlags = GetMaterialFlags( psoKey );
 
-    PSOInit init = {};
+    GraphicsPSOInit init = {};
     init.mRootSignature = mRS.get();
 
     // 頂点シェーダー
@@ -98,7 +125,7 @@ void ModelBase::CreateGraphicsPSO( uint64_t psoKey )
     }
 
     // ブレンド
-    init.mBlendState = DirectXCommonSettings::gBlendNone;
+    init.mBlendState = DirectXCommonSettings::gBlendAlpha;
 
     // ラスタライザ
     auto rasterizerState = DirectXCommonSettings::gRasterizerDefault;
@@ -113,7 +140,14 @@ void ModelBase::CreateGraphicsPSO( uint64_t psoKey )
     init.mRasterizerState = rasterizerState;
 
     // 深度ステンシル
-    init.mDepthStencilState = DirectXCommonSettings::gDepthDefault;
+    if( DirectXBase::kUseZPrepass )
+    {
+        init.mDepthStencilState = DirectXCommonSettings::gDepthEqual;
+    }
+    else
+    {
+        init.mDepthStencilState = DirectXCommonSettings::gDepthLess;
+    }
 
     // 頂点レイアウト
     init.mInputLayouts.resize( 3 );
@@ -134,4 +168,40 @@ void ModelBase::CreateGraphicsPSO( uint64_t psoKey )
     }
 
     mPSO.emplace( psoKey, std::move( pso ) );
+}
+
+// z-prepassの初期化
+bool ModelBase::InitZPrepass()
+{
+    auto& resMgr = ResourceManager::GetInstance();
+
+    mZPrepassRS = std::make_unique<RootSignature>();
+    mZPrepassRS->Init( 1, 0 );
+    mZPrepassRS->GetParameter( 0 ).InitAsCBV( 0, D3D12_SHADER_VISIBILITY_VERTEX );
+    if( !mZPrepassRS->Create() )
+    {
+        return false;
+    }
+
+    GraphicsPSOInit init = {};
+    init.mRootSignature = mZPrepassRS.get();
+    init.mVS = resMgr.GetShader( "assets/shader/ZPrepassVS.hlsl", "vs_6_0" );
+    init.mPS = nullptr;
+    init.mBlendState = DirectXCommonSettings::gBlendNone;
+    init.mRasterizerState = DirectXCommonSettings::gRasterizerDefault;
+    init.mDepthStencilState = DirectXCommonSettings::gDepthLess;
+    init.mInputLayouts.resize( 1 );
+    init.mInputLayouts[0].SemanticName = "POSITION";
+    init.mInputLayouts[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+    init.mInputLayouts[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+    init.mNumRenderTargets = 0;
+    init.mRTVFormats[0] = DXGI_FORMAT_UNKNOWN;
+
+    mZPrepassPSO = std::make_unique<GraphicsPSO>();
+    if( !mZPrepassPSO->Create( init ) )
+    {
+        return false;
+    }
+
+    return true;
 }

@@ -163,6 +163,7 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\core\ComputePSO.cpp" />
     <ClCompile Include="engine\graphics\DebugCamera.cpp" />
     <ClCompile Include="engine\graphics\Camera.cpp" />
     <ClCompile Include="engine\core\ConstantBuffer.cpp" />
@@ -205,8 +206,14 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     <ClCompile Include="engine\utils\Timer.cpp" />
     <ClCompile Include="engine\utils\Stopwatch.cpp" />
     <ClCompile Include="engine\graphics\PrimitiveRenderer.cpp" />
+    <ClCompile Include="engine\core\ReadbackTexture.cpp" />
+    <ClCompile Include="engine\core\RWStructuredBuffer.cpp" />
+    <ClCompile Include="engine\core\StructuredBuffer.cpp" />
+    <ClCompile Include="engine\core\ReadbackBuffer.cpp" />
+    <ClCompile Include="engine\math\Random.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\core\ComputePSO.h" />
     <ClInclude Include="engine\collision\Collision.h" />
     <ClInclude Include="engine\graphics\DebugCamera.h" />
     <ClInclude Include="engine\graphics\Camera.h" />
@@ -263,6 +270,11 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     <ClInclude Include="engine\utils\Timer.h" />
     <ClInclude Include="engine\utils\Stopwatch.h" />
     <ClInclude Include="engine\graphics\PrimitiveRenderer.h" />
+    <ClInclude Include="engine\core\ReadbackTexture.h" />
+    <ClInclude Include="engine\core\RWStructuredBuffer.h" />
+    <ClInclude Include="engine\core\StructuredBuffer.h" />
+    <ClInclude Include="engine\core\ReadbackBuffer.h" />
+    <ClInclude Include="engine\math\Random.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="external\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

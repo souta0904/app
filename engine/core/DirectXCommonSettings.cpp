@@ -6,6 +6,7 @@ namespace DirectXCommonSettings
 // ヒーププロパティ
 D3D12_HEAP_PROPERTIES gHeapDefault = {};
 D3D12_HEAP_PROPERTIES gHeapUpload = {};
+D3D12_HEAP_PROPERTIES gHeapReadback = {};
 
 // ブレンド設定
 D3D12_BLEND_DESC gBlendNone = {};
@@ -21,11 +22,13 @@ D3D12_RASTERIZER_DESC gRasterizerNoCulling = {};
 D3D12_RASTERIZER_DESC gRasterizerWireframe = {};
 
 // 深度ステンシル設定
-D3D12_DEPTH_STENCIL_DESC gDepthDefault = {};
+D3D12_DEPTH_STENCIL_DESC gDepthLess = {};
+D3D12_DEPTH_STENCIL_DESC gDepthEqual = {};
 D3D12_DEPTH_STENCIL_DESC gDepthDisable = {};
 
 // サンプラー設定
 D3D12_STATIC_SAMPLER_DESC gSamplerLinearWrap = {};
+D3D12_STATIC_SAMPLER_DESC gSamplerLinearClamp = {};
 
 // 初期化
 bool Init()
@@ -33,6 +36,7 @@ bool Init()
     // ヒーププロパティ
     gHeapDefault.Type = D3D12_HEAP_TYPE_DEFAULT;
     gHeapUpload.Type = D3D12_HEAP_TYPE_UPLOAD;
+    gHeapReadback.Type = D3D12_HEAP_TYPE_READBACK;
 
     // ブレンド設定
     gBlendNone.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
@@ -87,9 +91,13 @@ bool Init()
     gRasterizerWireframe.FillMode = D3D12_FILL_MODE_WIREFRAME;
 
     // 深度ステンシル設定
-    gDepthDefault.DepthEnable = true;
-    gDepthDefault.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-    gDepthDefault.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+    gDepthLess.DepthEnable = true;
+    gDepthLess.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+    gDepthLess.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+
+    gDepthEqual.DepthEnable = true;
+    gDepthEqual.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+    gDepthEqual.DepthFunc = D3D12_COMPARISON_FUNC_EQUAL;
 
     // サンプラー設定
     gSamplerLinearWrap.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
@@ -98,7 +106,13 @@ bool Init()
     gSamplerLinearWrap.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
     gSamplerLinearWrap.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
     gSamplerLinearWrap.MaxLOD = D3D12_FLOAT32_MAX;
-    gSamplerLinearWrap.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+    gSamplerLinearClamp.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+    gSamplerLinearClamp.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+    gSamplerLinearClamp.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+    gSamplerLinearClamp.AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+    gSamplerLinearClamp.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+    gSamplerLinearClamp.MaxLOD = D3D12_FLOAT32_MAX;
 
     return true;
 }

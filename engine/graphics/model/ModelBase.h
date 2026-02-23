@@ -20,6 +20,10 @@ class ModelBase
     // パイプラインステート
     std::unordered_map<uint64_t, std::unique_ptr<GraphicsPSO>> mPSO;
 
+    // z-prepass
+    std::unique_ptr<RootSignature> mZPrepassRS;
+    std::unique_ptr<GraphicsPSO> mZPrepassPSO;
+
     // コマンドリスト
     CommandList* mCmdList;
 
@@ -90,6 +94,17 @@ class ModelBase
     void End();
 
     /// <summary>
+    /// z-prepass開始
+    /// </summary>
+    /// <param name="cmdList">コマンドリスト</param>
+    void BeginZPrepass( CommandList* cmdList );
+
+    /// <summary>
+    /// z-prepass終了
+    /// </summary>
+    void EndZPrepass();
+
+    /// <summary>
     /// パイプラインステートの設定
     /// </summary>
     /// <param name="psoKey">PSOキー</param>
@@ -101,4 +116,10 @@ class ModelBase
     /// </summary>
     /// <param name="psoKey">PSOキー</param>
     void CreateGraphicsPSO( uint64_t psoKey );
+
+    /// <summary>
+    /// z-prepassの初期化
+    /// </summary>
+    /// <returns>成否</returns>
+    bool InitZPrepass();
 };

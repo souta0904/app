@@ -12,9 +12,6 @@ GraphicsPSO::GraphicsPSO()
 {
     // 共通の設定
     mDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-    mDesc.NumRenderTargets = 1;
-    mDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-    mDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
     mDesc.SampleDesc.Count = 1;
 }
 
@@ -34,20 +31,32 @@ GraphicsPSO& GraphicsPSO::operator=( const GraphicsPSO& pso )
 }
 
 // 作成
-bool GraphicsPSO::Create( const PSOInit& init )
+bool GraphicsPSO::Create( const GraphicsPSOInit& init )
 {
     // 設定を移行
     mDesc.pRootSignature = init.mRootSignature->GetRootSignature().Get();
-    auto blob = init.mVS->GetBlob();
-    mDesc.VS.pShaderBytecode = blob->GetBufferPointer();
-    mDesc.VS.BytecodeLength = blob->GetBufferSize();
-    blob = init.mPS->GetBlob();
-    mDesc.PS.pShaderBytecode = blob->GetBufferPointer();
-    mDesc.PS.BytecodeLength = blob->GetBufferSize();
+    if( init.mVS )
+    {
+        auto blob = init.mVS->GetBlob();
+        mDesc.VS.pShaderBytecode = blob->GetBufferPointer();
+        mDesc.VS.BytecodeLength = blob->GetBufferSize();
+    }
+    if( init.mPS )
+    {
+        auto blob = init.mPS->GetBlob();
+        mDesc.PS.pShaderBytecode = blob->GetBufferPointer();
+        mDesc.PS.BytecodeLength = blob->GetBufferSize();
+    }
     mDesc.BlendState = init.mBlendState;
     mDesc.RasterizerState = init.mRasterizerState;
     mDesc.DepthStencilState = init.mDepthStencilState;
     mDesc.PrimitiveTopologyType = init.mPrimitiveTopologyType;
+    mDesc.NumRenderTargets = init.mNumRenderTargets;
+    for( uint32_t i = 0; i < _countof( mDesc.RTVFormats ); ++i )
+    {
+        mDesc.RTVFormats[i] = init.mRTVFormats[i];
+    }
+    mDesc.DSVFormat = init.mDSVFormat;
 
     // 頂点レイアウトを設定
     auto num = static_cast<uint32_t>( init.mInputLayouts.size() );

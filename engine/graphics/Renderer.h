@@ -44,6 +44,8 @@ class Renderer
     // カメラ
     std::unique_ptr<Camera> mSpriteCamera;
     std::unique_ptr<Camera> mModelCamera;
+    float mCameraPitch;
+    float mCameraYaw;
     bool mUseDebugCamera;
     std::unique_ptr<DebugCamera> mDebugCamera;
     // ソーター
@@ -59,6 +61,9 @@ class Renderer
     std::unique_ptr<ModelInstance> mBoxModel;
     std::unique_ptr<ModelInstance> mSphereModel;
     std::unique_ptr<ModelInstance> mFloorModel;
+    std::unique_ptr<ModelInstance> mBoxModels[30 * 30];
+    Vector3 mBoxPosition[30 * 30];
+
     float mRotate;
 
     // テスト
@@ -138,21 +143,32 @@ class Renderer
     void Update( float deltaTime );
 
     /// <summary>
+    /// モデル描画
+    /// </summary>
+    void DrawModel();
+
+    /// <summary>
+    /// z-prepass描画
+    /// </summary>
+    /// <param name="cmdList"></param>
+    void RenderZPrepass( CommandList* cmdList );
+
+    /// <summary>
     /// 描画
     /// </summary>
-    /// <param name="cmdList">コマンドリスト</param>
-    void Draw( CommandList* cmdList );
+    /// <param name="cmdList"></param>
+    void RenderMain( CommandList* cmdList );
 
    private:
     /// <summary>
     /// モデルを描画
     /// </summary>
     /// <param name="cmdList">コマンドリスト</param>
-    void DrawModel( CommandList* cmdList );
+    void RenderModel( CommandList* cmdList );
 
     /// <summary>
     /// スプライトを描画
     /// </summary>
     /// <param name="cmdList">コマンドリスト</param>
-    void DrawSprite( CommandList* cmdList );
+    void RenderSprite( CommandList* cmdList );
 };

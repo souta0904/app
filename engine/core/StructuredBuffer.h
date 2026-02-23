@@ -5,13 +5,19 @@
 #include <cstdint>
 
 /// <summary>
-/// 定数バッファ
+/// 構造化バッファ
 /// </summary>
-class ConstantBuffer
+class StructuredBuffer
 {
+    friend class DirectXBase;
+
    private:
     // リソース
     Microsoft::WRL::ComPtr<ID3D12Resource> mResource;
+    // 要素数
+    uint32_t mCount;
+    // 1要素のサイズ
+    uint32_t mStrideSize;
     // サイズ
     uint32_t mSize;
     // データへのポインタ
@@ -21,19 +27,20 @@ class ConstantBuffer
     /// <summary>
     /// コンストラクタ
     /// </summary>
-    ConstantBuffer();
+    StructuredBuffer();
 
     /// <summary>
     /// デストラクタ
     /// </summary>
-    ~ConstantBuffer();
+    ~StructuredBuffer();
 
     /// <summary>
     /// 作成
     /// </summary>
-    /// <param name="size">サイズ</param>
+    /// <param name="count">要素数</param>
+    /// <param name="strideSize">1要素のサイズ</param>
     /// <returns>成否</returns>
-    bool Create( uint32_t size );
+    bool Create( uint32_t count, uint32_t strideSize );
 
     /// <summary>
     /// 更新
@@ -41,6 +48,6 @@ class ConstantBuffer
     /// <param name="data">データ</param>
     void Update( const void* data );
 
-    /// <summary>GPU仮想アドレスを取得</summary>
-    D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress() const { return mResource->GetGPUVirtualAddress(); }
+    /// <summary>リソースを取得</summary>
+    Microsoft::WRL::ComPtr<ID3D12Resource> GetResource() const { return mResource; }
 };

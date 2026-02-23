@@ -41,7 +41,7 @@ bool PrimitiveRenderer::Init( ShaderObject* vs, ShaderObject* ps, Camera* camera
     }
 
     // パイプラインステートの作成
-    PSOInit init = {};
+    GraphicsPSOInit init = {};
     init.mRootSignature = mRS.get();
     init.mVS = vs;
     init.mPS = ps;
@@ -67,7 +67,7 @@ bool PrimitiveRenderer::Init( ShaderObject* vs, ShaderObject* ps, Camera* camera
     {
         return false;
     }
-    init.mDepthStencilState = DirectXCommonSettings::gDepthDefault;
+    init.mDepthStencilState = DirectXCommonSettings::gDepthLess;
     init.mPrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
     mLine3D_PSO = std::make_unique<GraphicsPSO>();
     if( !mLine3D_PSO->Create( init ) )
@@ -498,7 +498,7 @@ void PrimitiveRenderer::Render2D( CommandList* cmdList )
     mPrim2D_VB->Update( mPrim2D_Vertices.data() );
 
     cmdList->SetGraphicsRootSignature( mRS.get() );
-    cmdList->SetConstantBuffer( 0, mCamera2D_CB.get() );
+    cmdList->SetGraphicsConstantBuffer( 0, mCamera2D_CB.get() );
 
     cmdList->SetPipelineState( mLine2D_PSO.get() );
     cmdList->SetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY_LINELIST );
@@ -525,7 +525,7 @@ void PrimitiveRenderer::Render3D( CommandList* cmdList )
     cmdList->SetGraphicsRootSignature( mRS.get() );
     cmdList->SetPipelineState( mLine3D_PSO.get() );
     cmdList->SetPrimitiveTopology( D3D_PRIMITIVE_TOPOLOGY_LINELIST );
-    cmdList->SetConstantBuffer( 0, mCamera3D_CB.get() );
+    cmdList->SetGraphicsConstantBuffer( 0, mCamera3D_CB.get() );
     cmdList->SetVertexBuffer( mLine3D_VB.get() );
     cmdList->DrawInstanced( mLine3D_Idx );
     mLine3D_Idx = 0;

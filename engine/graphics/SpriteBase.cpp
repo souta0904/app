@@ -29,7 +29,7 @@ bool SpriteBase::Init( ShaderObject* vs, ShaderObject* ps )
         return false;
     }
 
-    PSOInit init = {};
+    GraphicsPSOInit init = {};
     init.mRootSignature = mRS.get();
     init.mVS = vs;
     init.mPS = ps;

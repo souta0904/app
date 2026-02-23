@@ -11,6 +11,8 @@
 #pragma comment( lib, "dxgi.lib" )
 #pragma comment( lib, "dxguid.lib" )
 
+const bool DirectXBase::kUseZPrepass = true;
+
 // コンストラクタ
 DirectXBase::DirectXBase()
     : mFactory( nullptr )
@@ -79,6 +81,28 @@ void DirectXBase::Term()
     DirectXCommonSettings::Term();
 }
 
+// Z-prepass前処理
+void DirectXBase::BeginZPrepass()
+{
+    // コマンドをリセット
+    mCmdList->Reset( mBackBuffIdx );
+
+    // 深度バッファのみセット
+    mCmdList->SetRenderTarget( 0, nullptr, mDSVHdl );
+    mCmdList->ClearDepthStencilView( mDSVHdl );
+
+    // SRVデスクリプタヒープをセット
+    mCmdList->SetDescriptorHeap( mSRVHeap.get() );
+}
+
+// Z-prepass後処理
+void DirectXBase::EndZPrepass()
+{
+    // コマンドを実行
+    mCmdList->Close();
+    mCmdQueue->Execute( mCmdList.get() );
+}
+
 // 描画開始
 void DirectXBase::BeginDraw()
 {
@@ -93,11 +117,12 @@ void DirectXBase::BeginDraw()
     mCmdList->ResourceBarrier( barrier );
 
     // レンダーターゲットをセット
-    mCmdList->SetRenderTarget( mRTVHdls[mBackBuffIdx], mDSVHdl );
-
-    // レンダーターゲット・深度バッファをクリア
+    mCmdList->SetRenderTarget( 1, mRTVHdls[mBackBuffIdx], mDSVHdl );
     mCmdList->ClearRenderTargetView( mRTVHdls[mBackBuffIdx], &mClearColor.r );
-    mCmdList->ClearDepthStencilView( mDSVHdl );
+    if( !kUseZPrepass )
+    {
+        mCmdList->ClearDepthStencilView( mDSVHdl );
+    }
 
     // SRVデスクリプタヒープをセット
     mCmdList->SetDescriptorHeap( mSRVHeap.get() );

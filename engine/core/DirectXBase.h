@@ -23,6 +23,8 @@ class DirectXBase
     // バックバッファの数
     static const uint32_t kBackBuffCount = 2;
 
+    static const bool kUseZPrepass;
+
    private:
     // DXGIファクトリー
     Microsoft::WRL::ComPtr<IDXGIFactory7> mFactory;
@@ -107,6 +109,16 @@ class DirectXBase
     /// 終了処理
     /// </summary>
     void Term();
+
+    /// <summary>
+    /// Z-prepass前処理
+    /// </summary>
+    void BeginZPrepass();
+
+    /// <summary>
+    /// Z-prepass後処理
+    /// </summary>
+    void EndZPrepass();
 
     /// <summary>
     /// 描画開始

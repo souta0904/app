@@ -125,6 +125,24 @@
     <ClCompile Include="engine\graphics\PrimitiveRenderer.cpp">
       <Filter>engine\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="engine\core\ReadbackTexture.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\ComputePSO.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\RWStructuredBuffer.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\StructuredBuffer.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\core\ReadbackBuffer.cpp">
+      <Filter>engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\Random.cpp">
+      <Filter>engine\math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
@@ -328,6 +346,24 @@
       <Filter>engine\collision</Filter>
     </ClInclude>
     <ClInclude Include="engine\math\Primitive.h">
+      <Filter>engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\ReadbackTexture.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\ComputePSO.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\RWStructuredBuffer.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\StructuredBuffer.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\ReadbackBuffer.h">
+      <Filter>engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Random.h">
       <Filter>engine\math</Filter>
     </ClInclude>
   </ItemGroup>

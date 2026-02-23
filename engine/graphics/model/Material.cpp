@@ -6,7 +6,7 @@
 // コンストラクタ
 Material::Material()
     : mName( "Material" )
-    , mRenderQueue( RenderQueue::Transparent )
+    , mRenderQueue( RenderQueue::Opaque )
     , mFlags( MaterialFlags::None )
     , mCB( nullptr )
     , mTexture( nullptr )
@@ -42,7 +42,7 @@ void Material::Bind( CommandList* cmdList, uint32_t constIdx )
 {
     if( !cmdList ) return;
 
-    cmdList->SetConstantBuffer( constIdx, mCB.get() );
+    cmdList->SetGraphicsConstantBuffer( constIdx, mCB.get() );
 }
 
 // バインド
@@ -50,7 +50,7 @@ void Material::Bind( CommandList* cmdList, uint32_t constIdx, uint32_t texIdx )
 {
     if( !cmdList || !mCB ) return;
 
-    cmdList->SetConstantBuffer( constIdx, mCB.get() );
+    cmdList->SetGraphicsConstantBuffer( constIdx, mCB.get() );
 
     // テクスチャをセット
     if( HasFlags( MaterialFlags::HasTexture ) )

@@ -1,18 +1,20 @@
-#include "ConstantBuffer.h"
+#include "StructuredBuffer.h"
 
-#include "DirectXBase.h"
-#include "DirectXCommonSettings.h"
+#include "core/DirectXBase.h"
+#include "core/DirectXCommonSettings.h"
 
 // コンストラクタ
-ConstantBuffer::ConstantBuffer()
+StructuredBuffer::StructuredBuffer()
     : mResource( nullptr )
+    , mCount( 0 )
+    , mStrideSize( 0 )
     , mSize( 0 )
     , mData( nullptr )
 {
 }
 
 // デストラクタ
-ConstantBuffer::~ConstantBuffer()
+StructuredBuffer::~StructuredBuffer()
 {
     if( mResource && mData )
     {
@@ -22,9 +24,11 @@ ConstantBuffer::~ConstantBuffer()
 }
 
 // 作成
-bool ConstantBuffer::Create( uint32_t size )
+bool StructuredBuffer::Create( uint32_t count, uint32_t strideSize )
 {
-    mSize = size;
+    mCount = count;
+    mStrideSize = strideSize;
+    mSize = count * strideSize;
 
     D3D12_RESOURCE_DESC desc = {};
     desc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
@@ -35,7 +39,7 @@ bool ConstantBuffer::Create( uint32_t size )
     desc.SampleDesc.Count = 1;
     desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
-    // 定数バッファを作成
+    // 構造化バッファを作成
     [[maybe_unused]] auto hr = DirectXBase::GetInstance().GetDevice()->CreateCommittedResource(
         &DirectXCommonSettings::gHeapUpload,
         D3D12_HEAP_FLAG_NONE,
@@ -53,7 +57,7 @@ bool ConstantBuffer::Create( uint32_t size )
 }
 
 // 更新
-void ConstantBuffer::Update( const void* data )
+void StructuredBuffer::Update( const void* data )
 {
     if( !mData ) return;
 

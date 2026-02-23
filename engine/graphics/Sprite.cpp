@@ -61,7 +61,7 @@ void Sprite::Draw( const Matrix4& worldMat, Camera* camera )
     if( !cmdList ) return;
 
     cmdList->SetVertexBuffer( mVB.get() );
-    cmdList->SetConstantBuffer( 0, mCB.get() );
+    cmdList->SetGraphicsConstantBuffer( 0, mCB.get() );
     cmdList->SetGraphicsRootDescriptorTable( 1, mTexture->GetSRVHdl() );
     cmdList->DrawInstanced( kVertexCount );
 }

@@ -37,7 +37,7 @@ void LightManager::Bind( CommandList* cmdList, uint32_t constIdx )
 
     UpdateCB();
 
-    cmdList->SetConstantBuffer( constIdx, mCB.get() );
+    cmdList->SetGraphicsConstantBuffer( constIdx, mCB.get() );
 }
 
 // 平行光源を追加

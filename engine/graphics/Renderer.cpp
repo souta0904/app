@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+#include <format>
+
 #include "SpriteBase.h"
 #include "core/CommandList.h"
 #include "core/DirectXCommonSettings.h"
@@ -9,6 +11,7 @@
 #include "imgui/imgui_impl_dx12.h"
 #include "imgui/imgui_impl_win32.h"
 #include "light/LightManager.h"
+#include "math/Random.h"
 #include "model/ModelBase.h"
 #include "utils/Logger.h"
 
@@ -49,7 +52,7 @@ bool Renderer::Init()
     mDirectionalLight = std::make_unique<DirectionalLight>();
     mDirectionalLight->mColor = Color::kWhite;
     mDirectionalLight->mDirection = Vector3( 1.0f, -2.0f, 3.0f );
-    mDirectionalLight->mIntensity = 0.1f;
+    mDirectionalLight->mIntensity = 0.8f;
     mLightManager->AddDirectionalLight( mDirectionalLight.get() );
 
     // 点光源
@@ -113,7 +116,7 @@ bool Renderer::Init()
     }
 
     // パイプラインステートを作成
-    PSOInit init = {};
+    GraphicsPSOInit init = {};
     init.mRootSignature = mSimpleRS.get();
     init.mVS = resMgr.GetShader( "assets/shader/SimpleVS.hlsl", "vs_6_0" );
     init.mPS = resMgr.GetShader( "assets/shader/SimplePS.hlsl", "ps_6_0" );
@@ -166,9 +169,8 @@ bool Renderer::Init()
     }
 
     mModelCamera = std::make_unique<Camera>();
-    mModelCamera->mPosition = Vector3( 0.0f, 10.0f, -50.0f );
-    mModelCamera->mNearZ = 10.0f;
-    mModelCamera->mFarZ = 250.0f;
+    mModelCamera->mPosition = Vector3( 0.0f, 30.0f, -200.0f );
+    mModelCamera->mFov = MathUtil::kPi / 4.0f;
 
     mDebugCamera = std::make_unique<DebugCamera>();
 
@@ -189,6 +191,15 @@ bool Renderer::Init()
 
     mBoxModel = std::make_unique<ModelInstance>();
     mBoxModel->Create( resMgr.GetModel( "assets/model/box/box.obj" ) );
+    for( uint32_t i = 0; i < 30 * 30; ++i )
+    {
+        mBoxModels[i] = std::make_unique<ModelInstance>();
+        mBoxModels[i]->Create( resMgr.GetModel( "assets/model/box/box.obj" ) );
+        auto interval = 20.0f;
+        auto x = ( i % 30 - ( 30 - 1 ) / 2.0f ) * interval;
+        auto z = ( i / 30 - ( 30 - 1 ) / 2.0f ) * interval;
+        mBoxPosition[i] = Vector3( x, 0.0f, z );
+    }
 
     mSphereModel = std::make_unique<ModelInstance>();
     mSphereModel->Create( resMgr.GetModel( "assets/model/sphere/sphere.obj" ) );
@@ -264,11 +275,15 @@ void Renderer::UpdateGUI()
 {
     ImGui::Begin( "Renderer" );
 
+    ImGui::Text( std::format( "Mesh Count: {}", mSorter->GetItemCount() ).c_str() );
+
     // カメラ
     ImGui::SetNextItemOpen( true, ImGuiCond_Once );
     if( ImGui::TreeNode( "Camera" ) )
     {
         ImGui::DragFloat3( "Position", &mModelCamera->mPosition.x, 0.01f );
+        ImGui::DragFloat( "Camera Pitch", &mCameraPitch, 0.01f );
+        ImGui::DragFloat( "Camera Yaw", &mCameraYaw, 0.01f );
         ImGui::Checkbox( "Use Debug Camera", &mUseDebugCamera );
         ImGui::TreePop();
     }
@@ -317,6 +332,7 @@ void Renderer::UpdateGUI()
 void Renderer::Update( float deltaTime )
 {
     mSpriteCamera->Update();
+    mModelCamera->mRotate = Quaternion( Vector3::kUnitX, mCameraPitch ) * Quaternion( Vector3::kUnitY, mCameraYaw );
     mModelCamera->Update();
 
     if( !mUseDebugCamera )
@@ -339,12 +355,54 @@ void Renderer::Update( float deltaTime )
     mBotModel1->Update( deltaTime );
     mBotModel2->Update( deltaTime );
     mBoxModel->Update( deltaTime );
+    for( uint32_t i = 0; i < 30 * 30; ++i )
+    {
+        mBoxModels[i]->Update( deltaTime );
+    }
     mSphereModel->Update( deltaTime );
     mFloorModel->Update( deltaTime );
 }
 
-// 描画
-void Renderer::Draw( CommandList* cmdList )
+// モデル描画
+void Renderer::DrawModel()
+{
+    mFloorModel->Draw( mSorter.get(), CreateScale( Vector3( 3.0f, 3.0f, 3.0f ) ) * CreateTranslate( Vector3( 0.0f, -0.2f, 0.0f ) ) );
+
+    auto botWorld1 =
+        CreateScale( Vector3::kOne * 0.1f ) *
+        CreateRotate( Quaternion( Vector3::kUnitY, MathUtil::kPi ) ) *
+        CreateTranslate( Vector3( 10.0f, 0.0f, 0.0f ) );
+    mBotModel1->Draw( mSorter.get(), botWorld1 );
+
+    auto botWorld2 =
+        CreateScale( Vector3::kOne * 0.1f ) *
+        CreateRotate( Quaternion( Vector3::kUnitY, MathUtil::kPi ) ) *
+        CreateTranslate( Vector3( -10.0f, 0.0f, 0.0f ) );
+    mBotModel2->Draw( mSorter.get(), botWorld2 );
+
+    auto boxWorld =
+        CreateRotate( Quaternion( Vector3::kUnitY, mRotate ) ) *
+        CreateTranslate( Vector3( 2.5f, 0.0f, 0.0f ) );
+    mBoxModel->Draw( mSorter.get(), boxWorld );
+
+    for( uint32_t i = 0; i < 30 * 30; ++i )
+    {
+        boxWorld =
+            CreateScale( Vector3( 5.0f, 5.0f, 5.0f ) ) *
+            CreateTranslate( mBoxPosition[i] );
+        mBoxModels[i]->Draw( mSorter.get(), boxWorld );
+    }
+
+    auto sphereWorld =
+        CreateRotate( Quaternion( Vector3::kUnitY, mRotate ) ) *
+        CreateTranslate( Vector3( -2.5f, 0.0f, 0.0f ) );
+    mSphereModel->Draw( mSorter.get(), sphereWorld );
+
+    mSorter->Sort();
+}
+
+// z-prepass描画
+void Renderer::RenderZPrepass( CommandList* cmdList )
 {
     auto& window = Window::GetInstance();
     auto windowWidth = static_cast<float>( window.GetWidth() );
@@ -352,7 +410,23 @@ void Renderer::Draw( CommandList* cmdList )
     cmdList->SetViewport( 0.0f, 0.0f, windowWidth, windowHeight );
     cmdList->SetScissorRect( 0.0f, 0.0f, windowWidth, windowHeight );
 
-    DrawSprite( cmdList );
+    mModelBase->BeginZPrepass( cmdList );
+
+    mSorter->RenderZPrepass( cmdList );
+
+    mModelBase->EndZPrepass();
+}
+
+// 描画
+void Renderer::RenderMain( CommandList* cmdList )
+{
+    auto& window = Window::GetInstance();
+    auto windowWidth = static_cast<float>( window.GetWidth() );
+    auto windowHeight = static_cast<float>( window.GetHeight() );
+    cmdList->SetViewport( 0.0f, 0.0f, windowWidth, windowHeight );
+    cmdList->SetScissorRect( 0.0f, 0.0f, windowWidth, windowHeight );
+
+    RenderSprite( cmdList );
 
     cmdList->SetGraphicsRootSignature( mSimpleRS.get() );
     cmdList->SetPipelineState( mSimplePSO.get() );
@@ -360,9 +434,8 @@ void Renderer::Draw( CommandList* cmdList )
     cmdList->SetVertexBuffer( mSimpleVB.get() );
     cmdList->DrawInstanced( kVertexCount );
 
-    DrawModel( cmdList );
+    RenderModel( cmdList );
 
-    /*
     mPrimitiveRenderer->DrawLine2D( Vector2( 150.0f, 150.0f ), Vector2( 50.0f, 50.0f ), Color::kWhite );
     mPrimitiveRenderer->DrawTriangle( Vector2( 200.0f, 150.0f ), Vector2( 300.0f, 50.0f ), Vector2( 300.0f, 150.0f ), Color::kRed );
     mPrimitiveRenderer->DrawQuad( Vector2( 350.0f, 50.0f ), Vector2( 450.0f, 50.0f ), Vector2( 500.0f, 150.0f ), Vector2( 400.0f, 150.0f ), Color::kGreen );
@@ -415,11 +488,10 @@ void Renderer::Draw( CommandList* cmdList )
     mPrimitiveRenderer->DrawSphere( sphere, Color::kBlue );
 
     Capsule3D capsule3D = {};
-    capsule3D.mSegment.mStart = Vector3( 18.0f, 3.0f,13.0f );
+    capsule3D.mSegment.mStart = Vector3( 18.0f, 3.0f, 13.0f );
     capsule3D.mSegment.mEnd = Vector3( 22.0f, 7.0f, 17.0f );
     capsule3D.mRadius = 3.0f;
     mPrimitiveRenderer->DrawCapsule( capsule3D, Color::kYellow );
-    */
 
     mPrimitiveRenderer->DrawFrustum( mModelCamera->GetView() * mModelCamera->GetProjection(), Color::kWhite );
     mPrimitiveRenderer->DrawGrid();
@@ -428,7 +500,7 @@ void Renderer::Draw( CommandList* cmdList )
 }
 
 // モデルを描画
-void Renderer::DrawModel( CommandList* cmdList )
+void Renderer::RenderModel( CommandList* cmdList )
 {
     if( !mModelBase ) return;
 
@@ -436,39 +508,13 @@ void Renderer::DrawModel( CommandList* cmdList )
 
     mLightManager->Bind( cmdList, 4 );
 
-    mFloorModel->Draw( mSorter.get(), Matrix4() );
-
-    auto botWorld1 =
-        CreateScale( Vector3::kOne * 0.1f ) *
-        CreateRotate( Quaternion( Vector3::kUnitY, MathUtil::kPi ) ) *
-        CreateTranslate( Vector3( 10.0f, 0.0f, 0.0f ) );
-    mBotModel1->Draw( mSorter.get(), botWorld1 );
-
-    auto botWorld2 =
-        CreateScale( Vector3::kOne * 0.1f ) *
-        CreateRotate( Quaternion( Vector3::kUnitY, MathUtil::kPi ) ) *
-        CreateTranslate( Vector3( -10.0f, 0.0f, 0.0f ) );
-    mBotModel2->Draw( mSorter.get(), botWorld2 );
-
-    auto boxWorld =
-        CreateRotate( Quaternion( Vector3::kUnitY, mRotate ) ) *
-        CreateTranslate( Vector3( 2.5f, 0.0f, 0.0f ) );
-    mBoxModel->Draw( mSorter.get(), boxWorld );
-
-    auto sphereWorld =
-        CreateRotate( Quaternion( Vector3::kUnitY, mRotate ) ) *
-        CreateTranslate( Vector3( -2.5f, 0.0f, 0.0f ) );
-    mSphereModel->Draw( mSorter.get(), sphereWorld );
-
-    mSorter->Sort();
-
     mSorter->Render( cmdList );
 
     mModelBase->End();
 }
 
 // スプライトを描画
-void Renderer::DrawSprite( CommandList* cmdList )
+void Renderer::RenderSprite( CommandList* cmdList )
 {
     if( !mSpriteBase ) return;
 

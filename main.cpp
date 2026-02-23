@@ -14,6 +14,7 @@
 #include "graphics/Texture.h"
 #include "imgui/imgui.h"
 #include "input/InputBase.h"
+#include "math/Random.h"
 #include "math/Vector4.h"
 #include "utils/Logger.h"
 #include "utils/StringHelper.h"
@@ -100,6 +101,9 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         LOG_INFO( "Input base initialized successfully." );
     }
 
+    // 乱数の初期化
+    Random::Init();
+
     std::chrono::steady_clock::time_point prevTime = std::chrono::steady_clock::now();
     auto deltaTime = 0.0f;
 
@@ -171,20 +175,34 @@ int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
         auto useVSync = dxBase.GetUseVSync();
         ImGui::Checkbox( "Use VSync", &useVSync );
         dxBase.SetUseVSync( useVSync );
+        ImGui::Text( std::format( "Z-prepass: {}", DirectXBase::kUseZPrepass ).c_str() );
         // ImGui::Image( texture->GetSRVHdl()->mGPU.ptr, ImVec2( 256.0f, 256.0f ) );
         ImGui::End();
 
         renderer.UpdateGUI();
 
-        editorBase.End();
-
         renderer.Update( deltaTime );
 
-        dxBase.BeginDraw();
+        // レンダリング
 
         auto cmdList = dxBase.GetCmdList();
-        renderer.Draw( cmdList );
+        renderer.DrawModel();
 
+        // z-prepass
+        if( DirectXBase::kUseZPrepass )
+        {
+            dxBase.BeginZPrepass();
+            renderer.RenderZPrepass( cmdList );
+            dxBase.EndZPrepass();
+        }
+
+        // main
+        dxBase.BeginDraw();
+
+        renderer.RenderMain( cmdList );
+
+        // エディタ
+        editorBase.End();
         editorBase.Draw( cmdList );
 
         dxBase.EndDraw();

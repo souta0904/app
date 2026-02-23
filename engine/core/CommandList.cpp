@@ -1,5 +1,6 @@
 #include "CommandList.h"
 
+#include "ComputePSO.h"
 #include "ConstantBuffer.h"
 #include "DirectXBase.h"
 #include "GraphicsPSO.h"
@@ -91,6 +92,30 @@ void CommandList::ClearRenderTargetView( DescriptorHandle* hRTV, const float cle
     mCmdList->ClearRenderTargetView( hRTV->mCPU, clearColor, 0, nullptr );
 }
 
+// リソースをコピー
+void CommandList::CopyResource( ID3D12Resource* dst, ID3D12Resource* src )
+{
+    if( !mCmdList || !dst || !src ) return;
+
+    mCmdList->CopyResource( dst, src );
+}
+
+// テクスチャをコピー
+void CommandList::CopyTexture( const D3D12_TEXTURE_COPY_LOCATION* dst, const D3D12_TEXTURE_COPY_LOCATION* src )
+{
+    if( !mCmdList || !dst || !src ) return;
+
+    mCmdList->CopyTextureRegion( dst, 0, 0, 0, src, nullptr );
+}
+
+// コンピュートシェーダを実行
+void CommandList::Dispatch( uint32_t x, uint32_t y, uint32_t z )
+{
+    if( !mCmdList ) return;
+
+    mCmdList->Dispatch( x, y, z );
+}
+
 // 描画
 void CommandList::DrawInstanced( uint32_t vertexCount )
 {
@@ -116,7 +141,15 @@ void CommandList::ResourceBarrier( const D3D12_RESOURCE_BARRIER& barrier )
 }
 
 // 定数バッファをセット
-void CommandList::SetConstantBuffer( uint32_t rootParamIdx, ConstantBuffer* constantBuffer )
+void CommandList::SetComputeConstantBuffer( uint32_t rootParamIdx, ConstantBuffer* constantBuffer )
+{
+    if( !mCmdList || !constantBuffer ) return;
+
+    mCmdList->SetComputeRootConstantBufferView( rootParamIdx, constantBuffer->GetGPUVirtualAddress() );
+}
+
+// 定数バッファをセット
+void CommandList::SetGraphicsConstantBuffer( uint32_t rootParamIdx, ConstantBuffer* constantBuffer )
 {
     if( !mCmdList || !constantBuffer ) return;
 
@@ -133,11 +166,27 @@ void CommandList::SetDescriptorHeap( DescriptorHeap* descriptorHeap )
 }
 
 // デスクリプタテーブルをルートシグネチャへセット
-void CommandList::SetGraphicsRootDescriptorTable( uint32_t rootParamIdx, DescriptorHandle* hSRV )
+void CommandList::SetComputeRootDescriptorTable( uint32_t rootParamIdx, DescriptorHandle* descriptorHandle )
 {
-    if( !mCmdList || !hSRV ) return;
+    if( !mCmdList || !descriptorHandle ) return;
 
-    mCmdList->SetGraphicsRootDescriptorTable( rootParamIdx, hSRV->mGPU );
+    mCmdList->SetComputeRootDescriptorTable( rootParamIdx, descriptorHandle->mGPU );
+}
+
+// デスクリプタテーブルをルートシグネチャへセット
+void CommandList::SetGraphicsRootDescriptorTable( uint32_t rootParamIdx, DescriptorHandle* descriptorHandle )
+{
+    if( !mCmdList || !descriptorHandle ) return;
+
+    mCmdList->SetGraphicsRootDescriptorTable( rootParamIdx, descriptorHandle->mGPU );
+}
+
+// ルートシグネチャをセット
+void CommandList::SetComputeRootSignature( RootSignature* rootSignature )
+{
+    if( !mCmdList || !rootSignature ) return;
+
+    mCmdList->SetComputeRootSignature( rootSignature->GetRootSignature().Get() );
 }
 
 // ルートシグネチャをセット
@@ -157,6 +206,14 @@ void CommandList::SetIndexBuffer( IndexBuffer* indexBuffer )
 }
 
 // パイプラインステートをセット
+void CommandList::SetPipelineState( ComputePSO* pso )
+{
+    if( !mCmdList || !pso ) return;
+
+    mCmdList->SetPipelineState( pso->GetPipelineState().Get() );
+}
+
+// パイプラインステートをセット
 void CommandList::SetPipelineState( GraphicsPSO* pso )
 {
     if( !mCmdList || !pso ) return;
@@ -173,11 +230,15 @@ void CommandList::SetPrimitiveTopology( D3D12_PRIMITIVE_TOPOLOGY primitiveTopolo
 }
 
 // レンダーターゲットをセット
-void CommandList::SetRenderTarget( DescriptorHandle* hRTV, DescriptorHandle* hDSV )
+void CommandList::SetRenderTarget( uint32_t numRenderTarget, DescriptorHandle* hRTV, DescriptorHandle* hDSV )
 {
-    if( !mCmdList || !hRTV || !hDSV ) return;
+    if( !mCmdList ) return;
 
-    mCmdList->OMSetRenderTargets( 1, &hRTV->mCPU, false, &hDSV->mCPU );
+    mCmdList->OMSetRenderTargets(
+        numRenderTarget,
+        hRTV ? &hRTV->mCPU : nullptr,
+        false,
+        hDSV ? &hDSV->mCPU : nullptr );
 }
 
 // シザー矩形をセット
@@ -214,6 +275,31 @@ void CommandList::SetViewport( float topLeftX, float topLeftY, float width, floa
     viewport.MinDepth = minDepth;
     viewport.MaxDepth = maxDepth;
     mCmdList->RSSetViewports( 1, &viewport );
+}
+
+// Transitionバリア
+void CommandList::TransitionBarrier( ID3D12Resource* resource, D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after )
+{
+    if( !mCmdList ) return;
+
+    D3D12_RESOURCE_BARRIER barrier = {};
+    barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    barrier.Transition.pResource = resource;
+    barrier.Transition.StateBefore = before;
+    barrier.Transition.StateAfter = after;
+    barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+    mCmdList->ResourceBarrier( 1, &barrier );
+}
+
+// UAVバリア
+void CommandList::UAVBarrier( ID3D12Resource* resource )
+{
+    if( !mCmdList ) return;
+
+    D3D12_RESOURCE_BARRIER barrier = {};
+    barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
+    barrier.UAV.pResource = resource;
+    mCmdList->ResourceBarrier( 1, &barrier );
 }
 
 #pragma endregion
