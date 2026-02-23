@@ -11,7 +11,7 @@
 #pragma comment( lib, "dxgi.lib" )
 #pragma comment( lib, "dxguid.lib" )
 
-const bool DirectXBase::kUseZPrepass = true;
+const bool DirectXBase::kUseZPrepass = false;
 
 // コンストラクタ
 DirectXBase::DirectXBase()

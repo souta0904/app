@@ -50,6 +50,7 @@ class Renderer
     std::unique_ptr<DebugCamera> mDebugCamera;
     // ソーター
     std::unique_ptr<MeshSorter> mSorter;
+    uint32_t mItemCount;
 
     // スプライト
     std::unique_ptr<Sprite> mOwlSprite;

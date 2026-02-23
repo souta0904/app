@@ -171,6 +171,7 @@ bool Renderer::Init()
     mModelCamera = std::make_unique<Camera>();
     mModelCamera->mPosition = Vector3( 0.0f, 30.0f, -200.0f );
     mModelCamera->mFov = MathUtil::kPi / 4.0f;
+    mModelCamera->mNearZ = 10.0f;
 
     mDebugCamera = std::make_unique<DebugCamera>();
 
@@ -275,7 +276,7 @@ void Renderer::UpdateGUI()
 {
     ImGui::Begin( "Renderer" );
 
-    ImGui::Text( std::format( "Mesh Count: {}", mSorter->GetItemCount() ).c_str() );
+    ImGui::Text( std::format( "Mesh Count: {}", mItemCount ).c_str() );
 
     // カメラ
     ImGui::SetNextItemOpen( true, ImGuiCond_Once );
@@ -399,6 +400,8 @@ void Renderer::DrawModel()
     mSphereModel->Draw( mSorter.get(), sphereWorld );
 
     mSorter->Sort();
+
+    mItemCount = mSorter->GetItemCount();
 }
 
 // z-prepass描画
