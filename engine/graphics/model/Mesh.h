@@ -86,6 +86,14 @@ class Mesh
     /// <param name="cmdList">コマンドリスト</param>
     void Draw( CommandList* cmdList );
 
+    uint32_t GetVerticesCount() const { return static_cast<uint32_t>( mVertices.size() ); }
+
+    uint32_t GetIndicesCount() const { return static_cast<uint32_t>( mIndices.size() ); }
+
+    D3D12_VERTEX_BUFFER_VIEW GetVBV() const { return mVB->GetView(); }
+
+    D3D12_INDEX_BUFFER_VIEW GetIBV() const { return mIB->GetView(); }
+
    private:
     /// <summary>
     /// 頂点バッファを作成

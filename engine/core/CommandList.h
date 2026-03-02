@@ -87,6 +87,14 @@ class CommandList
     void ClearRenderTargetView( DescriptorHandle* hRTV, const float clearColor[4] );
 
     /// <summary>
+    /// バッファをコピー
+    /// </summary>
+    /// <param name="dst"></param>
+    /// <param name="src"></param>
+    /// <param name="numBytes"></param>
+    void CopyBuffer( ID3D12Resource* dst, ID3D12Resource* src, uint32_t numBytes );
+
+    /// <summary>
     /// リソースをコピー
     /// </summary>
     /// <param name="dst"></param>
@@ -119,6 +127,15 @@ class CommandList
     /// </summary>
     /// <param name="indexCount">インデックス数</param>
     void DrawIndexedInstanced( uint32_t indexCount );
+
+    /// <summary>
+    /// インダイレクト描画
+    /// </summary>
+    /// <param name="commandSignature"></param>
+    /// <param name="maxCommandCount"></param>
+    /// <param name="argumentBuffer"></param>
+    /// <param name="argumentBufferOffset"></param>
+    void ExecuteIndirect( ID3D12CommandSignature* commandSignature, uint32_t maxCommandCount, ID3D12Resource* argumentBuffer, uint32_t argumentBufferOffset );
 
     /// <summary>
     /// リソースバリアをセット

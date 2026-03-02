@@ -92,6 +92,14 @@ void CommandList::ClearRenderTargetView( DescriptorHandle* hRTV, const float cle
     mCmdList->ClearRenderTargetView( hRTV->mCPU, clearColor, 0, nullptr );
 }
 
+// バッファをコピー
+void CommandList::CopyBuffer( ID3D12Resource* dst, ID3D12Resource* src, uint32_t numBytes )
+{
+    if( !mCmdList || !dst || !src ) return;
+
+    mCmdList->CopyBufferRegion( dst, 0, src, 0, numBytes );
+}
+
 // リソースをコピー
 void CommandList::CopyResource( ID3D12Resource* dst, ID3D12Resource* src )
 {
@@ -130,6 +138,14 @@ void CommandList::DrawIndexedInstanced( uint32_t indexCount )
     if( !mCmdList ) return;
 
     mCmdList->DrawIndexedInstanced( indexCount, 1, 0, 0, 0 );
+}
+
+// インダイレクト描画
+void CommandList::ExecuteIndirect( ID3D12CommandSignature* commandSignature, uint32_t maxCommandCount, ID3D12Resource* argumentBuffer, uint32_t argumentBufferOffset )
+{
+    if( !mCmdList ) return;
+
+    mCmdList->ExecuteIndirect( commandSignature, maxCommandCount, argumentBuffer, argumentBufferOffset, nullptr, 0 );
 }
 
 // リソースバリアをセット

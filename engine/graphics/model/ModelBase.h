@@ -24,6 +24,8 @@ class ModelBase
     std::unique_ptr<RootSignature> mZPrepassRS;
     std::unique_ptr<GraphicsPSO> mZPrepassPSO;
 
+    Microsoft::WRL::ComPtr<ID3D12CommandSignature> mCommandSignature;
+
     // コマンドリスト
     CommandList* mCmdList;
 
@@ -109,6 +111,8 @@ class ModelBase
     /// </summary>
     /// <param name="psoKey">PSOキー</param>
     void SetGraphicsPSO( uint64_t psoKey );
+
+    Microsoft::WRL::ComPtr<ID3D12CommandSignature> GetCommandSignature() const { return mCommandSignature; }
 
    private:
     /// <summary>

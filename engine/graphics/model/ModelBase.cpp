@@ -2,6 +2,7 @@
 
 #include <format>
 
+#include "MeshSorter.h"
 #include "core/CommandList.h"
 #include "core/DirectXBase.h"
 #include "core/DirectXCommonSettings.h"
@@ -44,6 +45,25 @@ bool ModelBase::Init()
         {
             return false;
         }
+    }
+
+    D3D12_INDIRECT_ARGUMENT_DESC indirectArgs[5] = {};
+    indirectArgs[0].Type = D3D12_INDIRECT_ARGUMENT_TYPE_VERTEX_BUFFER_VIEW;
+    indirectArgs[0].VertexBuffer.Slot = 0;
+    indirectArgs[1].Type = D3D12_INDIRECT_ARGUMENT_TYPE_INDEX_BUFFER_VIEW;
+    indirectArgs[2].Type = D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT_BUFFER_VIEW;
+    indirectArgs[2].ConstantBufferView.RootParameterIndex = 0;
+    indirectArgs[3].Type = D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT_BUFFER_VIEW;
+    indirectArgs[3].ConstantBufferView.RootParameterIndex = 1;
+    indirectArgs[4].Type = D3D12_INDIRECT_ARGUMENT_TYPE_DRAW_INDEXED;
+    D3D12_COMMAND_SIGNATURE_DESC desc = {};
+    desc.ByteStride = sizeof( MeshSorter::IndirectCommand );
+    desc.NumArgumentDescs = _countof( indirectArgs );
+    desc.pArgumentDescs = indirectArgs;
+    auto hr = DirectXBase::GetInstance().GetDevice()->CreateCommandSignature( &desc, mRS->GetRootSignature().Get(), IID_PPV_ARGS( mCommandSignature.GetAddressOf() ) );
+    if( FAILED( hr ) )
+    {
+        return false;
     }
 
     return true;

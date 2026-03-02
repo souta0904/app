@@ -3,6 +3,8 @@
 #include <vector>
 
 #include "core/ConstantBuffer.h"
+#include "core/RWStructuredBuffer.h"
+#include "core/StructuredBuffer.h"
 #include "math/Primitive.h"
 
 class Camera;
@@ -16,6 +18,21 @@ class Mesh;
 class MeshSorter
 {
    public:
+    /// <summary>
+    /// コマンド構造体
+    /// </summary>
+    struct IndirectCommand
+    {
+        D3D12_VERTEX_BUFFER_VIEW mVBV;
+        D3D12_INDEX_BUFFER_VIEW mIBV;
+        D3D12_GPU_VIRTUAL_ADDRESS mTransMatCBV;
+        D3D12_GPU_VIRTUAL_ADDRESS mMaterialCBV;
+        D3D12_DRAW_INDEXED_ARGUMENTS mDrawArg;
+    };
+
+   private:
+    static const uint32_t kMaxDrawCount = 4096;
+
     /// <summary>
     /// 描画アイテム
     /// </summary>
@@ -39,6 +56,11 @@ class MeshSorter
 
     // 描画アイテムリスト
     std::vector<SortItem> mSortItems;
+
+    // インダイレクト描画
+    bool mUseIndirectDraw = true;
+    std::unique_ptr<RWStructuredBuffer> mIndirectBuff;
+    std::unique_ptr<StructuredBuffer> mIndirectUpload;
 
    public:
     /// <summary>
@@ -104,4 +126,6 @@ class MeshSorter
     /// <param name="distance">距離</param>
     /// <returns>量子化された距離</returns>
     uint32_t QuantizeDist( float distance );
+
+    void UpdateIndirectBuff( CommandList* cmdList );
 };

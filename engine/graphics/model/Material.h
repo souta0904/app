@@ -113,6 +113,8 @@ class Material
     /// <summary>レンダーキューを取得</summary>
     RenderQueue GetRenderQueue() const { return mRenderQueue; }
 
+    ConstantBuffer* GetConstantBuffer() const { return mCB.get(); }
+
     /// <summary>レンダーキューを設定</summary>
     void SetRenderQueue( RenderQueue renderQueue ) { mRenderQueue = renderQueue; }
 
