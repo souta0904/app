@@ -13,6 +13,22 @@
 
 class CommandList;
 
+struct ResMeshlet
+{
+    uint32_t mVertexOffset;
+    uint32_t mVertexCount;
+    uint32_t mPrimitiveOffset;
+    uint32_t mPrimitiveCount;
+};
+
+struct ResPrimitiveIndex
+{
+    uint32_t mIndex0 : 10;
+    uint32_t mIndex1 : 10;
+    uint32_t mIndex2 : 10;
+    uint32_t mReserved : 2;
+};
+
 /// <summary>
 /// メッシュ
 /// </summary>
@@ -51,6 +67,15 @@ class Mesh
 
     // マテリアルのインデックス
     uint32_t mMaterialIdx;
+
+
+
+    // メッシュレット
+    std::vector<ResMeshlet> mMeshlets;
+    std::vector<uint32_t> mUniqueVertexIndices;
+    std::vector<ResPrimitiveIndex> mPrimitiveIndices;
+
+
 
    public:
     /// <summary>

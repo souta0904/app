@@ -32,7 +32,7 @@ void RootSignature::Init( uint32_t numParameters, uint32_t numSamplers )
 // ルートパラメータを取得
 RootParameter& RootSignature::GetParameter( uint32_t idx )
 {
-    if( idx < 0 && idx >= mNumParameters ) nullptr;
+    if( idx >= mNumParameters ) nullptr;
 
     return mParameters[idx];
 }
@@ -40,7 +40,7 @@ RootParameter& RootSignature::GetParameter( uint32_t idx )
 // サンプラーを取得
 D3D12_STATIC_SAMPLER_DESC& RootSignature::GetSampler( uint32_t idx )
 {
-    if( idx < 0 && idx >= mNumSamplers ) nullptr;
+    if( idx >= mNumSamplers ) nullptr;
 
     return mSamplers[idx];
 }

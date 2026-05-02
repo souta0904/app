@@ -53,7 +53,7 @@ void Material::Bind( CommandList* cmdList, uint32_t constIdx, uint32_t texIdx )
     cmdList->SetGraphicsConstantBuffer( constIdx, mCB.get() );
 
     // テクスチャをセット
-    if( HasFlags( MaterialFlags::HasTexture ) )
+    //if( HasFlags( MaterialFlags::HasTexture ) )
     {
         cmdList->SetGraphicsRootDescriptorTable( texIdx, mTexture->GetSRVHdl() );
     }
@@ -75,5 +75,5 @@ void Material::EnableWireframe( bool enable )
 void Material::SetTexture( Texture* texture )
 {
     mTexture = texture;
-    mTexture ? AddFlags( MaterialFlags::HasTexture ) : RemoveFlags( MaterialFlags::HasTexture );
+    //mTexture ? AddFlags( MaterialFlags::HasTexture ) : RemoveFlags( MaterialFlags::HasTexture );
 }

@@ -4,6 +4,7 @@
 
 #include "SpriteBase.h"
 #include "core/CommandList.h"
+#include "core/DirectXBase.h"
 #include "core/DirectXCommonSettings.h"
 #include "core/ResourceManager.h"
 #include "core/Window.h"
@@ -12,6 +13,7 @@
 #include "imgui/imgui_impl_win32.h"
 #include "light/LightManager.h"
 #include "math/Random.h"
+#include "model/MaterialManager.h"
 #include "model/ModelBase.h"
 #include "utils/Logger.h"
 
@@ -75,6 +77,11 @@ bool Renderer::Init()
     mSpotLight->mInnerAngle = 0.0f;
     mSpotLight->mOuterAngle = 25.0f;
     mLightManager->AddSpotLight( mSpotLight.get() );
+
+    if( !MaterialManager::GetInstance().Init() )
+    {
+        return false;
+    }
 
     auto& resMgr = ResourceManager::GetInstance();
     auto* spriteVS = resMgr.GetShader( "assets/shader/SpriteVS.hlsl", "vs_6_0" );
@@ -348,6 +355,8 @@ void Renderer::Update( float deltaTime )
         mPrimitiveRenderer->SetCamera3D( mDebugCamera->GetCamera() );
     }
 
+    MaterialManager::GetInstance().Update();
+
     // UVスクロール
     mStarSprite->mUVTranslate += Vector2( 0.1f * deltaTime, -0.1f * deltaTime );
 
@@ -496,7 +505,10 @@ void Renderer::RenderMain( CommandList* cmdList )
     capsule3D.mRadius = 3.0f;
     mPrimitiveRenderer->DrawCapsule( capsule3D, Color::kYellow );
 
-    mPrimitiveRenderer->DrawFrustum( mModelCamera->GetView() * mModelCamera->GetProjection(), Color::kWhite );
+    if( mUseDebugCamera )
+    {
+        mPrimitiveRenderer->DrawFrustum( mModelCamera->GetView() * mModelCamera->GetProjection(), Color::kWhite );
+    }
     mPrimitiveRenderer->DrawGrid();
     mPrimitiveRenderer->Render3D( cmdList );
     mPrimitiveRenderer->Render2D( cmdList );
@@ -509,7 +521,12 @@ void Renderer::RenderModel( CommandList* cmdList )
 
     mModelBase->Begin( cmdList );
 
-    mLightManager->Bind( cmdList, 4 );
+    DescriptorHandle hdl = {};
+    hdl.mCPU = DirectXBase::GetInstance().GetSRVHeap()->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart();
+    hdl.mGPU = DirectXBase::GetInstance().GetSRVHeap()->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart();
+    MaterialManager::GetInstance().Bind( cmdList, 1 );
+    cmdList->SetGraphicsRootDescriptorTable( 3, &hdl );
+    mLightManager->Bind( cmdList, 5 );
 
     mSorter->Render( cmdList );
 

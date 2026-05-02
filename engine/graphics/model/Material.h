@@ -27,6 +27,7 @@ class Material
 {
     friend class ModelData;
     friend class ModelInstance;
+    friend class MaterialManager;
 
    private:
     /// <summary>
@@ -55,6 +56,8 @@ class Material
     std::unique_ptr<ConstantBuffer> mCB;
     // テクスチャ
     Texture* mTexture;
+
+    uint32_t mGlobalIdx;
 
    public:
     // 色
@@ -113,7 +116,13 @@ class Material
     /// <summary>レンダーキューを取得</summary>
     RenderQueue GetRenderQueue() const { return mRenderQueue; }
 
+    /// <summary>定数バッファを取得</summary>
     ConstantBuffer* GetConstantBuffer() const { return mCB.get(); }
+
+    /// <summary>テクスチャを取得</summary>
+    Texture* GetTexture() const { return mTexture; }
+
+    uint32_t GetGlobalIdx() const { return mGlobalIdx; }
 
     /// <summary>レンダーキューを設定</summary>
     void SetRenderQueue( RenderQueue renderQueue ) { mRenderQueue = renderQueue; }

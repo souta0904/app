@@ -138,7 +138,7 @@ void MeshSorter::Render( CommandList* cmdList )
 
     // カメラ
     mCameraCB->Update( &mCamera->mPosition );
-    cmdList->SetGraphicsConstantBuffer( 2, mCameraCB.get() );
+    cmdList->SetGraphicsConstantBuffer( 4, mCameraCB.get() );
 
     auto currPSOKey = UINT64_MAX;
     if( mUseIndirectDraw )
@@ -167,7 +167,7 @@ void MeshSorter::Render( CommandList* cmdList )
                 offsetIdx = i;
             }
         }
-        else
+        /*else
         {
             auto& item = mSortItems[i];
 
@@ -196,7 +196,7 @@ void MeshSorter::Render( CommandList* cmdList )
             {
                 item.mMesh->Draw( cmdList );
             }
-        }
+        }*/
     }
 
     if( mUseIndirectDraw )
@@ -229,7 +229,8 @@ void MeshSorter::UpdateIndirectBuff( CommandList* cmdList )
         data[i].mVBV = item.mMesh->GetVBV();
         data[i].mIBV = item.mMesh->GetIBV();
         data[i].mTransMatCBV = item.mTransMatCB->GetGPUVirtualAddress();
-        data[i].mMaterialCBV = item.mMaterial->GetConstantBuffer()->GetGPUVirtualAddress();
+        //data[i].mMaterialCBV = item.mMaterial->GetConstantBuffer()->GetGPUVirtualAddress();
+        data[i].mMaterialIdx = item.mMaterial->GetGlobalIdx();
         data[i].mDrawArg.IndexCountPerInstance = item.mMesh->GetIndicesCount();
         data[i].mDrawArg.InstanceCount = 1;
         data[i].mDrawArg.StartIndexLocation = 0;

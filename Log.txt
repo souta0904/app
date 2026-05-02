@@ -1,37 +1,37 @@
-[2026-03-02 22:38:29] [INFO ] Window created successfully.
-[2026-03-02 22:38:29] [INFO ] Back Buffer Count: 2
-[2026-03-02 22:38:29] [INFO ] Enable debug layer.
-[2026-03-02 22:38:29] [INFO ] DXGIFactory created successfully.
-[2026-03-02 22:38:29] [INFO ] Use Adapter: NVIDIA GeForce RTX 3070
-[2026-03-02 22:38:29] [INFO ] Feature Level: 12.2
-[2026-03-02 22:38:29] [INFO ] D3D12Device created successfully.
-[2026-03-02 22:38:29] [INFO ] CommandQueue created successfully.
-[2026-03-02 22:38:29] [INFO ] DXGISwapChain created successfully.
-[2026-03-02 22:38:29] [INFO ] CommandList created successfully.
-[2026-03-02 22:38:29] [INFO ] DirectX initialized successfully.
-[2026-03-02 22:38:29] [INFO ] Editor base initialized successfully.
-[2026-03-02 22:38:29] [INFO ] Resource manager initialized successfully.
-[2026-03-02 22:38:29] [INFO ] Light manager initialized successfully.
-[2026-03-02 22:38:29] [INFO ] Shader compiled successfully: assets/shader/SpriteVS.hlsl
-[2026-03-02 22:38:29] [INFO ] Shader compiled successfully: assets/shader/SpritePS.hlsl
-[2026-03-02 22:38:29] [INFO ] Sprite base initialized successfully.
-[2026-03-02 22:38:29] [INFO ] Shader compiled successfully: assets/shader/SimpleVS.hlsl
-[2026-03-02 22:38:29] [INFO ] Shader compiled successfully: assets/shader/SimplePS.hlsl
-[2026-03-02 22:38:29] [INFO ] Shader compiled successfully: assets/shader/ModelVS.hlsl
-[2026-03-02 22:38:29] [INFO ] Shader compiled successfully: assets/shader/NoTextureModelPS.hlsl
-[2026-03-02 22:38:29] [INFO ] Model base initialized successfully.
-[2026-03-02 22:38:30] [INFO ] Shader compiled successfully: assets/shader/PrimitiveVS.hlsl
-[2026-03-02 22:38:30] [INFO ] Shader compiled successfully: assets/shader/PrimitivePS.hlsl
-[2026-03-02 22:38:30] [INFO ] Primitive renderer initialized successfully.
-[2026-03-02 22:38:30] [INFO ] Renderer initialized successfully.
-[2026-03-02 22:38:30] [INFO ] Input base initialized successfully.
-[2026-03-02 22:38:30] [INFO ] Shader compiled successfully: assets/shader/ModelPS.hlsl
-[2026-03-02 22:38:40] [INFO ] Input base terminated.
-[2026-03-02 22:38:40] [INFO ] Model base terminated.
-[2026-03-02 22:38:40] [INFO ] Sprite base terminated.
-[2026-03-02 22:38:40] [INFO ] Light manager terminated.
-[2026-03-02 22:38:40] [INFO ] Renderer terminated.
-[2026-03-02 22:38:40] [INFO ] Resource manager terminated.
-[2026-03-02 22:38:40] [INFO ] Editor base terminated.
-[2026-03-02 22:38:40] [INFO ] DirectX terminated.
-[2026-03-02 22:38:40] [INFO ] Window destroyed.
+[2026-05-02 13:43:59] [INFO ] Window created successfully.
+[2026-05-02 13:43:59] [INFO ] Back Buffer Count: 2
+[2026-05-02 13:43:59] [INFO ] Enable debug layer.
+[2026-05-02 13:43:59] [INFO ] DXGIFactory created successfully.
+[2026-05-02 13:43:59] [INFO ] Use Adapter: NVIDIA GeForce RTX 3070
+[2026-05-02 13:43:59] [INFO ] Feature Level: 12.2
+[2026-05-02 13:43:59] [INFO ] D3D12Device created successfully.
+[2026-05-02 13:43:59] [INFO ] CommandQueue created successfully.
+[2026-05-02 13:43:59] [INFO ] DXGISwapChain created successfully.
+[2026-05-02 13:43:59] [INFO ] CommandList created successfully.
+[2026-05-02 13:43:59] [INFO ] DirectX initialized successfully.
+[2026-05-02 13:44:00] [INFO ] Editor base initialized successfully.
+[2026-05-02 13:44:00] [INFO ] Resource manager initialized successfully.
+[2026-05-02 13:44:00] [INFO ] Light manager initialized successfully.
+[2026-05-02 13:44:00] [INFO ] Shader compiled successfully: assets/shader/SpriteVS.hlsl
+[2026-05-02 13:44:00] [INFO ] Shader compiled successfully: assets/shader/SpritePS.hlsl
+[2026-05-02 13:44:00] [INFO ] Sprite base initialized successfully.
+[2026-05-02 13:44:00] [INFO ] Shader compiled successfully: assets/shader/SimpleVS.hlsl
+[2026-05-02 13:44:00] [INFO ] Shader compiled successfully: assets/shader/SimplePS.hlsl
+[2026-05-02 13:44:00] [INFO ] Shader compiled successfully: assets/shader/ModelVS.hlsl
+[2026-05-02 13:44:00] [INFO ] Shader compiled successfully: assets/shader/ModelPS.hlsl
+[2026-05-02 13:44:00] [INFO ] Shader compiled successfully: assets/shader/ZPrepassVS.hlsl
+[2026-05-02 13:44:00] [INFO ] Model base initialized successfully.
+[2026-05-02 13:44:01] [INFO ] Shader compiled successfully: assets/shader/PrimitiveVS.hlsl
+[2026-05-02 13:44:01] [INFO ] Shader compiled successfully: assets/shader/PrimitivePS.hlsl
+[2026-05-02 13:44:01] [INFO ] Primitive renderer initialized successfully.
+[2026-05-02 13:44:01] [INFO ] Renderer initialized successfully.
+[2026-05-02 13:44:01] [INFO ] Input base initialized successfully.
+[2026-05-02 13:44:10] [INFO ] Input base terminated.
+[2026-05-02 13:44:10] [INFO ] Model base terminated.
+[2026-05-02 13:44:10] [INFO ] Sprite base terminated.
+[2026-05-02 13:44:10] [INFO ] Light manager terminated.
+[2026-05-02 13:44:10] [INFO ] Renderer terminated.
+[2026-05-02 13:44:10] [INFO ] Resource manager terminated.
+[2026-05-02 13:44:10] [INFO ] Editor base terminated.
+[2026-05-02 13:44:10] [INFO ] DirectX terminated.
+[2026-05-02 13:44:10] [INFO ] Window destroyed.

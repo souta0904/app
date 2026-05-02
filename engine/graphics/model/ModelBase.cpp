@@ -21,13 +21,15 @@ ModelBase::ModelBase()
 bool ModelBase::Init()
 {
     mRS = std::make_unique<RootSignature>();
-    mRS->Init( 5, 1 );
+    mRS->Init( 6, 1 );
     mRS->GetParameter( 0 ).InitAsCBV( 0, D3D12_SHADER_VISIBILITY_VERTEX );
-    mRS->GetParameter( 1 ).InitAsCBV( 0, D3D12_SHADER_VISIBILITY_PIXEL );
-    mRS->GetParameter( 2 ).InitAsCBV( 1, D3D12_SHADER_VISIBILITY_PIXEL );
+    mRS->GetParameter( 1 ).InitAsDescriptorTable( 1 );
+    mRS->GetParameter( 1 ).SetDescriptorRange( 0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0 );
+    mRS->GetParameter( 2 ).InitAsConstants( 2, D3D12_SHADER_VISIBILITY_PIXEL );
     mRS->GetParameter( 3 ).InitAsDescriptorTable( 1 );
-    mRS->GetParameter( 3 ).SetDescriptorRange( 0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0 );
-    mRS->GetParameter( 4 ).InitAsCBV( 2, D3D12_SHADER_VISIBILITY_PIXEL );
+    mRS->GetParameter( 3 ).SetDescriptorRange( 0, D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 4096, 1 );
+    mRS->GetParameter( 4 ).InitAsCBV( 0, D3D12_SHADER_VISIBILITY_PIXEL );
+    mRS->GetParameter( 5 ).InitAsCBV( 1, D3D12_SHADER_VISIBILITY_PIXEL );
     mRS->GetSampler( 0 ) = DirectXCommonSettings::gSamplerLinearWrap;
     // ルートシグネチャの作成
     if( !mRS->Create() )
@@ -53,8 +55,9 @@ bool ModelBase::Init()
     indirectArgs[1].Type = D3D12_INDIRECT_ARGUMENT_TYPE_INDEX_BUFFER_VIEW;
     indirectArgs[2].Type = D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT_BUFFER_VIEW;
     indirectArgs[2].ConstantBufferView.RootParameterIndex = 0;
-    indirectArgs[3].Type = D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT_BUFFER_VIEW;
-    indirectArgs[3].ConstantBufferView.RootParameterIndex = 1;
+    indirectArgs[3].Type = D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT;
+    indirectArgs[3].Constant.RootParameterIndex = 2;
+    indirectArgs[3].Constant.Num32BitValuesToSet = 1;
     indirectArgs[4].Type = D3D12_INDIRECT_ARGUMENT_TYPE_DRAW_INDEXED;
     D3D12_COMMAND_SIGNATURE_DESC desc = {};
     desc.ByteStride = sizeof( MeshSorter::IndirectCommand );
@@ -135,14 +138,14 @@ void ModelBase::CreateGraphicsPSO( uint64_t psoKey )
     init.mVS = resMgr.GetShader( "assets/shader/ModelVS.hlsl", "vs_6_0" );
 
     // ピクセルシェーダー
-    if( ( materialFlags & MaterialFlags::HasTexture ) == MaterialFlags::HasTexture )
+    // if( ( materialFlags & MaterialFlags::HasTexture ) == MaterialFlags::HasTexture )
     {
         init.mPS = resMgr.GetShader( "assets/shader/ModelPS.hlsl", "ps_6_0" );
     }
-    else
+    /*else
     {
         init.mPS = resMgr.GetShader( "assets/shader/NoTextureModelPS.hlsl", "ps_6_0" );
-    }
+    }*/
 
     // ブレンド
     init.mBlendState = DirectXCommonSettings::gBlendAlpha;

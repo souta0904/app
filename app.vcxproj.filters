@@ -143,6 +143,66 @@
     <ClCompile Include="engine\math\Random.cpp">
       <Filter>engine\math</Filter>
     </ClCompile>
+    <ClCompile Include="engine\graphics\model\MaterialManager.cpp">
+      <Filter>engine\graphics\model</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\allocator.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\clusterizer.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\indexanalyzer.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\indexcodec.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\indexgenerator.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\meshletcodec.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\meshletutils.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\opacitymap.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\overdrawoptimizer.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\partition.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\quantization.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\rasterizer.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\simplifier.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\spatialorder.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\stripifier.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\vcacheoptimizer.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\vertexcodec.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\vertexfilter.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\meshoptimizer\vfetchoptimizer.cpp">
+      <Filter>external\meshoptimizer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
@@ -177,6 +237,12 @@
     </Filter>
     <Filter Include="engine\collision">
       <UniqueIdentifier>{027cf8b4-6cb1-415e-a931-6b39bcc0a0d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external">
+      <UniqueIdentifier>{e1827540-9b5f-467d-a7d3-6ca01b2c28c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\meshoptimizer">
+      <UniqueIdentifier>{7c881a39-adbb-4cdc-b1da-ad2a867b2ed4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -366,6 +432,13 @@
     <ClInclude Include="engine\math\Random.h">
       <Filter>engine\math</Filter>
     </ClInclude>
+    <ClInclude Include="engine\graphics\model\MaterialManager.h">
+      <Filter>engine\graphics\model</Filter>
+    </ClInclude>
+    <ClInclude Include="external\meshoptimizer\meshoptimizer.h">
+      <Filter>external\meshoptimizer</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\graphics\model\ResMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shader\SimplePS.hlsl">

@@ -40,6 +40,8 @@ class RootParameter
     /// <param name="shaderVisibility">使用されるシェーダーステージ</param>
     void InitAsDescriptorTable( uint32_t numDescriptorRanges, D3D12_SHADER_VISIBILITY shaderVisibility = D3D12_SHADER_VISIBILITY_ALL );
 
+    void InitAsConstants( uint32_t shaderRegister, D3D12_SHADER_VISIBILITY shaderVisibility );
+
     /// <summary>
     /// デスクリプタレンジを設定
     /// </summary>

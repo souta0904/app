@@ -22,6 +22,7 @@ struct Material
     uint32_t mIsLighting;
     SpecularType mSpecularType;
     float32_t mShininess;
+    uint32_t mTextureIdx;
 };
 
 struct Camera
@@ -70,28 +71,36 @@ struct Light
     float32_t pad;
 };
 
-ConstantBuffer<Material> gMaterial : register(b0);
-ConstantBuffer<Camera> gCamera : register(b1);
-Texture2D<float32_t4> gTexture : register(t0);
+//ConstantBuffer<Material> gMaterial : register(b0);
+ConstantBuffer<Camera> gCamera : register(b0);
+//Texture2D<float32_t4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
-ConstantBuffer<Light> gLight : register(b2);
+ConstantBuffer<Light> gLight : register(b1);
+
+StructuredBuffer<Material> gMaterials : register(t0);
+Texture2D<float32_t4> gTextures[] : register(t1);
+
+cbuffer MaterialIdx : register(b2)
+{
+    uint32_t gMaterialIdx;
+};
 
 PSOutput main(VSOutput input)
 {
     PSOutput output;
     output.color = 0.0f;
     
+    Material mat = gMaterials[gMaterialIdx];
+    
     float32_t4 surfaceColor;
 #ifdef NO_TEXTURE
-    surfaceColor = gMaterial.mColor;
+    surfaceColor = mat.mColor;
 #else
-    //float32_t4 transformedUV = mul(float32_t4(input.uv, 0.0f, 1.0f), gConstant.mUVTransform);
-    //float32_t4 texColor = gTexture.Sample(gSampler, transformedUV.xy);
-    float32_t4 texColor = gTexture.Sample(gSampler, input.uv);
-    surfaceColor = gMaterial.mColor * texColor;
+    float32_t4 texColor = gTextures[mat.mTextureIdx].Sample(gSampler, input.uv);
+    surfaceColor = mat.mColor * texColor;
 #endif
     
-    if (!gMaterial.mIsLighting)
+    if (!mat.mIsLighting)
     {
         output.color = surfaceColor;
         return output;
@@ -102,8 +111,8 @@ PSOutput main(VSOutput input)
     float32_t3 diffuse = 0.0f;
     float32_t3 specular = 0.0f;
     
-    bool isSpecular = gMaterial.mSpecularType != SpecularType::None;
-    bool isBlinnPhong = gMaterial.mSpecularType == SpecularType::BlinnPhong;
+    bool isSpecular = mat.mSpecularType != SpecularType::None;
+    bool isBlinnPhong = mat.mSpecularType == SpecularType::BlinnPhong;
     
     // directional light
     [loop]
@@ -124,12 +133,12 @@ PSOutput main(VSOutput input)
             if (!isBlinnPhong)
             {
                 float32_t3 R = reflect(-L, N);
-                specularPower = pow(saturate(dot(R, toEye)), gMaterial.mShininess);
+                specularPower = pow(saturate(dot(R, toEye)), mat.mShininess);
             }
             else
             {
                 float32_t3 H = normalize(L + toEye);
-                specularPower = pow(saturate(dot(N, H)), gMaterial.mShininess);
+                specularPower = pow(saturate(dot(N, H)), mat.mShininess);
             }
             specular += float32_t3(1.0f, 1.0f, 1.0f) * lightColor * specularPower;
         }
@@ -163,12 +172,12 @@ PSOutput main(VSOutput input)
             if (!isBlinnPhong)
             {
                 float32_t3 R = reflect(-L, N);
-                specularPower = pow(saturate(dot(R, toEye)), gMaterial.mShininess);
+                specularPower = pow(saturate(dot(R, toEye)), mat.mShininess);
             }
             else
             {
                 float32_t3 H = normalize(L + toEye);
-                specularPower = pow(saturate(dot(N, H)), gMaterial.mShininess);
+                specularPower = pow(saturate(dot(N, H)), mat.mShininess);
             }
             specular += float32_t3(1.0f, 1.0f, 1.0f) * lightColor * specularPower * factor;
         }
@@ -204,12 +213,12 @@ PSOutput main(VSOutput input)
             if (!isBlinnPhong)
             {
                 float32_t3 R = reflect(-L, N);
-                specularPower = pow(saturate(dot(R, toEye)), gMaterial.mShininess);
+                specularPower = pow(saturate(dot(R, toEye)), mat.mShininess);
             }
             else
             {
                 float32_t3 H = normalize(L + toEye);
-                specularPower = pow(saturate(dot(N, H)), gMaterial.mShininess);
+                specularPower = pow(saturate(dot(N, H)), mat.mShininess);
             }
             specular += float32_t3(1.0f, 1.0f, 1.0f) * lightColor * specularPower * factor;
         }
@@ -217,6 +226,6 @@ PSOutput main(VSOutput input)
     
     output.color.rgb = diffuse + specular;
     output.color.a = surfaceColor.a;
-    
+
     return output;
 }

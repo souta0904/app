@@ -21,9 +21,9 @@ ENABLE_ENUM_FLAGS( MeshFlags )
 enum class MaterialFlags : uint32_t
 {
     None = 0,
-    HasTexture = 1 << 0,
-    NoCulling = 1 << 1,
-    Wireframe = 1 << 2,
+    //HasTexture = 1 << 0,
+    NoCulling = 1 << 0,
+    Wireframe = 1 << 1,
 };
 ENABLE_ENUM_FLAGS( MaterialFlags )
 

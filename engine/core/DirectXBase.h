@@ -12,6 +12,7 @@
 #include "DescriptorHeap.h"
 #include "math/Color.h"
 
+class StructuredBuffer;
 class Window;
 
 /// <summary>
@@ -129,6 +130,8 @@ class DirectXBase
     /// 描画終了
     /// </summary>
     void EndDraw();
+
+    DescriptorHandle* CreateSRV( StructuredBuffer* buff );
 
     /// <summary>デバイスを取得</summary>
     Microsoft::WRL::ComPtr<ID3D12Device> GetDevice() const { return mDevice.Get(); }

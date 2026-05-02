@@ -26,6 +26,15 @@ void RootParameter::InitAsDescriptorTable( uint32_t numDescriptorRanges, D3D12_S
     mRootParameter.ShaderVisibility = shaderVisibility;
 }
 
+void RootParameter::InitAsConstants( uint32_t shaderRegister, D3D12_SHADER_VISIBILITY shaderVisibility )
+{
+    mRootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
+    mRootParameter.Constants.ShaderRegister = shaderRegister;
+    mRootParameter.Constants.RegisterSpace = 0;
+    mRootParameter.Constants.Num32BitValues = 1;
+    mRootParameter.ShaderVisibility = shaderVisibility;
+}
+
 // デスクリプタレンジを設定
 void RootParameter::SetDescriptorRange( uint32_t idx, D3D12_DESCRIPTOR_RANGE_TYPE rangeType, uint32_t numDescriptors, uint32_t baseShaderRegister )
 {

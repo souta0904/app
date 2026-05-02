@@ -2,7 +2,9 @@
 
 #include <format>
 
+#include "MaterialManager.h"
 #include "core/ResourceManager.h"
+#include "meshoptimizer/meshoptimizer.h"
 #include "utils/StringHelper.h"
 
 namespace
@@ -11,6 +13,7 @@ namespace
 #ifdef _DEBUG
 const bool kIsOutput = false;
 #endif
+const std::string kDefaultTex = "assets/texture/default.png";
 const std::string kErrorTex = "assets/texture/error.png";
 
 }  // namespace
@@ -170,6 +173,125 @@ void ModelData::BuildMesh( ModelNode* node )
             }
         }
 
+        /*
+        // 最適化
+        {
+            std::vector<uint32_t> remap( indices.size() );
+
+            auto vertexCount = meshopt_generateVertexRemap(
+                remap.data(),
+                indices.data(),
+                indices.size(),
+                vertices.data(),
+                vertices.size(),
+                sizeof( Mesh::Vertex ) );
+
+            std::vector<Mesh::Vertex> tmpVertices( vertexCount );
+            std::vector<uint32_t> tmpIndices( indices.size() );
+
+            meshopt_remapIndexBuffer(
+                tmpIndices.data(),
+                indices.data(),
+                indices.size(),
+                remap.data() );
+
+            meshopt_remapVertexBuffer(
+                tmpVertices.data(),
+                vertices.data(),
+                vertices.size(),
+                sizeof( Mesh::Vertex ),
+                remap.data() );
+
+            remap.clear();
+            remap.shrink_to_fit();
+
+            meshopt_optimizeVertexCache(
+                indices.data(),
+                tmpIndices.data(),
+                tmpIndices.size(),
+                vertexCount );
+
+            indices.clear();
+            indices.shrink_to_fit();
+
+            meshopt_optimizeVertexFetch(
+                vertices.data(),
+                indices.data(),
+                indices.size(),
+                tmpVertices.data(),
+                tmpVertices.size(),
+                sizeof( Mesh::Vertex ) );
+
+            tmpVertices.clear();
+            tmpVertices.shrink_to_fit();
+        }
+
+        // メッシュレット作成
+        {
+            const size_t kMaxVertices = 64;
+            const size_t kMaxPrimitives = 126;
+
+            size_t maxMeshlets = meshopt_buildMeshletsBound(
+                indices.size(),
+                kMaxVertices,
+                kMaxPrimitives );
+
+            std::vector<meshopt_Meshlet> meshlets( maxMeshlets );
+            std::vector<unsigned int> meshletVertices( maxMeshlets * kMaxVertices );
+            std::vector<unsigned char> meshletTriangles( maxMeshlets * kMaxPrimitives * 3 );
+
+            size_t meshletCount = meshopt_buildMeshlets(
+                meshlets.data(),
+                meshletVertices.data(),
+                meshletTriangles.data(),
+                indices.data(),
+                indices.size(),
+                &vertices[0].mPosition.x,  // ← 重要
+                vertices.size(),
+                sizeof( Mesh::Vertex ),
+                kMaxVertices,
+                kMaxPrimitives,
+                0.0f );
+
+            meshlets.resize( meshletCount );
+
+            mesh->mUniqueVertexIndices.reserve( meshlets.size() * kMaxVertices );
+            mesh->mPrimitiveIndices.reserve( meshlets.size() * kMaxPrimitives );
+
+            for( auto& meshlet : meshlets )
+            {
+                auto vertexOffset = static_cast<uint32_t>( mesh->mUniqueVertexIndices.size() );
+                auto primitiveOffset = static_cast<uint32_t>( mesh->mPrimitiveIndices.size() );
+
+                for( uint32_t i = 0; i < meshlet.vertex_count; ++i )
+                {
+                    mesh->mUniqueVertexIndices.push_back( meshletVertices[meshlet.vertex_offset + i] );
+                }
+
+                for( uint32_t i = 0; i < meshlet.triangle_count; ++i )
+                {
+                    ResPrimitiveIndex tris = {};
+                    tris.mIndex0 = meshletTriangles[( meshlet.triangle_offset + i ) * 3 + 0];
+                    tris.mIndex1 = meshletTriangles[( meshlet.triangle_offset + i ) * 3 + 1];
+                    tris.mIndex2 = meshletTriangles[( meshlet.triangle_offset + i ) * 3 + 2];
+                    mesh->mPrimitiveIndices.push_back( tris );
+                }
+
+                ResMeshlet m = {};
+                m.mVertexCount = meshlet.vertex_count;
+                m.mVertexOffset = vertexOffset;
+                m.mPrimitiveCount = meshlet.triangle_count;
+                m.mPrimitiveOffset = primitiveOffset;
+
+                mesh->mMeshlets.push_back( m );
+            }
+        }
+
+        mesh->mUniqueVertexIndices.shrink_to_fit();
+        mesh->mPrimitiveIndices.shrink_to_fit();
+        mesh->mMeshlets.shrink_to_fit();
+        */
+
         // マテリアルのインデックス
         mesh->mMaterialIdx = assimpMesh->mMaterialIndex;
 
@@ -195,6 +317,7 @@ void ModelData::BuildMesh( ModelNode* node )
 void ModelData::BuildMaterial()
 {
     ResourceManager& resMgr = ResourceManager::GetInstance();
+    MaterialManager& materialMgr = MaterialManager::GetInstance();
 
     for( uint32_t i = 0; i < mAssimpScene->mNumMaterials; ++i )
     {
@@ -226,6 +349,10 @@ void ModelData::BuildMaterial()
                 }
             }
         }
+        if( !texture )
+        {
+            texture = resMgr.GetTexture( kDefaultTex );
+        }
 
         // 色
         aiColor4D color;
@@ -234,6 +361,7 @@ void ModelData::BuildMaterial()
 
         // 作成
         material->Create( texture );
+        materialMgr.Register( material.get() );
         mMaterials.emplace_back( std::move( material ) );
         ++mMaterialCount;
     }

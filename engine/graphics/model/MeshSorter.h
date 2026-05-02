@@ -26,7 +26,7 @@ class MeshSorter
         D3D12_VERTEX_BUFFER_VIEW mVBV;
         D3D12_INDEX_BUFFER_VIEW mIBV;
         D3D12_GPU_VIRTUAL_ADDRESS mTransMatCBV;
-        D3D12_GPU_VIRTUAL_ADDRESS mMaterialCBV;
+        uint32_t mMaterialIdx;
         D3D12_DRAW_INDEXED_ARGUMENTS mDrawArg;
     };
 

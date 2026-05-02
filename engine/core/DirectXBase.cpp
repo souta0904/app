@@ -3,6 +3,7 @@
 #include <format>
 
 #include "DirectXCommonSettings.h"
+#include "StructuredBuffer.h"
 #include "Window.h"
 #include "utils/Logger.h"
 #include "utils/StringHelper.h"
@@ -11,7 +12,7 @@
 #pragma comment( lib, "dxgi.lib" )
 #pragma comment( lib, "dxguid.lib" )
 
-const bool DirectXBase::kUseZPrepass = false;
+const bool DirectXBase::kUseZPrepass = true;
 
 // コンストラクタ
 DirectXBase::DirectXBase()
@@ -99,15 +100,15 @@ void DirectXBase::BeginZPrepass()
 void DirectXBase::EndZPrepass()
 {
     // コマンドを実行
-    mCmdList->Close();
-    mCmdQueue->Execute( mCmdList.get() );
+    //mCmdList->Close();
+    //mCmdQueue->Execute( mCmdList.get() );
 }
 
 // 描画開始
 void DirectXBase::BeginDraw()
 {
     // コマンドをリセット
-    mCmdList->Reset( mBackBuffIdx );
+    //mCmdList->Reset( mBackBuffIdx );
 
     // 表示からレンダーターゲットへ
     D3D12_RESOURCE_BARRIER barrier = {};
@@ -148,6 +149,23 @@ void DirectXBase::EndDraw()
     mCmdQueue->WaitGPU();
 
     mBackBuffIdx = mSwapChain->GetCurrentBackBufferIndex();
+}
+
+DescriptorHandle* DirectXBase::CreateSRV( StructuredBuffer* buff )
+{
+    auto hdl = mSRVHeap->Alloc();
+
+    D3D12_SHADER_RESOURCE_VIEW_DESC desc = {};
+    desc.Format = DXGI_FORMAT_UNKNOWN;
+    desc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+    desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+    desc.Buffer.FirstElement = 0;
+    desc.Buffer.NumElements = buff->mCount;
+    desc.Buffer.StructureByteStride = buff->mStrideSize;
+    desc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+    mDevice->CreateShaderResourceView( buff->mResource.Get(), &desc, hdl->mCPU );
+
+    return hdl;
 }
 
 #pragma region 作成処理
