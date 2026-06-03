@@ -119,6 +119,12 @@ class Mesh
 
     D3D12_INDEX_BUFFER_VIEW GetIBV() const { return mIB->GetView(); }
 
+    VertexBuffer* GetVertexBuffer() const { return mVB.get(); }
+
+    IndexBuffer* GetIndexBuffer() const { return mIB.get(); }
+
+    const AABB3D& GetAABB() const { return mAABB; }
+
    private:
     /// <summary>
     /// 頂点バッファを作成

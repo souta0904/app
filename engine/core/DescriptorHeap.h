@@ -26,7 +26,7 @@ class DescriptorHeap
 {
    public:
     /// <summary>
-    /// デスクリプタヒープの種類
+    /// 種別
     /// </summary>
     enum class Type
     {
@@ -37,13 +37,9 @@ class DescriptorHeap
     };
 
    private:
-    // デスクリプタヒープ
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mDescriptorHeap;
-    // デスクリプタハンドルのリスト
-    std::unique_ptr<SimplePool<DescriptorHandle>> mDescriptorHdlPool;
-    // デスクリプタのインクリメントサイズ
+    std::unique_ptr<Nebula::SimplePool<DescriptorHandle>> mDescriptorHdlPool;
     uint32_t mIncrementSize;
-    // シェーダーから参照可能か
     bool mIsShaderVisible;
 
    public:

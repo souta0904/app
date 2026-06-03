@@ -141,11 +141,11 @@ void CommandList::DrawIndexedInstanced( uint32_t indexCount )
 }
 
 // インダイレクト描画
-void CommandList::ExecuteIndirect( ID3D12CommandSignature* commandSignature, uint32_t maxCommandCount, ID3D12Resource* argumentBuffer, uint32_t argumentBufferOffset )
+void CommandList::ExecuteIndirect( ID3D12CommandSignature* commandSignature, uint32_t maxCommandCount, ID3D12Resource* argumentBuffer, uint32_t argumentBufferOffset, ID3D12Resource* counterBuffer, uint64_t c )
 {
     if( !mCmdList ) return;
 
-    mCmdList->ExecuteIndirect( commandSignature, maxCommandCount, argumentBuffer, argumentBufferOffset, nullptr, 0 );
+    mCmdList->ExecuteIndirect( commandSignature, maxCommandCount, argumentBuffer, argumentBufferOffset, counterBuffer, c );
 }
 
 // リソースバリアをセット

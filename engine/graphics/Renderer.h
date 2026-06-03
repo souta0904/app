@@ -15,11 +15,13 @@
 #include "light/SpotLight.h"
 #include "model/MeshSorter.h"
 #include "model/ModelInstance.h"
+#include "hiz/OcclusionCulling.h"
 
 class CommandList;
 class LightManager;
 class ModelBase;
 class SpriteBase;
+class GrassRenderer;
 
 /// <summary>
 /// レンダラー
@@ -64,8 +66,13 @@ class Renderer
     std::unique_ptr<ModelInstance> mFloorModel;
     std::unique_ptr<ModelInstance> mBoxModels[30 * 30];
     Vector3 mBoxPosition[30 * 30];
+    std::unique_ptr<ModelInstance> mOccluder[4];
 
     float mRotate;
+
+    GrassRenderer* mGrassRenderer;
+    // オクルージョンカリング
+    std::unique_ptr<HiZBuilder> mHiZBuilder;
 
     // テスト
     static const uint32_t kVertexCount = 3;
@@ -159,6 +166,12 @@ class Renderer
     /// </summary>
     /// <param name="cmdList"></param>
     void RenderMain( CommandList* cmdList );
+
+    /// <summary>
+    /// カリング
+    /// </summary>
+    /// <param name="cmdList"></param>
+    void ExecuteCulling( CommandList* cmdList );
 
    private:
     /// <summary>

@@ -4,6 +4,7 @@
 
 #include "DirectXCommonSettings.h"
 #include "StructuredBuffer.h"
+#include "RWStructuredBuffer.h"
 #include "Window.h"
 #include "utils/Logger.h"
 #include "utils/StringHelper.h"
@@ -100,15 +101,20 @@ void DirectXBase::BeginZPrepass()
 void DirectXBase::EndZPrepass()
 {
     // コマンドを実行
-    //mCmdList->Close();
-    //mCmdQueue->Execute( mCmdList.get() );
+    mCmdList->Close();
+    mCmdQueue->Execute( mCmdList.get() );
+
+    // コマンドの実行を待つ
+    mCmdQueue->WaitGPU();
+
+    //mCmdList->Reset( mBackBuffIdx );
 }
 
 // 描画開始
 void DirectXBase::BeginDraw()
 {
     // コマンドをリセット
-    //mCmdList->Reset( mBackBuffIdx );
+    mCmdList->Reset( mBackBuffIdx );
 
     // 表示からレンダーターゲットへ
     D3D12_RESOURCE_BARRIER barrier = {};
@@ -118,11 +124,11 @@ void DirectXBase::BeginDraw()
     mCmdList->ResourceBarrier( barrier );
 
     // レンダーターゲットをセット
-    mCmdList->SetRenderTarget( 1, mRTVHdls[mBackBuffIdx], mDSVHdl );
+    mCmdList->SetRenderTarget( 1, mRTVHdls[mBackBuffIdx], mNormalDSVHdl );
     mCmdList->ClearRenderTargetView( mRTVHdls[mBackBuffIdx], &mClearColor.r );
-    if( !kUseZPrepass )
+    //if( !kUseZPrepass )
     {
-        mCmdList->ClearDepthStencilView( mDSVHdl );
+        mCmdList->ClearDepthStencilView( mNormalDSVHdl );
     }
 
     // SRVデスクリプタヒープをセット
@@ -166,6 +172,56 @@ DescriptorHandle* DirectXBase::CreateSRV( StructuredBuffer* buff )
     mDevice->CreateShaderResourceView( buff->mResource.Get(), &desc, hdl->mCPU );
 
     return hdl;
+}
+
+DescriptorHandle* DirectXBase::CreateUAV( RWStructuredBuffer* buff )
+{
+    auto hdl = mSRVHeap->Alloc();
+
+    D3D12_UNORDERED_ACCESS_VIEW_DESC desc = {};
+    desc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+    desc.Format = DXGI_FORMAT_UNKNOWN;
+    desc.Buffer.NumElements = buff->mCount;
+    desc.Buffer.StructureByteStride = buff->mStrideSize;
+    desc.Buffer.CounterOffsetInBytes = 0;
+    mDevice->CreateUnorderedAccessView( buff->mResource.Get(), buff->mCounterResource.Get(), &desc, hdl->mCPU );
+
+    return hdl;
+}
+
+DescriptorHandle DirectXBase::CreateSRV( const D3D12_SHADER_RESOURCE_VIEW_DESC& desc, ID3D12Resource* resource )
+{
+    auto hdl = mSRVHeap->Alloc();
+    mDevice->CreateShaderResourceView( resource, &desc, hdl->mCPU );
+    return *hdl;
+}
+
+DescriptorHandle DirectXBase::CreateUAV( const D3D12_UNORDERED_ACCESS_VIEW_DESC& desc, ID3D12Resource* resource )
+{
+    auto hdl = mSRVHeap->Alloc();
+    mDevice->CreateUnorderedAccessView( resource, nullptr, &desc, hdl->mCPU );
+    return *hdl;
+}
+
+void DirectXBase::ResetCmdList()
+{
+    // コマンドをリセット
+    mCmdList->Reset( mBackBuffIdx );
+}
+
+void DirectXBase::SetDescriptorHeap()
+{
+    // SRVデスクリプタヒープをセット
+    mCmdList->SetDescriptorHeap( mSRVHeap.get() );
+}
+
+void DirectXBase::WaitGPU()
+{
+    // コマンドを実行
+    mCmdList->Close();
+    mCmdQueue->Execute( mCmdList.get() );
+    // コマンドの実行を待つ
+    mCmdQueue->WaitGPU();
 }
 
 #pragma region 作成処理
@@ -291,7 +347,7 @@ bool DirectXBase::CreateSwapChain()
 {
     if( !mFactory || !mCmdQueue ) return false;
 
-    auto& window = Window::GetInstance();
+    auto& window = Nebula::Window::GetInstance();
 
     DXGI_SWAP_CHAIN_DESC1 desc = {};
     desc.Width = window.GetWidth();
@@ -377,7 +433,7 @@ bool DirectXBase::CreateDSV()
 {
     if( !mDevice || !mDSVHeap ) return false;
 
-    auto& window = Window::GetInstance();
+    auto& window = Nebula::Window::GetInstance();
 
     D3D12_RESOURCE_DESC desc = {};
     desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
@@ -395,15 +451,23 @@ bool DirectXBase::CreateDSV()
     // 深度バッファを作成
     [[maybe_unused]] auto hr = mDevice->CreateCommittedResource( &DirectXCommonSettings::gHeapDefault, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_DEPTH_WRITE, &clearValue, IID_PPV_ARGS( mDepthBuff.GetAddressOf() ) );
     if( FAILED( hr ) ) return false;
+    // 深度バッファを作成
+    hr = mDevice->CreateCommittedResource( &DirectXCommonSettings::gHeapDefault, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_DEPTH_WRITE, &clearValue, IID_PPV_ARGS( mNormalDepthBuff.GetAddressOf() ) );
+    if( FAILED( hr ) ) return false;
 
     mDSVHdl = mDSVHeap->Alloc();
     if( !mDSVHdl ) return false;
+
+    mNormalDSVHdl = mDSVHeap->Alloc();
+    if( !mNormalDSVHdl ) return false;
 
     // 深度ステンシルビューを作成
     D3D12_DEPTH_STENCIL_VIEW_DESC viewDesc = {};
     viewDesc.Format = DXGI_FORMAT_D32_FLOAT;
     viewDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
     mDevice->CreateDepthStencilView( mDepthBuff.Get(), &viewDesc, mDSVHdl->mCPU );
+
+    mDevice->CreateDepthStencilView( mNormalDepthBuff.Get(), &viewDesc, mNormalDSVHdl->mCPU );
 
     return true;
 }

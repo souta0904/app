@@ -81,12 +81,32 @@ void ModelInstance::Draw( MeshSorter* sorter, const Matrix4& worldMat )
     UpdateAABB( worldMat );
 
     // デバッグ描画
-    auto& pr = PrimitiveRenderer::GetInstance();
-    pr.DrawAABB( mWorldAABB, Color( 0.2f, 1.0f, 0.2f ) );
+    //auto& pr = PrimitiveRenderer::GetInstance();
+    //pr.DrawAABB( mWorldAABB, Color( 0.2f, 1.0f, 0.2f ) );
 
-    auto& frustum = sorter->GetFrustumCamera()->GetFrustum();
-    // フラスタムの外側はスキップ
-    if( !Intersect( mWorldAABB, frustum ) ) return;
+    //auto& frustum = sorter->GetFrustumCamera()->GetFrustum();
+    //// フラスタムの外側はスキップ
+    //if( !Intersect( mWorldAABB, frustum ) ) return;
+
+    // メッシュごと描画
+    for( uint32_t i = 0; i < mModelData->mMeshCount; ++i )
+    {
+        auto& meshData = mModelData->mMeshes[i];
+        auto mesh = meshData.mMesh.get();
+        auto material = mMaterials[mesh->mMaterialIdx];
+        if( !material )
+        {
+            material = mModelData->mMaterials[mesh->mMaterialIdx].get();
+        }
+        TransformationMatrix c = {};
+        c.mWorld = mNodes[meshData.mNodeIdx].mModelMat * worldMat;
+        auto wvMat = c.mWorld * camera->GetView();
+        c.mWVP = wvMat * camera->GetProjection();
+        c.mWorldInvTranspose = Transpose( InverseAffine( c.mWorld ) );
+        mTransMatCBs[i]->Update( &c );
+    }
+
+    UpdateWVP( worldMat, camera );
 
     // メッシュごと描画
     for( uint32_t i = 0; i < mModelData->mMeshCount; ++i )
@@ -99,21 +119,14 @@ void ModelInstance::Draw( MeshSorter* sorter, const Matrix4& worldMat )
             material = mModelData->mMaterials[mesh->mMaterialIdx].get();
         }
 
-        TransformationMatrix c = {};
-        c.mWorld = mNodes[meshData.mNodeIdx].mModelMat * worldMat;
-        auto wvMat = c.mWorld * camera->GetView();
-        c.mWVP = wvMat * camera->GetProjection();
-        c.mWorldInvTranspose = Transpose( InverseAffine( c.mWorld ) );
-        mTransMatCBs[i]->Update( &c );
-
         // ソーターへ登録
         sorter->Add(
             MakePSOKey( mesh->mFlags, material->mFlags ),
-            wvMat.m[3][2],  // Z値(カメラからの距離)
+            0.0f,  // Z値(カメラからの距離)
             mTransMatCBs[i].get(),
             mesh,
             material,
-            mWorldAABB );
+            mWorldAABB,this );
     }
 }
 
@@ -139,6 +152,39 @@ void ModelInstance::SetMaterial( uint32_t idx, Material* material )
     if( idx >= mMaterials.size() ) return;
 
     mMaterials[idx] = material;
+}
+
+void ModelInstance::UpdateWVP( const Matrix4& mat, Camera* camera )
+{
+    mWorld.clear();
+    mWorld.resize( mModelData->mMeshCount );
+    // メッシュごと描画
+    for( uint32_t i = 0; i < mModelData->mMeshCount; ++i )
+    {
+        auto& meshData = mModelData->mMeshes[i];
+
+        TransformationMatrix c = {};
+        c.mWorld = mNodes[meshData.mNodeIdx].mModelMat * mat;
+        auto wvMat = c.mWorld * camera->GetView();
+        c.mWVP = wvMat * camera->GetProjection();
+        c.mWorldInvTranspose = Transpose( InverseAffine( c.mWorld ) );
+        mTransMatCBs[i]->Update( &c );
+
+        mWorld[i] = c.mWorld;
+    }
+}
+
+void ModelInstance::Reupdate( Camera* camera )
+{
+    // メッシュごと描画
+    for( uint32_t i = 0; i < mModelData->mMeshCount; ++i )
+    {
+        TransformationMatrix c = {};
+        auto wvMat = mWorld[i] * camera->GetView();
+        c.mWVP = wvMat * camera->GetProjection();
+        c.mWorldInvTranspose = Transpose( InverseAffine( c.mWorld ) );
+        mTransMatCBs[i]->Update( &c );
+    }
 }
 
 // AABBの更新

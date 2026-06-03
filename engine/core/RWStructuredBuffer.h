@@ -14,6 +14,7 @@ class RWStructuredBuffer
    private:
     // リソース
     Microsoft::WRL::ComPtr<ID3D12Resource> mResource;
+    Microsoft::WRL::ComPtr<ID3D12Resource> mCounterResource;
     // 要素数
     uint32_t mCount;
     // 1要素のサイズ
@@ -40,10 +41,13 @@ class RWStructuredBuffer
     /// <param name="count">要素数</param>
     /// <param name="strideSize">1要素のサイズ</param>
     /// <returns>成否</returns>
-    bool Create( uint32_t count, uint32_t strideSize );
+    bool Create( uint32_t count, uint32_t strideSize, bool enableCounter = false );
 
     /// <summary>リソースを取得</summary>
     Microsoft::WRL::ComPtr<ID3D12Resource> GetResource() const { return mResource; }
+
+    /// <summary>リソースを取得</summary>
+    Microsoft::WRL::ComPtr<ID3D12Resource> GetCounterResource() const { return mCounterResource; }
 
     /// <summary>サイズを取得</summary>
     uint32_t GetSize() const { return mSize; }

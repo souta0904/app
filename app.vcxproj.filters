@@ -203,6 +203,15 @@
     <ClCompile Include="external\meshoptimizer\vfetchoptimizer.cpp">
       <Filter>external\meshoptimizer</Filter>
     </ClCompile>
+    <ClCompile Include="engine\graphics\grass\GrassRenderer.cpp">
+      <Filter>engine\graphics\grass</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\graphics\hiz\HiZBuilder.cpp" />
+    <ClCompile Include="engine\graphics\hiz\OcclusionCulling.cpp" />
+    <ClCompile Include="engine\core\Core.cpp" />
+    <ClCompile Include="engine\core\dx12\DepthBuffer.cpp">
+      <Filter>engine\core\dx12</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="engine">
@@ -243,6 +252,12 @@
     </Filter>
     <Filter Include="external\meshoptimizer">
       <UniqueIdentifier>{7c881a39-adbb-4cdc-b1da-ad2a867b2ed4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\graphics\grass">
+      <UniqueIdentifier>{172cd23a-2211-4e1f-aca0-47f453834e97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\core\dx12">
+      <UniqueIdentifier>{6f887d3f-e4ea-462f-812f-278fd8f18ca1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -439,6 +454,18 @@
       <Filter>external\meshoptimizer</Filter>
     </ClInclude>
     <ClInclude Include="engine\graphics\model\ResMesh.h" />
+    <ClInclude Include="engine\graphics\grass\GrassRenderer.h">
+      <Filter>engine\graphics\grass</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\graphics\hiz\HiZBuilder.h" />
+    <ClInclude Include="engine\graphics\hiz\OcclusionCulling.h" />
+    <ClInclude Include="engine\utils\Singleton.h" />
+    <ClInclude Include="engine\core\Core.h" />
+    <ClInclude Include="engine\core\dx12\DepthBuffer.h">
+      <Filter>engine\core\dx12</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\core\DescriptorHandle.h" />
+    <ClInclude Include="engine\core\dx12\GPUResource.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shader\SimplePS.hlsl">
@@ -468,6 +495,18 @@
     <FxCompile Include="assets\shader\PrimitivePS.hlsl">
       <Filter>shader</Filter>
     </FxCompile>
+    <FxCompile Include="assets\shader\GrassPS.hlsl">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shader\GrassVS.hlsl">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shader\IndirectCS.hlsl">
+      <Filter>shader</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shader\HiZBuildCS.hlsl">
+      <Filter>shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shader\Simple.hlsli">
@@ -480,6 +519,9 @@
       <Filter>shader</Filter>
     </None>
     <None Include="assets\shader\Primitive.hlsli">
+      <Filter>shader</Filter>
+    </None>
+    <None Include="assets\shader\Grass.hlsli">
       <Filter>shader</Filter>
     </None>
   </ItemGroup>

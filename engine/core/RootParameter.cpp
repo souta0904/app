@@ -26,12 +26,12 @@ void RootParameter::InitAsDescriptorTable( uint32_t numDescriptorRanges, D3D12_S
     mRootParameter.ShaderVisibility = shaderVisibility;
 }
 
-void RootParameter::InitAsConstants( uint32_t shaderRegister, D3D12_SHADER_VISIBILITY shaderVisibility )
+void RootParameter::InitAsConstants( uint32_t shaderRegister, uint32_t num32BitValues, D3D12_SHADER_VISIBILITY shaderVisibility )
 {
     mRootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
     mRootParameter.Constants.ShaderRegister = shaderRegister;
     mRootParameter.Constants.RegisterSpace = 0;
-    mRootParameter.Constants.Num32BitValues = 1;
+    mRootParameter.Constants.Num32BitValues = num32BitValues;
     mRootParameter.ShaderVisibility = shaderVisibility;
 }
 

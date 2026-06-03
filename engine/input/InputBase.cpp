@@ -16,7 +16,7 @@ InputBase::InputBase()
 // 初期化
 bool InputBase::Init()
 {
-    auto& window = Window::GetInstance();
+    auto& window = Nebula::Window::GetInstance();
     mHWnd = window.GetHWnd();
 
     // DirectInputの作成

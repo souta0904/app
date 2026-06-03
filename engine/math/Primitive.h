@@ -200,10 +200,10 @@ struct Frustum
         mPlanes[3].mNormal.z = vpMat.m[2][3] - vpMat.m[2][1];
         mPlanes[3].mD = vpMat.m[3][3] - vpMat.m[3][1];
         // near
-        mPlanes[4].mNormal.x = vpMat.m[0][3] + vpMat.m[0][2];
-        mPlanes[4].mNormal.y = vpMat.m[1][3] + vpMat.m[1][2];
-        mPlanes[4].mNormal.z = vpMat.m[2][3] + vpMat.m[2][2];
-        mPlanes[4].mD = vpMat.m[3][3] + vpMat.m[3][2];
+        mPlanes[4].mNormal.x = vpMat.m[0][2];
+        mPlanes[4].mNormal.y = vpMat.m[1][2];
+        mPlanes[4].mNormal.z = vpMat.m[2][2];
+        mPlanes[4].mD = vpMat.m[3][2];
         // far
         mPlanes[5].mNormal.x = vpMat.m[0][3] - vpMat.m[0][2];
         mPlanes[5].mNormal.y = vpMat.m[1][3] - vpMat.m[1][2];

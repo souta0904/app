@@ -163,6 +163,7 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine\core\dx12\DepthBuffer.cpp" />
     <ClCompile Include="engine\core\ComputePSO.cpp" />
     <ClCompile Include="engine\graphics\DebugCamera.cpp" />
     <ClCompile Include="engine\graphics\Camera.cpp" />
@@ -202,6 +203,8 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     <ClCompile Include="external\meshoptimizer\vertexcodec.cpp" />
     <ClCompile Include="external\meshoptimizer\vertexfilter.cpp" />
     <ClCompile Include="external\meshoptimizer\vfetchoptimizer.cpp" />
+    <ClCompile Include="engine\graphics\grass\GrassRenderer.cpp" />
+    <ClCompile Include="engine\graphics\hiz\HiZBuilder.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="engine\core\Window.cpp" />
     <ClCompile Include="engine\utils\StringHelper.cpp" />
@@ -231,10 +234,15 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     <ClCompile Include="engine\core\ReadbackBuffer.cpp" />
     <ClCompile Include="engine\math\Random.cpp" />
     <ClCompile Include="engine\graphics\model\MaterialManager.cpp" />
+    <ClCompile Include="engine\graphics\hiz\OcclusionCulling.cpp" />
+    <ClCompile Include="engine\core\Core.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="engine\core\dx12\DepthBuffer.h" />
     <ClInclude Include="engine\core\ComputePSO.h" />
     <ClInclude Include="engine\collision\Collision.h" />
+    <ClInclude Include="engine\core\DescriptorHandle.h" />
+    <ClInclude Include="engine\core\dx12\GPUResource.h" />
     <ClInclude Include="engine\graphics\DebugCamera.h" />
     <ClInclude Include="engine\graphics\Camera.h" />
     <ClInclude Include="engine\core\ConstantBuffer.h" />
@@ -260,6 +268,7 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     <ClInclude Include="engine\core\DirectXBase.h" />
     <ClInclude Include="engine\utils\SimplePool.h" />
     <ClInclude Include="engine\core\Window.h" />
+    <ClInclude Include="engine\utils\Singleton.h" />
     <ClInclude Include="engine\utils\StringHelper.h" />
     <ClInclude Include="engine\graphics\Texture.h" />
     <ClInclude Include="engine\core\RootParameter.h" />
@@ -298,6 +307,10 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     <ClInclude Include="engine\math\Random.h" />
     <ClInclude Include="engine\graphics\model\MaterialManager.h" />
     <ClInclude Include="external\meshoptimizer\meshoptimizer.h" />
+    <ClInclude Include="engine\graphics\grass\GrassRenderer.h" />
+    <ClInclude Include="engine\graphics\hiz\HiZBuilder.h" />
+    <ClInclude Include="engine\graphics\hiz\OcclusionCulling.h" />
+    <ClInclude Include="engine\core\Core.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="external\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
@@ -308,6 +321,38 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="assets\shader\HiZBuildCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="assets\shader\IndirectCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="assets\shader\GrassPS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="assets\shader\GrassVS.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="assets\shader\ModelPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -382,6 +427,10 @@ copy /Y "$(ProjectDir)external\assimp\bin\Release\assimp-vc143-mt.dll" "$(Target
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\shader\Grass.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="assets\shader\Model.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

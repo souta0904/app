@@ -23,7 +23,7 @@ void Camera::Update()
     mView = InverseAffine( worldMat );
 
     // プロジェクション行列を更新
-    auto& window = Window::GetInstance();
+    auto& window = Nebula::Window::GetInstance();
     auto windowWidth = static_cast<float>( window.GetWidth() );
     auto windowHeight = static_cast<float>( window.GetHeight() );
     switch( mProjectionMode )

@@ -6,6 +6,7 @@
 #include "core/RWStructuredBuffer.h"
 #include "core/StructuredBuffer.h"
 #include "math/Primitive.h"
+#include "ModelInstance.h"
 
 class Camera;
 class CommandList;
@@ -46,6 +47,7 @@ class MeshSorter
         Material* mMaterial;
         AABB3D mWorldAABB;
         bool mIsVisible = true;
+        ModelInstance* inst;
     };
 
     // カメラ
@@ -88,7 +90,7 @@ class MeshSorter
     /// <param name="transMatCB">変換行列用定数バッファ</param>
     /// <param name="mesh">メッシュ</param>
     /// <param name="material">マテリアル</param>
-    void Add( uint64_t psoKey, float distance, ConstantBuffer* transMatCB, Mesh* mesh, Material* material, const AABB3D& aabb );
+    void Add( uint64_t psoKey, float distance, ConstantBuffer* transMatCB, Mesh* mesh, Material* material, const AABB3D& aabb ,ModelInstance* inst);
 
     /// <summary>
     /// ソート

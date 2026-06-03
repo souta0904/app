@@ -16,6 +16,7 @@
 #include "model/MaterialManager.h"
 #include "model/ModelBase.h"
 #include "utils/Logger.h"
+#include "grass/GrassRenderer.h"
 
 // コンストラクタ
 Renderer::Renderer()
@@ -57,6 +58,13 @@ bool Renderer::Init()
     mDirectionalLight->mIntensity = 0.8f;
     mLightManager->AddDirectionalLight( mDirectionalLight.get() );
 
+    mHiZBuilder = std::make_unique<HiZBuilder>();
+    if( !mHiZBuilder->Init() )
+    {
+        return false;
+    }
+
+    /*
     // 点光源
     mPointLight = std::make_unique<PointLight>();
     mPointLight->mColor = Color( 1.0f, 1.0f, 0.0f );
@@ -77,6 +85,7 @@ bool Renderer::Init()
     mSpotLight->mInnerAngle = 0.0f;
     mSpotLight->mOuterAngle = 25.0f;
     mLightManager->AddSpotLight( mSpotLight.get() );
+    */
 
     if( !MaterialManager::GetInstance().Init() )
     {
@@ -110,7 +119,7 @@ bool Renderer::Init()
     mOwlSprite->Create( resMgr.GetTexture( "assets/texture/bird_fukurou_run.png" ) );
     mStarSprite = std::make_unique<Sprite>();
     mStarSprite->Create( resMgr.GetTexture( "assets/texture/star_pattern_transparent.png" ) );
-    auto& window = Window::GetInstance();
+    auto& window = Nebula::Window::GetInstance();
     mStarSprite->mDrawRc.right = static_cast<float>( window.GetWidth() );
     mStarSprite->mDrawRc.bottom = static_cast<float>( window.GetHeight() );
 
@@ -176,9 +185,10 @@ bool Renderer::Init()
     }
 
     mModelCamera = std::make_unique<Camera>();
-    mModelCamera->mPosition = Vector3( 0.0f, 30.0f, -200.0f );
+    mModelCamera->mPosition = Vector3( 0.0f, 20.0f, -100.0f );
     mModelCamera->mFov = MathUtil::kPi / 4.0f;
     mModelCamera->mNearZ = 10.0f;
+    mModelCamera->mFarZ = 200.0f;
 
     mDebugCamera = std::make_unique<DebugCamera>();
 
@@ -212,6 +222,12 @@ bool Renderer::Init()
     mSphereModel = std::make_unique<ModelInstance>();
     mSphereModel->Create( resMgr.GetModel( "assets/model/sphere/sphere.obj" ) );
 
+    for( uint32_t i = 0; i < 4; ++i )
+    {
+        mOccluder[i] = std::make_unique<ModelInstance>();
+        mOccluder[i]->Create( resMgr.GetModel( "assets/model/box/box.obj" ) );
+    }
+
     mFloorModel = std::make_unique<ModelInstance>();
     mFloorModel->Create( resMgr.GetModel( "assets/model/floor/floor.glb" ) );
 
@@ -230,6 +246,23 @@ bool Renderer::Init()
     {
         LOG_INFO( "Primitive renderer initialized successfully." );
     }
+
+    mGrassRenderer = &GrassRenderer::GetInstance();
+    mGrassRenderer->Init();
+
+    /*for( uint32_t x = 0; x < 100; ++x )
+    {
+        for( uint32_t z = 0; z < 100; ++z )
+        {
+            mGrass[x * 100 + z] = std::make_unique<ModelInstance>();
+            mGrass[x * 100 + z]->Create( resMgr.GetModel( "assets/model/grass/grass.obj" ) );
+            Vector3 pos = Vector3( ( x - 50.0f ) * 5.0f, 0.0f, ( z - 50.0f ) * 5.0f ) / 2.0f + Random::Next( Vector3( -1.0f, 0.0f, -1.0f ), Vector3( 1.0f, 0.0f, 1.0f ) );
+            mGrassWorld[x * 100 + z] =
+                CreateScale( Vector3::kOne * 3.0f ) *
+                CreateRotateY( Random::Next( 0, 360 ) * MathUtil::kDegToRad ) *
+                CreateTranslate( pos );
+        }
+    }*/
 
     return true;
 }
@@ -306,6 +339,7 @@ void Renderer::UpdateGUI()
         ImGui::TreePop();
     }
 
+    /*
     // 点光源
     ImGui::SetNextItemOpen( true, ImGuiCond_Once );
     if( ImGui::TreeNode( "Point Light" ) )
@@ -332,6 +366,7 @@ void Renderer::UpdateGUI()
         ImGui::DragFloat( "Outer Angle", &mSpotLight->mOuterAngle, 0.01f, mSpotLight->mInnerAngle, 180.0f );
         ImGui::TreePop();
     }
+    */
 
     ImGui::End();
 }
@@ -371,13 +406,21 @@ void Renderer::Update( float deltaTime )
     }
     mSphereModel->Update( deltaTime );
     mFloorModel->Update( deltaTime );
+
+    for( uint32_t i = 0; i < 4; ++i )
+    {
+        mOccluder[i]->Update( deltaTime );
+    }
+
+    mGrassRenderer->Update( deltaTime );
 }
 
 // モデル描画
 void Renderer::DrawModel()
 {
-    mFloorModel->Draw( mSorter.get(), CreateScale( Vector3( 3.0f, 3.0f, 3.0f ) ) * CreateTranslate( Vector3( 0.0f, -0.2f, 0.0f ) ) );
+    mFloorModel->Draw( mSorter.get(), CreateScale( Vector3( 1.5f, 1.5f, 1.5f ) ) * CreateTranslate( Vector3( 0.0f, -0.2f, 0.0f ) ) );
 
+    /*
     auto botWorld1 =
         CreateScale( Vector3::kOne * 0.1f ) *
         CreateRotate( Quaternion( Vector3::kUnitY, MathUtil::kPi ) ) *
@@ -407,6 +450,30 @@ void Renderer::DrawModel()
         CreateRotate( Quaternion( Vector3::kUnitY, mRotate ) ) *
         CreateTranslate( Vector3( -2.5f, 0.0f, 0.0f ) );
     mSphereModel->Draw( mSorter.get(), sphereWorld );
+    */
+
+    Vector3 scale = Vector3( 8.0f, 16.0f, 8.0f );
+    auto sphereWorld = CreateScale( scale ) * CreateTranslate( Vector3( -16.0f, 0.0f, 30.0f ) );
+    mOccluder[0]->Draw( mSorter.get(), sphereWorld );
+
+    sphereWorld = CreateScale( scale ) * CreateTranslate( Vector3( 16.0f, 0.0f, 30.0f ) );
+    mOccluder[1]->Draw( mSorter.get(), sphereWorld );
+
+    sphereWorld = CreateScale( scale ) * CreateTranslate( Vector3( 48.0f, 0.0f, 0.0f ) );
+    mOccluder[2]->Draw( mSorter.get(), sphereWorld );
+
+    sphereWorld = CreateScale( scale ) * CreateTranslate( Vector3( -48.0f, 0.0f, 0.0f ) );
+    mOccluder[3]->Draw( mSorter.get(), sphereWorld );
+
+
+    //mGrass->Draw( mSorter.get(), Matrix4() );
+    /*for( uint32_t x = 0; x < 100; ++x )
+    {
+        for( uint32_t z = 0; z < 100; ++z )
+        {
+            mGrass[x * 100 + z]->Draw( mSorter.get(), mGrassWorld[x * 100 + z] );
+        }
+    }*/
 
     mSorter->Sort();
 
@@ -416,7 +483,7 @@ void Renderer::DrawModel()
 // z-prepass描画
 void Renderer::RenderZPrepass( CommandList* cmdList )
 {
-    auto& window = Window::GetInstance();
+    auto& window = Nebula::Window::GetInstance();
     auto windowWidth = static_cast<float>( window.GetWidth() );
     auto windowHeight = static_cast<float>( window.GetHeight() );
     cmdList->SetViewport( 0.0f, 0.0f, windowWidth, windowHeight );
@@ -432,22 +499,25 @@ void Renderer::RenderZPrepass( CommandList* cmdList )
 // 描画
 void Renderer::RenderMain( CommandList* cmdList )
 {
-    auto& window = Window::GetInstance();
+    auto& window = Nebula::Window::GetInstance();
     auto windowWidth = static_cast<float>( window.GetWidth() );
     auto windowHeight = static_cast<float>( window.GetHeight() );
     cmdList->SetViewport( 0.0f, 0.0f, windowWidth, windowHeight );
     cmdList->SetScissorRect( 0.0f, 0.0f, windowWidth, windowHeight );
 
-    RenderSprite( cmdList );
+    //RenderSprite( cmdList );
 
+    /*
     cmdList->SetGraphicsRootSignature( mSimpleRS.get() );
     cmdList->SetPipelineState( mSimplePSO.get() );
     cmdList->SetPrimitiveTopology( D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
     cmdList->SetVertexBuffer( mSimpleVB.get() );
     cmdList->DrawInstanced( kVertexCount );
+    */
 
     RenderModel( cmdList );
 
+    /*
     mPrimitiveRenderer->DrawLine2D( Vector2( 150.0f, 150.0f ), Vector2( 50.0f, 50.0f ), Color::kWhite );
     mPrimitiveRenderer->DrawTriangle( Vector2( 200.0f, 150.0f ), Vector2( 300.0f, 50.0f ), Vector2( 300.0f, 150.0f ), Color::kRed );
     mPrimitiveRenderer->DrawQuad( Vector2( 350.0f, 50.0f ), Vector2( 450.0f, 50.0f ), Vector2( 500.0f, 150.0f ), Vector2( 400.0f, 150.0f ), Color::kGreen );
@@ -504,6 +574,18 @@ void Renderer::RenderMain( CommandList* cmdList )
     capsule3D.mSegment.mEnd = Vector3( 22.0f, 7.0f, 17.0f );
     capsule3D.mRadius = 3.0f;
     mPrimitiveRenderer->DrawCapsule( capsule3D, Color::kYellow );
+    */
+
+    mGrassRenderer->Begin( cmdList );
+    if( !mUseDebugCamera )
+    {
+        mGrassRenderer->Draw( mModelCamera.get(), mModelCamera.get(), mHiZBuilder.get() );
+    }
+    else
+    {
+        mGrassRenderer->Draw( mDebugCamera->GetCamera(), mModelCamera.get(), mHiZBuilder.get() );
+    }
+    mGrassRenderer->End();
 
     if( mUseDebugCamera )
     {
@@ -512,6 +594,18 @@ void Renderer::RenderMain( CommandList* cmdList )
     mPrimitiveRenderer->DrawGrid();
     mPrimitiveRenderer->Render3D( cmdList );
     mPrimitiveRenderer->Render2D( cmdList );
+}
+
+void Renderer::ExecuteCulling( CommandList* cmdList )
+{
+    auto& dxBase = DirectXBase::GetInstance();
+
+    dxBase.ResetCmdList();
+    dxBase.SetDescriptorHeap();
+
+    mHiZBuilder->Build( cmdList );
+
+    dxBase.WaitGPU();
 }
 
 // モデルを描画
@@ -540,8 +634,8 @@ void Renderer::RenderSprite( CommandList* cmdList )
 
     mSpriteBase->Begin( cmdList );
 
-    mStarSprite->Draw( Matrix4(), mSpriteCamera.get() );
-    mOwlSprite->Draw( Matrix4(), mSpriteCamera.get() );
+    //mStarSprite->Draw( Matrix4(), mSpriteCamera.get() );
+    //mOwlSprite->Draw( Matrix4(), mSpriteCamera.get() );
 
     mSpriteBase->End();
 }

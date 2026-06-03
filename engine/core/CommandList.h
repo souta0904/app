@@ -135,7 +135,7 @@ class CommandList
     /// <param name="maxCommandCount"></param>
     /// <param name="argumentBuffer"></param>
     /// <param name="argumentBufferOffset"></param>
-    void ExecuteIndirect( ID3D12CommandSignature* commandSignature, uint32_t maxCommandCount, ID3D12Resource* argumentBuffer, uint32_t argumentBufferOffset );
+    void ExecuteIndirect( ID3D12CommandSignature* commandSignature, uint32_t maxCommandCount, ID3D12Resource* argumentBuffer, uint32_t argumentBufferOffset, ID3D12Resource* counterBuffer = nullptr, uint64_t c = 0 );
 
     /// <summary>
     /// リソースバリアをセット

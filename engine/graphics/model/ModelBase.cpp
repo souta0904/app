@@ -163,14 +163,14 @@ void ModelBase::CreateGraphicsPSO( uint64_t psoKey )
     init.mRasterizerState = rasterizerState;
 
     // 深度ステンシル
-    if( DirectXBase::kUseZPrepass )
+    /*if( DirectXBase::kUseZPrepass )
     {
         init.mDepthStencilState = DirectXCommonSettings::gDepthEqual;
     }
     else
-    {
+    {*/
         init.mDepthStencilState = DirectXCommonSettings::gDepthLess;
-    }
+    //}
 
     // 頂点レイアウト
     init.mInputLayouts.resize( 3 );

@@ -10,16 +10,16 @@ const auto kClassName = TEXT( "DxWndClass" );
 
 }  // namespace
 
-// imguiのウィンドウプロシージャ
+// ImGuiのウィンドウプロシージャの前方宣言
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
 
-// ウィンドウプロシージャ
-LRESULT CALLBACK Window::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
+namespace Nebula
 {
-    if( ImGui_ImplWin32_WndProcHandler( hwnd, msg, wp, lp ) )
-    {
-        return true;
-    }
+
+// 独自のウィンドウプロシージャ
+LRESULT CALLBACK Window::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+    if( ImGui_ImplWin32_WndProcHandler( hWnd, msg, wParam, lParam ) ) return true;
 
     switch( msg )
     {
@@ -27,10 +27,10 @@ LRESULT CALLBACK Window::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
             PostQuitMessage( 0 );
             return 0;
     }
-    return DefWindowProc( hwnd, msg, wp, lp );
+
+    return DefWindowProc( hWnd, msg, wParam, lParam );
 }
 
-// コンストラクタ
 Window::Window()
     : mHInstance( nullptr )
     , mHWnd( nullptr )
@@ -40,64 +40,64 @@ Window::Window()
 {
 }
 
-// ウィンドウを作成
 bool Window::Create( uint32_t width, uint32_t height, const std::wstring& title )
 {
+    if( mHWnd ) return false;  // 作成済みチェック
+
     mWidth = width;
     mHeight = height;
     mTitle = title;
 
-    // インスタンスハンドルを取得
     mHInstance = GetModuleHandle( nullptr );
     if( !mHInstance ) return false;
 
-    // ウィンドウクラスを設定
-    WNDCLASSEX wc = {};
-    wc.cbSize = sizeof( WNDCLASSEX );
-    wc.lpfnWndProc = WndProc;
-    wc.hInstance = mHInstance;
-    wc.hCursor = LoadCursor( nullptr, IDC_ARROW );
-    wc.lpszClassName = kClassName;
-    if( !RegisterClassEx( &wc ) ) return false;
+    WNDCLASSEX wndClass = {};
+    wndClass.cbSize = sizeof( WNDCLASSEX );
+    wndClass.lpfnWndProc = WndProc;
+    wndClass.hInstance = mHInstance;
+    wndClass.hCursor = LoadCursor( nullptr, IDC_ARROW );
+    wndClass.lpszClassName = kClassName;
+    if( !RegisterClassEx( &wndClass ) ) return false;
 
-    // ウィンドウスタイルを考慮してウィンドウサイズを計算
-    RECT rc = { 0, 0, static_cast<LONG>( mWidth ), static_cast<LONG>( mHeight ) };
-    AdjustWindowRect( &rc, WS_OVERLAPPEDWINDOW, false );
+    // クライアント領域のサイズからウィンドウのサイズを計算
+    RECT wndRc = { 0, 0, static_cast<LONG>( mWidth ), static_cast<LONG>( mHeight ) };
+    AdjustWindowRect( &wndRc, WS_OVERLAPPEDWINDOW, false );
 
-    // ウィンドウを作成
     mHWnd = CreateWindow(
-        wc.lpszClassName,
+        wndClass.lpszClassName,
         mTitle.c_str(),
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT,
         CW_USEDEFAULT,
-        rc.right - rc.left,
-        rc.bottom - rc.top,
+        wndRc.right - wndRc.left,
+        wndRc.bottom - wndRc.top,
         nullptr,
         nullptr,
         mHInstance,
         nullptr );
     if( !mHWnd ) return false;
 
-    // ウィンドウを表示
     ShowWindow( mHWnd, SW_SHOW );
 
     return true;
 }
 
-// ウィンドウを破棄
 void Window::Destroy()
 {
-    DestroyWindow( mHWnd );
+    // 破棄
+    if( mHWnd )
+    {
+        DestroyWindow( mHWnd );
+    }
     if( mHInstance )
     {
         UnregisterClass( kClassName, mHInstance );
     }
+
     mHInstance = nullptr;
     mHWnd = nullptr;
 }
 
-// メッセージを処理
 bool Window::ProcessMessage()
 {
     MSG msg = {};
@@ -106,11 +106,10 @@ bool Window::ProcessMessage()
         TranslateMessage( &msg );
         DispatchMessage( &msg );
 
-        if( msg.message == WM_QUIT )
-        {
-            // ループ終了
-            return true;
-        }
+        if( msg.message == WM_QUIT ) return true;
     }
+
     return false;
 }
+
+}  // namespace Nebula

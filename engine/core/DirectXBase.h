@@ -13,6 +13,7 @@
 #include "math/Color.h"
 
 class StructuredBuffer;
+class RWStructuredBuffer;
 class Window;
 
 /// <summary>
@@ -46,7 +47,9 @@ class DirectXBase
     DescriptorHandle* mRTVHdls[kBackBuffCount];
     // 深度バッファ
     Microsoft::WRL::ComPtr<ID3D12Resource> mDepthBuff;
+    Microsoft::WRL::ComPtr<ID3D12Resource> mNormalDepthBuff;
     DescriptorHandle* mDSVHdl;
+    DescriptorHandle* mNormalDSVHdl;
     // 現在のバックバッファのインデックス
     uint32_t mBackBuffIdx;
 
@@ -133,6 +136,19 @@ class DirectXBase
 
     DescriptorHandle* CreateSRV( StructuredBuffer* buff );
 
+    DescriptorHandle* CreateUAV( RWStructuredBuffer* buff );
+
+    
+    DescriptorHandle CreateSRV( const D3D12_SHADER_RESOURCE_VIEW_DESC& desc, ID3D12Resource* resource );
+    DescriptorHandle CreateUAV( const D3D12_UNORDERED_ACCESS_VIEW_DESC& desc, ID3D12Resource* resource );
+
+    void ResetCmdList();
+
+    void SetDescriptorHeap();
+
+    void WaitGPU();
+
+
     /// <summary>デバイスを取得</summary>
     Microsoft::WRL::ComPtr<ID3D12Device> GetDevice() const { return mDevice.Get(); }
 
@@ -165,6 +181,9 @@ class DirectXBase
 
     /// <summary>垂直同期するかを設定</summary>
     void SetUseVSync( bool useVSync ) { mUseVSync = useVSync; }
+
+    /// <summary>深度バッファを取得</summary>
+    Microsoft::WRL::ComPtr<ID3D12Resource> GetDepthBuff() const { return mDepthBuff; }
 
    private:
     /// <summary>

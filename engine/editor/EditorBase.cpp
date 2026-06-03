@@ -21,7 +21,7 @@ EditorBase::EditorBase()
 // 初期化
 bool EditorBase::Init()
 {
-    auto& window = Window::GetInstance();
+    auto& window = Nebula::Window::GetInstance();
     auto& dxBase = DirectXBase::GetInstance();
 
     if( !ImGui::CreateContext() ) return false;

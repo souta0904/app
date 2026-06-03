@@ -11,6 +11,7 @@
 #include "core/RootSignature.h"
 #include "graphics/Camera.h"
 #include "math/Vector3.h"
+#include "ModelInstance.h"
 
 // コンストラクタ
 MeshSorter::MeshSorter()
@@ -48,7 +49,7 @@ bool MeshSorter::Init( Camera* camera )
 }
 
 // 描画アイテムの追加
-void MeshSorter::Add( uint64_t psoKey, float distance, ConstantBuffer* transMatCB, Mesh* mesh, Material* material, const AABB3D& aabb )
+void MeshSorter::Add( uint64_t psoKey, float distance, ConstantBuffer* transMatCB, Mesh* mesh, Material* material, const AABB3D& aabb, ModelInstance* inst )
 {
     if( !transMatCB || !mesh || !material ) return;
 
@@ -60,6 +61,7 @@ void MeshSorter::Add( uint64_t psoKey, float distance, ConstantBuffer* transMatC
     item.mMesh = mesh;
     item.mMaterial = material;
     item.mWorldAABB = aabb;
+    item.inst = inst;
     mSortItems.emplace_back( item );
 }
 
@@ -112,6 +114,8 @@ void MeshSorter::RenderZPrepass( CommandList* cmdList )
 
     for( auto& item : mSortItems )
     {
+        item.inst->Reupdate( GetFrustumCamera() );
+
         if( !item.mIsVisible ) continue;
 
         if( item.mTransMatCB )
@@ -151,6 +155,8 @@ void MeshSorter::Render( CommandList* cmdList )
     auto offsetIdx = 0u;
     for( uint32_t i = 0; i < mSortItems.size(); ++i )
     {
+        mSortItems[i].inst->Reupdate( GetCamera() );
+
         if( mUseIndirectDraw )
         {
             if( mSortItems[i].mPSOKey != currPSOKey )

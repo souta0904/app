@@ -45,7 +45,7 @@ bool DescriptorHeap::Create( Type type, uint32_t numDescriptors, bool isShaderVi
     if( FAILED( hr ) ) return false;
 
     // デスクリプタハンドルのリストを作成
-    mDescriptorHdlPool = std::make_unique<SimplePool<DescriptorHandle>>();
+    mDescriptorHdlPool = std::make_unique<Nebula::SimplePool<DescriptorHandle>>();
     mDescriptorHdlPool->Init( desc.NumDescriptors );
 
     // デスクリプタのインクリメントサイズを取得
@@ -62,8 +62,8 @@ DescriptorHandle* DescriptorHeap::Alloc()
     auto* hdl = mDescriptorHdlPool->Lend();
     if( hdl )
     {
-        InitHdl( hdl->mIdx, hdl->mValue );
-        return &hdl->mValue;
+        InitHdl( hdl->mIdx, hdl->mVal );
+        return &hdl->mVal;
     }
     return nullptr;
 }

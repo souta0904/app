@@ -9,7 +9,7 @@ class MeshSorter;
 /// </summary>
 class ModelInstance
 {
-   private:
+   public:
     /// <summary>
     /// 変換行列
     /// </summary>
@@ -30,6 +30,7 @@ class ModelInstance
     std::vector<Material*> mMaterials;
 
     AABB3D mWorldAABB;
+    std::vector<Matrix4> mWorld;
 
    public:
     /// <summary>
@@ -75,6 +76,9 @@ class ModelInstance
     /// <param name="idx">インデックス</param>
     /// <param name="material">マテリアル</param>
     void SetMaterial( uint32_t idx, Material* material );
+
+    void UpdateWVP( const Matrix4& mat, Camera* camera );
+    void Reupdate( Camera* camera );
 
     /// <summary>マテリアル数を取得</summary>
     uint32_t GetMaterialCount() const { return static_cast<uint32_t>( mMaterials.size() ); }

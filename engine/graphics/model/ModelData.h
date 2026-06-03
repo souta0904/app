@@ -103,6 +103,8 @@ class ModelData
     /// <returns>成否</returns>
     bool Build( const std::string& path );
 
+    Mesh* GetMesh() const { return mMeshes[0].mMesh.get(); }
+
    private:
     /// <summary>
     /// ノードを構築(再帰)
